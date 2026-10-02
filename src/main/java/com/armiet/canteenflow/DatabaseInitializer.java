@@ -21,7 +21,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         // ==============================
         jdbcTemplate.execute("""
             CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id SERIAL PRIMARY KEY,
                 name TEXT NOT NULL,
                 email TEXT NOT NULL UNIQUE,
                 password TEXT NOT NULL,
@@ -36,11 +36,11 @@ public class DatabaseInitializer implements CommandLineRunner {
         // ==============================
         jdbcTemplate.execute("""
             CREATE TABLE IF NOT EXISTS food_items (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id SERIAL PRIMARY KEY,
                 name TEXT NOT NULL,
                 description TEXT,
                 category TEXT,
-                price REAL NOT NULL,
+                price DOUBLE PRECISION NOT NULL,
                 image_url TEXT,
                 available INTEGER NOT NULL DEFAULT 1,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -53,10 +53,10 @@ public class DatabaseInitializer implements CommandLineRunner {
         // ==============================
         jdbcTemplate.execute("""
             CREATE TABLE IF NOT EXISTS orders (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id SERIAL PRIMARY KEY,
                 user_id INTEGER NOT NULL,
                 token_number INTEGER,
-                total_amount REAL NOT NULL,
+                total_amount DOUBLE PRECISION NOT NULL,
                 status TEXT NOT NULL DEFAULT 'PLACED',
                 payment_method TEXT NOT NULL DEFAULT 'CASH_AT_COUNTER',
                 payment_status TEXT NOT NULL DEFAULT 'PENDING',
@@ -93,8 +93,6 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         // ==================================================
         // NORMALIZE EXISTING ORDERS
-        // Old demo orders may have UPI as payment method.
-        // Convert them to the new cash-at-counter system.
         // ==================================================
 
         jdbcTemplate.update("""
@@ -116,11 +114,11 @@ public class DatabaseInitializer implements CommandLineRunner {
         // ==============================
         jdbcTemplate.execute("""
             CREATE TABLE IF NOT EXISTS order_items (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id SERIAL PRIMARY KEY,
                 order_id INTEGER NOT NULL,
                 food_item_id INTEGER NOT NULL,
                 quantity INTEGER NOT NULL,
-                price REAL NOT NULL,
+                price DOUBLE PRECISION NOT NULL,
                 FOREIGN KEY (order_id) REFERENCES orders(id),
                 FOREIGN KEY (food_item_id) REFERENCES food_items(id)
             )
@@ -131,9 +129,9 @@ public class DatabaseInitializer implements CommandLineRunner {
         // DEFAULT ADMIN ACCOUNT
         // ==============================
         Integer adminCount = jdbcTemplate.queryForObject(
-            "SELECT COUNT(*) FROM users WHERE email = ?",
-            Integer.class,
-            "admin@armiet.com"
+                "SELECT COUNT(*) FROM users WHERE email = ?",
+                Integer.class,
+                "admin@armiet.com"
         );
 
         if (adminCount != null && adminCount == 0) {
@@ -143,10 +141,11 @@ public class DatabaseInitializer implements CommandLineRunner {
                 (name, email, password, role)
                 VALUES (?, ?, ?, ?)
             """,
-            "ARMIET Admin",
-            "admin@armiet.com",
-            "admin123",
-            "ADMIN");
+                    "ARMIET Admin",
+                    "admin@armiet.com",
+                    "admin123",
+                    "ADMIN"
+            );
 
             System.out.println("======================================");
             System.out.println("Default admin account created");
@@ -160,77 +159,59 @@ public class DatabaseInitializer implements CommandLineRunner {
         // DEFAULT FOOD MENU
         // ==============================
         Integer foodCount = jdbcTemplate.queryForObject(
-            "SELECT COUNT(*) FROM food_items",
-            Integer.class
+                "SELECT COUNT(*) FROM food_items",
+                Integer.class
         );
 
         if (foodCount != null && foodCount == 0) {
 
-            jdbcTemplate.update("""
-                INSERT INTO food_items
-                (name, description, category, price, image_url)
-                VALUES (?, ?, ?, ?, ?)
-            """,
-            "Vada Pav",
-            "Mumbai's favourite spicy snack",
-            "Snacks",
-            20.0,
-            "🥪");
+            insertFood(
+                    "Vada Pav",
+                    "Mumbai's favourite spicy snack",
+                    "Snacks",
+                    20.0,
+                    "🥪"
+            );
 
-            jdbcTemplate.update("""
-                INSERT INTO food_items
-                (name, description, category, price, image_url)
-                VALUES (?, ?, ?, ?, ?)
-            """,
-            "Samosa",
-            "Crispy samosa with delicious filling",
-            "Snacks",
-            15.0,
-            "🥟");
+            insertFood(
+                    "Samosa",
+                    "Crispy samosa with delicious filling",
+                    "Snacks",
+                    15.0,
+                    "🥟"
+            );
 
-            jdbcTemplate.update("""
-                INSERT INTO food_items
-                (name, description, category, price, image_url)
-                VALUES (?, ?, ?, ?, ?)
-            """,
-            "Sandwich",
-            "Fresh vegetable sandwich",
-            "Fast Food",
-            40.0,
-            "🥪");
+            insertFood(
+                    "Sandwich",
+                    "Fresh vegetable sandwich",
+                    "Fast Food",
+                    40.0,
+                    "🥪"
+            );
 
-            jdbcTemplate.update("""
-                INSERT INTO food_items
-                (name, description, category, price, image_url)
-                VALUES (?, ?, ?, ?, ?)
-            """,
-            "Pizza",
-            "Cheesy college special pizza",
-            "Fast Food",
-            80.0,
-            "🍕");
+            insertFood(
+                    "Pizza",
+                    "Cheesy college special pizza",
+                    "Fast Food",
+                    80.0,
+                    "🍕"
+            );
 
-            jdbcTemplate.update("""
-                INSERT INTO food_items
-                (name, description, category, price, image_url)
-                VALUES (?, ?, ?, ?, ?)
-            """,
-            "Burger",
-            "Fresh and tasty veg burger",
-            "Fast Food",
-            60.0,
-            "🍔");
+            insertFood(
+                    "Burger",
+                    "Fresh and tasty veg burger",
+                    "Fast Food",
+                    60.0,
+                    "🍔"
+            );
 
-            jdbcTemplate.update("""
-                INSERT INTO food_items
-                (name, description, category, price, image_url)
-                VALUES (?, ?, ?, ?, ?)
-            """,
-            "Cold Coffee",
-            "Chilled creamy cold coffee",
-            "Beverages",
-            50.0,
-            "☕");
+            insertFood(
+                    "Cold Coffee",
+                    "Chilled creamy cold coffee",
+                    "Beverages",
+                    50.0,
+                    "☕"
+            );
 
             System.out.println("======================================");
             System.out.println("Default food menu inserted");
@@ -257,7 +238,33 @@ public class DatabaseInitializer implements CommandLineRunner {
 
 
     // ==================================================
+    // INSERT FOOD
+    // ==================================================
+
+    private void insertFood(
+            String name,
+            String description,
+            String category,
+            double price,
+            String imageUrl) {
+
+        jdbcTemplate.update("""
+            INSERT INTO food_items
+            (name, description, category, price, image_url)
+            VALUES (?, ?, ?, ?, ?)
+        """,
+                name,
+                description,
+                category,
+                price,
+                imageUrl
+        );
+    }
+
+
+    // ==================================================
     // ADD COLUMN ONLY IF IT DOES NOT ALREADY EXIST
+    // PostgreSQL version
     // ==================================================
 
     private void addColumnIfMissing(
@@ -269,8 +276,10 @@ public class DatabaseInitializer implements CommandLineRunner {
                 jdbcTemplate.queryForObject(
                         """
                         SELECT COUNT(*)
-                        FROM pragma_table_info(?)
-                        WHERE name = ?
+                        FROM information_schema.columns
+                        WHERE table_schema = 'public'
+                        AND table_name = ?
+                        AND column_name = ?
                         """,
                         Integer.class,
                         tableName,
@@ -281,18 +290,18 @@ public class DatabaseInitializer implements CommandLineRunner {
 
             jdbcTemplate.execute(
                     "ALTER TABLE "
-                    + tableName
-                    + " ADD COLUMN "
-                    + columnName
-                    + " "
-                    + columnDefinition
+                            + tableName
+                            + " ADD COLUMN "
+                            + columnName
+                            + " "
+                            + columnDefinition
             );
 
             System.out.println(
                     "Added database column: "
-                    + tableName
-                    + "."
-                    + columnName
+                            + tableName
+                            + "."
+                            + columnName
             );
         }
     }
