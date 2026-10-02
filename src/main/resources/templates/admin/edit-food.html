@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Food | ARMIET CanteenFlow</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "DM Sans", sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        .navbar {
+            height: 72px;
+            background: white;
+            border-bottom: 1px solid #e8ebf0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6%;
+        }
+
+        .brand {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .brand span {
+            color: #2864e6;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 22px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #697386;
+            font-weight: 600;
+        }
+
+        .nav-links a:hover {
+            color: #2864e6;
+        }
+
+        .logout {
+            color: #e5484d !important;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 760px;
+            margin: 45px auto;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 34px;
+            margin-bottom: 7px;
+        }
+
+        .page-header p {
+            color: #697386;
+        }
+
+        .form-card {
+            background: white;
+            border: 1px solid #edf0f5;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 8px 25px rgba(30, 45, 70, 0.06);
+        }
+
+        .food-id {
+            background: #f5f7fb;
+            padding: 10px 13px;
+            border-radius: 9px;
+            color: #697386;
+            font-size: 13px;
+            margin-bottom: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #dce1e8;
+            border-radius: 10px;
+            background: white;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #2864e6;
+            box-shadow: 0 0 0 3px rgba(40, 100, 230, 0.08);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .emoji-input {
+            font-size: 22px;
+        }
+
+        .availability-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+
+        .availability-box input {
+            width: auto;
+        }
+
+        .availability-box label {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 28px;
+        }
+
+        .btn {
+            flex: 1;
+            border: none;
+            border-radius: 10px;
+            padding: 14px;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .submit-btn {
+            background: #2864e6;
+            color: white;
+        }
+
+        .submit-btn:hover {
+            background: #1f55ca;
+        }
+
+        .cancel-btn {
+            background: #eef0f4;
+            color: #172033;
+        }
+
+        .cancel-btn:hover {
+            background: #e2e5ea;
+        }
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                padding: 0 4%;
+            }
+
+            .nav-links a:not(.logout) {
+                display: none;
+            }
+
+            .container {
+                width: 94%;
+                margin-top: 25px;
+            }
+
+            .form-card {
+                padding: 22px;
+            }
+
+            .two-columns {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="brand">
+        ARMIET <span>CanteenFlow</span>
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/admin/dashboard">
+            Dashboard
+        </a>
+
+        <a href="/admin/orders">
+            Orders
+        </a>
+
+        <a href="/admin/food">
+            Food Menu
+        </a>
+
+        <a href="/logout" class="logout">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<main class="container">
+
+    <section class="page-header">
+
+        <h1>
+            Edit Food
+        </h1>
+
+        <p>
+            Update the food item's information.
+        </p>
+
+    </section>
+
+
+    <section class="form-card">
+
+        <div class="food-id">
+
+            Food ID:
+            <strong th:text="${food.id}">
+                1
+            </strong>
+
+        </div>
+
+
+        <form action="/admin/food/edit"
+              method="post">
+
+
+            <input type="hidden"
+                   name="foodId"
+                   th:value="${food.id}">
+
+
+            <div class="form-group">
+
+                <label for="name">
+                    Food Name
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    th:value="${food.name}"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="description">
+                    Description
+                </label>
+
+                <textarea
+                    id="description"
+                    name="description"
+                    required
+                    th:text="${food.description}"></textarea>
+
+            </div>
+
+
+            <div class="two-columns">
+
+                <div class="form-group">
+
+                    <label for="category">
+                        Category
+                    </label>
+
+                    <select id="category"
+                            name="category"
+                            required>
+
+                        <option value="Snacks"
+                                th:selected="${food.category == 'Snacks'}">
+                            Snacks
+                        </option>
+
+                        <option value="Fast Food"
+                                th:selected="${food.category == 'Fast Food'}">
+                            Fast Food
+                        </option>
+
+                        <option value="Beverages"
+                                th:selected="${food.category == 'Beverages'}">
+                            Beverages
+                        </option>
+
+                        <option value="Meals"
+                                th:selected="${food.category == 'Meals'}">
+                            Meals
+                        </option>
+
+                        <option value="Desserts"
+                                th:selected="${food.category == 'Desserts'}">
+                            Desserts
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="price">
+                        Price (?)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="price"
+                        name="price"
+                        min="1"
+                        step="0.01"
+                        th:value="${food.price}"
+                        required>
+
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label for="imageUrl">
+                    Food Emoji / Icon
+                </label>
+
+                <input
+                    type="text"
+                    id="imageUrl"
+                    name="imageUrl"
+                    class="emoji-input"
+                    maxlength="10"
+                    th:value="${food.image_url}"
+                    placeholder="??">
+
+            </div>
+
+
+            <div class="availability-box">
+
+                <input
+                    type="checkbox"
+                    id="available"
+                    name="available"
+                    th:checked="${food.available == 1}">
+
+                <label for="available">
+                    Food is currently available
+                </label>
+
+            </div>
+
+
+            <div class="buttons">
+
+                <a href="/admin/food"
+                   class="btn cancel-btn">
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="btn submit-btn">
+                    Save Changes
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+</body>
+</html>

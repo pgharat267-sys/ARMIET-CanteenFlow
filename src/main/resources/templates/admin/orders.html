@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Orders | ARMIET CanteenFlow</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            background: #f6f7f9;
+
+            color: #171717;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+        }
+
+
+        /* =========================================
+           NAVBAR
+        ========================================= */
+
+        .navbar {
+
+            height: 76px;
+
+            background: white;
+
+            border-bottom:
+                1px solid #eeeeee;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding:
+                0 5%;
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            text-decoration: none;
+
+            color: #111;
+        }
+
+
+        .brand-icon {
+
+            width: 46px;
+
+            height: 46px;
+
+            border-radius: 13px;
+
+            background: #ff6b35;
+
+            color: white;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 23px;
+
+            box-shadow:
+                0 8px 20px
+                rgba(255, 107, 53, 0.20);
+        }
+
+
+        .brand-name {
+
+            display: block;
+
+            font-size: 18px;
+
+            font-weight: 900;
+        }
+
+
+        .brand-subtitle {
+
+            display: block;
+
+            color: #888;
+
+            font-size: 11px;
+
+            margin-top: 3px;
+        }
+
+
+        .nav-actions {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .nav-btn {
+
+            text-decoration: none;
+
+            color: #171717;
+
+            border:
+                1px solid #dddddd;
+
+            background: white;
+
+            padding:
+                10px 15px;
+
+            border-radius: 9px;
+
+            font-size: 13px;
+
+            font-weight: 800;
+        }
+
+
+        .nav-btn:hover {
+
+            border-color: #ff6b35;
+
+            color: #ff6b35;
+        }
+
+
+        /* =========================================
+           MAIN
+        ========================================= */
+
+        .container {
+
+            width: 92%;
+
+            max-width: 1350px;
+
+            margin: auto;
+
+            padding:
+                42px 0 70px;
+        }
+
+
+        .page-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: flex-end;
+
+            margin-bottom: 28px;
+        }
+
+
+        .page-label {
+
+            color: #ff6b35;
+
+            font-size: 12px;
+
+            font-weight: 900;
+
+            letter-spacing: 1.2px;
+        }
+
+
+        .page-header h1 {
+
+            margin:
+                9px 0 7px;
+
+            font-size: 34px;
+
+            line-height: 1.1;
+        }
+
+
+        .page-header p {
+
+            margin: 0;
+
+            color: #777;
+
+            font-size: 14px;
+        }
+
+
+        .order-count {
+
+            background: white;
+
+            border:
+                1px solid #eeeeee;
+
+            padding:
+                12px 17px;
+
+            border-radius: 12px;
+
+            font-size: 13px;
+
+            font-weight: 800;
+        }
+
+
+        /* =========================================
+           ORDERS CONTAINER
+        ========================================= */
+
+        .orders-card {
+
+            background: white;
+
+            border:
+                1px solid #eeeeee;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 8px 30px
+                rgba(0, 0, 0, 0.04);
+        }
+
+
+        .table-wrapper {
+
+            width: 100%;
+
+            overflow-x: auto;
+        }
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 1100px;
+        }
+
+
+        thead {
+
+            background: #fafafa;
+        }
+
+
+        th {
+
+            text-align: left;
+
+            padding:
+                17px 18px;
+
+            color: #777;
+
+            font-size: 11px;
+
+            letter-spacing: .6px;
+
+            text-transform: uppercase;
+
+            border-bottom:
+                1px solid #eeeeee;
+
+            white-space: nowrap;
+        }
+
+
+        td {
+
+            padding:
+                18px;
+
+            border-bottom:
+                1px solid #eeeeee;
+
+            vertical-align: top;
+
+            font-size: 13px;
+        }
+
+
+        tbody tr:hover {
+
+            background: #fffaf7;
+        }
+
+
+        tbody tr:last-child td {
+
+            border-bottom: none;
+        }
+
+
+        /* =========================================
+           TOKEN
+        ========================================= */
+
+        .token {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            min-width: 54px;
+
+            padding:
+                9px 12px;
+
+            border-radius: 10px;
+
+            background: #fff1ea;
+
+            color: #ff5b23;
+
+            font-size: 14px;
+
+            font-weight: 900;
+        }
+
+
+        /* =========================================
+           STUDENT
+        ========================================= */
+
+        .student-name {
+
+            font-weight: 900;
+
+            margin-bottom: 5px;
+        }
+
+
+        .student-email {
+
+            color: #888;
+
+            font-size: 11px;
+        }
+
+
+        /* =========================================
+           FOOD ITEMS
+        ========================================= */
+
+        .food-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 6px;
+        }
+
+
+        .food-item {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            font-size: 12px;
+        }
+
+
+        .food-name {
+
+            font-weight: 800;
+        }
+
+
+        .food-quantity {
+
+            color: #777;
+
+            background: #f4f4f4;
+
+            padding:
+                3px 7px;
+
+            border-radius: 6px;
+
+            font-size: 10px;
+        }
+
+
+        .food-price {
+
+            color: #777;
+
+            font-size: 11px;
+        }
+
+
+        /* =========================================
+           AMOUNT
+        ========================================= */
+
+        .amount {
+
+            font-size: 15px;
+
+            font-weight: 900;
+
+            white-space: nowrap;
+        }
+
+
+        /* =========================================
+           PAYMENT
+        ========================================= */
+
+        .payment-box {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+
+            min-width: 145px;
+        }
+
+
+        .payment-method {
+
+            color: #777;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+        }
+
+
+        .payment-status {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            width: fit-content;
+
+            padding:
+                6px 9px;
+
+            border-radius: 8px;
+
+            font-size: 10px;
+
+            font-weight: 900;
+        }
+
+
+        .payment-pending {
+
+            background: #fff3dc;
+
+            color: #b56a00;
+        }
+
+
+        .payment-paid {
+
+            background: #e8f8ed;
+
+            color: #16823b;
+        }
+
+
+        .payment-action {
+
+            margin-top: 2px;
+        }
+
+
+        .mark-paid-btn {
+
+            border: none;
+
+            background: #171717;
+
+            color: white;
+
+            padding:
+                8px 11px;
+
+            border-radius: 8px;
+
+            font-size: 10px;
+
+            font-weight: 900;
+
+            cursor: pointer;
+        }
+
+
+        .mark-paid-btn:hover {
+
+            background: #ff6b35;
+        }
+
+
+        .pending-note {
+
+            color: #999;
+
+            font-size: 10px;
+        }
+
+
+        /* =========================================
+           ORDER STATUS
+        ========================================= */
+
+        .status-form {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 8px;
+
+            min-width: 135px;
+        }
+
+
+        .status-select {
+
+            border:
+                1px solid #dddddd;
+
+            background: white;
+
+            padding:
+                9px 10px;
+
+            border-radius: 8px;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            outline: none;
+        }
+
+
+        .status-select:focus {
+
+            border-color: #ff6b35;
+        }
+
+
+        .status-update-btn {
+
+            border: none;
+
+            background: #f1f1f1;
+
+            color: #171717;
+
+            padding:
+                8px 10px;
+
+            border-radius: 8px;
+
+            font-size: 10px;
+
+            font-weight: 900;
+
+            cursor: pointer;
+        }
+
+
+        .status-update-btn:hover {
+
+            background: #ff6b35;
+
+            color: white;
+        }
+
+
+        /* =========================================
+           ORDER TIME
+        ========================================= */
+
+        .order-time {
+
+            color: #777;
+
+            font-size: 11px;
+
+            line-height: 1.5;
+
+            white-space: nowrap;
+        }
+
+
+        /* =========================================
+           EMPTY ORDERS
+        ========================================= */
+
+        .empty-orders {
+
+            padding:
+                70px 20px;
+
+            text-align: center;
+        }
+
+
+        .empty-icon {
+
+            font-size: 45px;
+
+            margin-bottom: 15px;
+        }
+
+
+        .empty-orders h2 {
+
+            margin:
+                0 0 8px;
+
+            font-size: 20px;
+        }
+
+
+        .empty-orders p {
+
+            margin: 0;
+
+            color: #888;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        .footer {
+
+            text-align: center;
+
+            color: #999;
+
+            font-size: 11px;
+
+            margin-top: 28px;
+        }
+
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 700px) {
+
+            .navbar {
+
+                padding:
+                    0 4%;
+            }
+
+
+            .brand-subtitle {
+
+                display: none;
+            }
+
+
+            .nav-actions {
+
+                gap: 5px;
+            }
+
+
+            .nav-btn {
+
+                padding:
+                    9px 10px;
+
+                font-size: 11px;
+            }
+
+
+            .container {
+
+                width: 94%;
+
+                padding-top: 28px;
+            }
+
+
+            .page-header {
+
+                align-items: flex-start;
+
+                flex-direction: column;
+
+                gap: 18px;
+            }
+
+
+            .page-header h1 {
+
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     NAVBAR
+========================================= -->
+
+<header class="navbar">
+
+    <a
+        href="/admin/dashboard"
+        class="brand">
+
+        <div class="brand-icon">
+            🍴
+        </div>
+
+        <div>
+
+            <span class="brand-name">
+                ARMIET CanteenFlow
+            </span>
+
+            <span class="brand-subtitle">
+                Admin Panel
+            </span>
+
+        </div>
+
+    </a>
+
+
+    <div class="nav-actions">
+
+        <a
+            href="/admin/dashboard"
+            class="nav-btn">
+
+            Dashboard
+
+        </a>
+
+
+        <a
+            href="/admin/food"
+            class="nav-btn">
+
+            Menu
+
+        </a>
+
+
+        <a
+            href="/admin/sales"
+            class="nav-btn">
+
+            Sales
+
+        </a>
+
+
+        <a
+            href="/logout"
+            class="nav-btn">
+
+            Logout
+
+        </a>
+
+    </div>
+
+</header>
+
+
+
+<!-- =========================================
+     MAIN
+========================================= -->
+
+<main class="container">
+
+
+    <!-- =====================================
+         PAGE HEADER
+    ====================================== -->
+
+    <section class="page-header">
+
+        <div>
+
+            <span class="page-label">
+                ORDER MANAGEMENT
+            </span>
+
+            <h1>
+                All Orders
+            </h1>
+
+            <p>
+                Manage student orders, payments and order status.
+            </p>
+
+        </div>
+
+
+        <div class="order-count">
+
+            <span
+                th:text="${#lists.size(orders) + ' Orders'}">
+
+                0 Orders
+
+            </span>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================
+         ORDERS CARD
+    ====================================== -->
+
+    <section class="orders-card">
+
+
+        <!-- =================================
+             ORDERS EXIST
+        ================================== -->
+
+        <div
+            class="table-wrapper"
+            th:if="${orders != null and !orders.isEmpty()}">
+
+            <table>
+
+
+                <!-- ==========================
+                     TABLE HEADER
+                =========================== -->
+
+                <thead>
+
+                <tr>
+
+                    <th>
+                        Token
+                    </th>
+
+                    <th>
+                        Student
+                    </th>
+
+                    <th>
+                        Food Items
+                    </th>
+
+                    <th>
+                        Amount
+                    </th>
+
+                    <th>
+                        Payment
+                    </th>
+
+                    <th>
+                        Order Status
+                    </th>
+
+                    <th>
+                        Order Time
+                    </th>
+
+                </tr>
+
+                </thead>
+
+
+
+                <!-- ==========================
+                     TABLE BODY
+                =========================== -->
+
+                <tbody>
+
+                <tr
+                    th:each="order : ${orders}">
+
+
+                    <!-- ======================
+                         TOKEN
+                    ======================= -->
+
+                    <td>
+
+                        <span
+                            class="token"
+                            th:text="${'#' + order.token_number}">
+
+                            #1
+
+                        </span>
+
+                    </td>
+
+
+
+                    <!-- ======================
+                         STUDENT
+                    ======================= -->
+
+                    <td>
+
+                        <div class="student-name"
+                             th:text="${order.student_name}">
+
+                            Student
+
+                        </div>
+
+                        <div class="student-email"
+                             th:text="${order.student_email}">
+
+                            student@email.com
+
+                        </div>
+
+                    </td>
+
+
+
+                    <!-- ======================
+                         FOOD
+                    ======================= -->
+
+                    <td>
+
+                        <div class="food-list">
+
+                            <div
+                                class="food-item"
+                                th:each="item : ${order.items}">
+
+                                <span
+                                    class="food-name"
+                                    th:text="${item.name}">
+
+                                    Food
+
+                                </span>
+
+
+                                <span
+                                    class="food-quantity"
+                                    th:text="${'x' + item.quantity}">
+
+                                    x1
+
+                                </span>
+
+
+                                <span
+                                    class="food-price"
+                                    th:text="${'₹' + item.price}">
+
+                                    ₹0
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+
+                    <!-- ======================
+                         AMOUNT
+                    ======================= -->
+
+                    <td>
+
+                        <span
+                            class="amount"
+                            th:text="${'₹' + order.total_amount}">
+
+                            ₹0
+
+                        </span>
+
+                    </td>
+
+
+
+                    <!-- ======================
+                         PAYMENT
+                    ======================= -->
+
+                    <td>
+
+                        <div class="payment-box">
+
+
+                            <div class="payment-method">
+
+                                💵 Cash at Counter
+
+                            </div>
+
+
+                            <!-- PENDING -->
+
+                            <span
+                                th:if="${order.payment_status == 'PENDING'}"
+                                class="payment-status payment-pending">
+
+                                🟠 PAYMENT PENDING
+
+                            </span>
+
+
+                            <!-- PAID -->
+
+                            <span
+                                th:if="${order.payment_status == 'PAID'}"
+                                class="payment-status payment-paid">
+
+                                🟢 PAID
+
+                            </span>
+
+
+                            <!-- MARK PAID -->
+
+                            <div
+                                class="payment-action"
+                                th:if="${order.payment_status != 'PAID'}">
+
+                                <form
+                                    method="post"
+                                    action="/admin/orders/payment">
+
+                                    <input
+                                        type="hidden"
+                                        name="orderId"
+                                        th:value="${order.id}">
+
+                                    <input
+                                        type="hidden"
+                                        name="paymentStatus"
+                                        value="PAID">
+
+                                    <button
+                                        type="submit"
+                                        class="mark-paid-btn">
+
+                                        💵 Mark Paid
+
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+
+                            <!-- PAID MESSAGE -->
+
+                            <span
+                                class="pending-note"
+                                th:if="${order.payment_status == 'PAID'}">
+
+                                Payment received at counter
+
+                            </span>
+
+                        </div>
+
+                    </td>
+
+
+
+                    <!-- ======================
+                         ORDER STATUS
+                    ======================= -->
+
+                    <td>
+
+                        <form
+                            method="post"
+                            action="/admin/orders/status"
+                            class="status-form">
+
+
+                            <input
+                                type="hidden"
+                                name="orderId"
+                                th:value="${order.id}">
+
+
+                            <select
+                                name="status"
+                                class="status-select">
+
+
+                                <option
+                                    value="PLACED"
+                                    th:selected="${order.status == 'PLACED'}">
+
+                                    PLACED
+
+                                </option>
+
+
+                                <option
+                                    value="PREPARING"
+                                    th:selected="${order.status == 'PREPARING'}">
+
+                                    PREPARING
+
+                                </option>
+
+
+                                <option
+                                    value="READY"
+                                    th:selected="${order.status == 'READY'}">
+
+                                    READY
+
+                                </option>
+
+
+                                <option
+                                    value="COMPLETED"
+                                    th:selected="${order.status == 'COMPLETED'}">
+
+                                    COMPLETED
+
+                                </option>
+
+
+                                <option
+                                    value="CANCELLED"
+                                    th:selected="${order.status == 'CANCELLED'}">
+
+                                    CANCELLED
+
+                                </option>
+
+
+                            </select>
+
+
+                            <button
+                                type="submit"
+                                class="status-update-btn">
+
+                                Update Status
+
+                            </button>
+
+                        </form>
+
+                    </td>
+
+
+
+                    <!-- ======================
+                         ORDER TIME
+                    ======================= -->
+
+                    <td>
+
+                        <div
+                            class="order-time"
+                            th:text="${order.order_time}">
+
+                            Order time
+
+                        </div>
+
+                    </td>
+
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+
+        <!-- =================================
+             NO ORDERS
+        ================================== -->
+
+        <div
+            class="empty-orders"
+            th:if="${orders == null or orders.isEmpty()}">
+
+            <div class="empty-icon">
+                📦
+            </div>
+
+            <h2>
+                No Orders Yet
+            </h2>
+
+            <p>
+                Student orders will appear here when they place an order.
+            </p>
+
+        </div>
+
+
+    </section>
+
+
+    <div class="footer">
+
+        ARMIET CanteenFlow • Smart College Canteen Management System
+
+    </div>
+
+
+</main>
+
+
+</body>
+
+</html>

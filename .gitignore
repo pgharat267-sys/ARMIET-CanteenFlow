@@ -1,0 +1,11 @@
+target/
+canteen.db
+*.db
+*.db-shm
+*.db-wal
+*.log
+.idea/
+.vscode/
+.classpath
+.project
+.settings/

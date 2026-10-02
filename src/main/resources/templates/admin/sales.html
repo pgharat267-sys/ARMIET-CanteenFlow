@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Sales & Reports | ARMIET CanteenFlow</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        .navbar {
+            background: #111827;
+            color: white;
+            padding: 18px 6%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #60a5fa;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #d1d5db;
+            text-decoration: none;
+            padding: 9px 13px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover,
+        .nav-links .active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1250px;
+            margin: 35px auto;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            margin-bottom: 7px;
+        }
+
+        .page-header p {
+            color: #6b7280;
+        }
+
+        /* STAT CARDS */
+
+        .stats {
+            display: grid;
+            grid-template-columns:
+                repeat(5, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 15px;
+            box-shadow:
+                0 5px 18px rgba(0, 0, 0, 0.06);
+        }
+
+        .stat-icon {
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        /* MAIN GRID */
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow:
+                0 5px 18px rgba(0, 0, 0, 0.06);
+        }
+
+        .card h2 {
+            font-size: 21px;
+            margin-bottom: 5px;
+        }
+
+        .card-subtitle {
+            color: #6b7280;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        /* POPULAR FOOD */
+
+        .food-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #e5e7eb;
+            gap: 15px;
+        }
+
+        .food-row:last-child {
+            border-bottom: none;
+        }
+
+        .food-name {
+            font-weight: bold;
+        }
+
+        .food-category {
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .food-sales {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .quantity {
+            font-weight: bold;
+        }
+
+        .revenue {
+            color: #16a34a;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        /* SALES TABLE */
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 14px;
+            background: #f3f4f6;
+            font-size: 13px;
+            color: #4b5563;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .placed {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .preparing {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .ready {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .amount {
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            color: #6b7280;
+            padding: 30px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 20px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 9px;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            background: #1d4ed8;
+        }
+
+        @media (max-width: 1000px) {
+            .stats {
+                grid-template-columns:
+                    repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 750px) {
+            .stats {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        ARMIET <span>CanteenFlow</span>
+    </div>
+
+    <div class="nav-links">
+        <a href="/admin/dashboard">
+            Dashboard
+        </a>
+
+        <a href="/admin/orders">
+            Orders
+        </a>
+
+        <a href="/admin/food">
+            Food Menu
+        </a>
+
+        <a href="/admin/sales"
+           class="active">
+            Sales
+        </a>
+
+        <a href="/logout">
+            Logout
+        </a>
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+    <div class="page-header">
+
+        <h1>Sales & Reports</h1>
+
+        <p>
+            Monitor canteen sales, orders and popular food items.
+        </p>
+
+    </div>
+
+
+    <!-- STAT CARDS -->
+
+    <div class="stats">
+
+        <div class="stat-card">
+
+            <div class="stat-icon">₹</div>
+
+            <div class="stat-label">
+                Total Sales
+            </div>
+
+            <div class="stat-value">
+                ₹<span th:text="${totalSales}">
+                    0
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">📅</div>
+
+            <div class="stat-label">
+                Today's Sales
+            </div>
+
+            <div class="stat-value">
+                ₹<span th:text="${todaySales}">
+                    0
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">🧾</div>
+
+            <div class="stat-label">
+                Total Orders
+            </div>
+
+            <div class="stat-value"
+                 th:text="${totalOrders}">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">✅</div>
+
+            <div class="stat-label">
+                Completed Orders
+            </div>
+
+            <div class="stat-value"
+                 th:text="${completedOrders}">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">🔥</div>
+
+            <div class="stat-label">
+                Active Orders
+            </div>
+
+            <div class="stat-value"
+                 th:text="${activeOrders}">
+                0
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- POPULAR FOOD + SUMMARY -->
+
+    <div class="grid">
+
+        <div class="card">
+
+            <h2>🍔 Popular Food</h2>
+
+            <p class="card-subtitle">
+                Items ordered most frequently
+            </p>
+
+
+            <div th:if="${popularFood.isEmpty()}"
+                 class="empty">
+
+                No sales data available yet.
+
+            </div>
+
+
+            <div th:each="food : ${popularFood}"
+                 class="food-row">
+
+                <div>
+
+                    <div class="food-name"
+                         th:text="${food.name}">
+                        Food
+                    </div>
+
+                    <div class="food-category"
+                         th:text="${food.category}">
+                        Category
+                    </div>
+
+                </div>
+
+
+                <div class="food-sales">
+
+                    <div class="quantity">
+
+                        <span th:text="${food.quantity_sold}">
+                            0
+                        </span>
+                        sold
+
+                    </div>
+
+                    <div class="revenue">
+
+                        ₹<span th:text="${food.revenue}">
+                            0
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>📊 Sales Overview</h2>
+
+            <p class="card-subtitle">
+                Current performance summary
+            </p>
+
+
+            <div class="food-row">
+
+                <div>
+                    Total Revenue
+                </div>
+
+                <strong>
+                    ₹<span th:text="${totalSales}">
+                        0
+                    </span>
+                </strong>
+
+            </div>
+
+
+            <div class="food-row">
+
+                <div>
+                    Today's Revenue
+                </div>
+
+                <strong>
+                    ₹<span th:text="${todaySales}">
+                        0
+                    </span>
+                </strong>
+
+            </div>
+
+
+            <div class="food-row">
+
+                <div>
+                    Total Orders
+                </div>
+
+                <strong th:text="${totalOrders}">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="food-row">
+
+                <div>
+                    Completed Orders
+                </div>
+
+                <strong th:text="${completedOrders}">
+                    0
+                </strong>
+
+            </div>
+
+
+            <div class="food-row">
+
+                <div>
+                    Active Orders
+                </div>
+
+                <strong th:text="${activeOrders}">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RECENT SALES -->
+
+    <div class="card">
+
+        <h2>🧾 Recent Sales</h2>
+
+        <p class="card-subtitle">
+            Latest customer orders
+        </p>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                <tr>
+
+                    <th>Order</th>
+                    <th>Token</th>
+                    <th>Customer</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Time</th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                <tr th:each="sale : ${recentSales}">
+
+                    <td>
+                        #<span th:text="${sale.id}">
+                            1
+                        </span>
+                    </td>
+
+                    <td>
+                        #<span th:text="${sale.token_number}">
+                            1
+                        </span>
+                    </td>
+
+                    <td th:text="${sale.customer_name}">
+                        Customer
+                    </td>
+
+                    <td class="amount">
+
+                        ₹<span th:text="${sale.total_amount}">
+                            0
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <span class="status"
+                              th:classappend="${#strings.toLowerCase(sale.status)}"
+                              th:text="${sale.status}">
+                            PLACED
+                        </span>
+
+                    </td>
+
+                    <td th:text="${sale.order_time}">
+                        Time
+                    </td>
+
+                </tr>
+
+
+                <tr th:if="${recentSales.isEmpty()}">
+
+                    <td colspan="6"
+                        class="empty">
+
+                        No sales found.
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <a href="/admin/dashboard"
+       class="back-btn">
+        ← Back to Dashboard
+    </a>
+
+</div>
+
+</body>
+</html>

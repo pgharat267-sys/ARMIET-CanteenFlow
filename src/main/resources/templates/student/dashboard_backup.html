@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Dashboard | ARMIET CanteenFlow</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f6f7f9;
+            color: #171717;
+            font-family: Arial, sans-serif;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .student-navbar {
+            height: 78px;
+            background: white;
+            border-bottom: 1px solid #eeeeee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #111;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: #ff6b35;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 8px 20px rgba(255, 107, 53, 0.22);
+        }
+
+        .brand-name {
+            display: block;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .brand-subtitle {
+            display: block;
+            color: #777;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        .student-user {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            display: block;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .user-email {
+            display: block;
+            color: #888;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .logout-btn {
+            text-decoration: none;
+            color: #111;
+            border: 1px solid #dddddd;
+            padding: 11px 18px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            background: white;
+        }
+
+        .logout-btn:hover {
+            border-color: #ff6b35;
+            color: #ff6b35;
+        }
+
+        /* ================= MAIN ================= */
+
+        .dashboard-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            padding: 48px 0 70px;
+        }
+
+        .welcome-section {
+            margin-bottom: 35px;
+        }
+
+        .welcome-tag {
+            color: #ff6b35;
+            font-size: 13px;
+            font-weight: 900;
+            letter-spacing: 1.2px;
+        }
+
+        .welcome-section h1 {
+            margin: 12px 0 12px;
+            font-size: 38px;
+            line-height: 1.15;
+        }
+
+        .welcome-section p {
+            margin: 0;
+            color: #777;
+            font-size: 16px;
+        }
+
+        /* ================= STAT CARDS ================= */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #eeeeee;
+            border-radius: 20px;
+            padding: 28px;
+            min-height: 150px;
+            position: relative;
+        }
+
+        .stat-label {
+            color: #777;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: .5px;
+        }
+
+        .stat-value {
+            font-size: 30px;
+            font-weight: 900;
+            margin-top: 22px;
+        }
+
+        .stat-description {
+            color: #888;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .stat-icon {
+            position: absolute;
+            right: 25px;
+            top: 55px;
+            width: 48px;
+            height: 48px;
+            background: #fff0e9;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        /* ================= CONTENT ================= */
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.65fr 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .menu-section {
+            background: white;
+            border: 1px solid #eeeeee;
+            border-radius: 22px;
+            padding: 28px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .section-heading h2 {
+            margin: 0;
+            font-size: 23px;
+        }
+
+        .section-heading p {
+            margin: 7px 0 0;
+            color: #888;
+            font-size: 13px;
+        }
+
+        .item-count {
+            color: #888;
+            font-size: 13px;
+        }
+
+        /* ================= FOOD GRID ================= */
+
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .food-card {
+            border: 1px solid #eeeeee;
+            border-radius: 18px;
+            padding: 18px;
+            transition: .2s ease;
+        }
+
+        .food-card:hover {
+            transform: translateY(-3px);
+            border-color: #ffb49a;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, .06);
+        }
+
+        .food-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .food-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: #fff5ef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 27px;
+        }
+
+        .food-price {
+            color: #ff5b23;
+            font-weight: 900;
+            font-size: 14px;
+        }
+
+        .food-card h3 {
+            margin: 18px 0 7px;
+            font-size: 17px;
+        }
+
+        .food-description {
+            margin: 0;
+            color: #888;
+            font-size: 12px;
+            min-height: 32px;
+            line-height: 1.5;
+        }
+
+        .food-category {
+            display: inline-block;
+            background: #f4f4f4;
+            color: #777;
+            padding: 5px 9px;
+            border-radius: 7px;
+            font-size: 10px;
+            margin-top: 12px;
+        }
+
+        .add-cart-btn {
+            width: 100%;
+            margin-top: 15px;
+            border: none;
+            background: #171717;
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .add-cart-btn:hover {
+            background: #ff6b35;
+        }
+
+        /* ================= RIGHT SIDE ================= */
+
+        .right-column {
+            display: flex;
+            flex-direction: column;
+            gap: 22px;
+        }
+
+        .rush-card {
+            background: #171717;
+            color: white;
+            border-radius: 22px;
+            padding: 30px;
+        }
+
+        .rush-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rush-header h2 {
+            margin: 0;
+            font-size: 23px;
+        }
+
+        .live {
+            color: #ff8a5b;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .rush-subtitle {
+            color: #aaa;
+            margin: 8px 0 28px;
+            font-size: 13px;
+        }
+
+        .rush-percent {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .rush-percent strong {
+            font-size: 38px;
+        }
+
+        .rush-percent span {
+            color: #aaa;
+            font-size: 13px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #353535;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-value {
+            height: 100%;
+            width: 0%;
+            background: #ff6b35;
+            border-radius: 20px;
+        }
+
+        .rush-info {
+            margin-top: 25px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .rush-info-row {
+            background: #242424;
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        .rush-info-row span {
+            color: #aaa;
+        }
+
+        .rush-info-row strong {
+            color: white;
+        }
+
+        /* ================= TOKEN ================= */
+
+        .token-card {
+            background: white;
+            border: 1px solid #eeeeee;
+            border-radius: 22px;
+            padding: 28px;
+        }
+
+        .token-card h2 {
+            margin: 0 0 20px;
+            font-size: 21px;
+        }
+
+        .token-box {
+            background: #fff6f1;
+            border-radius: 18px;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .token-label {
+            display: block;
+            color: #888;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .token-number {
+            display: block;
+            color: #ff6b35;
+            font-size: 42px;
+            font-weight: 900;
+            margin: 12px 0;
+        }
+
+        .token-message {
+            color: #777;
+            font-size: 12px;
+        }
+
+        /* ================= QUICK INFO ================= */
+
+        .quick-card {
+            background: white;
+            border: 1px solid #eeeeee;
+            border-radius: 22px;
+            padding: 28px;
+        }
+
+        .quick-card h2 {
+            margin: 0 0 20px;
+            font-size: 21px;
+        }
+
+        .quick-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 13px 0;
+            border-bottom: 1px solid #eeeeee;
+            font-size: 13px;
+        }
+
+        .quick-row:last-child {
+            border-bottom: none;
+        }
+
+        .quick-row span {
+            color: #777;
+        }
+
+        /* ================= EMPTY MENU ================= */
+
+        .empty-menu {
+            padding: 50px 20px;
+            text-align: center;
+            color: #888;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 950px) {
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .right-column {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+            }
+
+        }
+
+        @media (max-width: 650px) {
+
+            .student-navbar {
+                padding: 0 4%;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .dashboard-container {
+                width: 92%;
+                padding-top: 30px;
+            }
+
+            .welcome-section h1 {
+                font-size: 30px;
+            }
+
+            .food-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .right-column {
+                display: flex;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="student-navbar">
+
+    <a href="/student/dashboard" class="brand">
+
+        <div class="brand-icon">
+            🍴
+        </div>
+
+        <div>
+
+            <span class="brand-name">
+                ARMIET CanteenFlow
+            </span>
+
+            <span class="brand-subtitle">
+                Student Dashboard
+            </span>
+
+        </div>
+
+    </a>
+
+
+    <div class="student-user">
+
+        <div class="user-info">
+
+            <span
+                class="user-name"
+                th:text="${userName}">
+                Student
+            </span>
+
+            <span
+                class="user-email"
+                th:text="${userEmail}">
+                student@email.com
+            </span>
+
+        </div>
+
+
+        <a
+            href="/student/cart"
+            class="logout-btn">
+
+            🛒 Cart
+
+        </a>
+
+
+        <a
+            href="/logout"
+            class="logout-btn">
+
+            Logout
+
+        </a>
+
+    </div>
+
+</header>
+
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="dashboard-container">
+
+
+    <!-- ================= WELCOME ================= -->
+
+    <section class="welcome-section">
+
+        <span class="welcome-tag">
+            STUDENT DASHBOARD
+        </span>
+
+        <h1>
+            Welcome,
+            <span th:text="${userName}">
+                Student
+            </span>
+            👋
+        </h1>
+
+        <p>
+            Order your favourite food without waiting in a long queue.
+        </p>
+
+    </section>
+
+
+
+    <!-- ================= STATS ================= -->
+
+    <section class="stats-grid">
+
+
+        <div class="stat-card">
+
+            <span class="stat-label">
+                CANTEEN RUSH
+            </span>
+
+            <div
+                class="stat-value"
+                th:text="${rushPercentage + '%'}">
+
+                0%
+
+            </div>
+
+            <div
+                class="stat-description"
+                th:text="${rushStatus}">
+
+                Low
+
+            </div>
+
+            <div class="stat-icon">
+                🔥
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span class="stat-label">
+                ACTIVE ORDERS
+            </span>
+
+            <div
+                class="stat-value"
+                th:text="${activeOrders}">
+
+                0
+
+            </div>
+
+            <div class="stat-description">
+                Orders being processed
+            </div>
+
+            <div class="stat-icon">
+                📦
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <span class="stat-label">
+                DIGITAL TOKEN
+            </span>
+
+            <div
+                class="stat-value"
+                th:text="${currentToken != null ? '#' + currentToken : '—'}">
+
+                —
+
+            </div>
+
+            <div class="stat-description">
+                Your current order
+            </div>
+
+            <div class="stat-icon">
+                🎫
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================= MAIN GRID ================= -->
+
+    <section class="dashboard-grid">
+
+
+        <!-- ================= MENU ================= -->
+
+        <div class="menu-section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <h2>
+                        Today's Menu
+                    </h2>
+
+                    <p>
+                        Fresh food available now
+                    </p>
+
+                </div>
+
+                <span
+                    class="item-count"
+                    th:text="${#lists.size(foodItems) + ' items'}">
+
+                    0 items
+
+                </span>
+
+            </div>
+
+
+            <!-- FOOD GRID -->
+
+            <div
+                class="food-grid"
+                th:if="${foodItems != null and !foodItems.isEmpty()}">
+
+                <div
+                    class="food-card"
+                    th:each="food : ${foodItems}">
+
+
+                    <div class="food-top">
+
+                        <div
+                            class="food-icon"
+                            th:text="${food.image_url != null ? food.image_url : '🍴'}">
+
+                            🍴
+
+                        </div>
+
+                        <span
+                            class="food-price"
+                            th:text="'₹' + ${food.price}">
+
+                            ₹0
+
+                        </span>
+
+                    </div>
+
+
+                    <h3
+                        th:text="${food.name}">
+
+                        Food Name
+
+                    </h3>
+
+
+                    <p
+                        class="food-description"
+                        th:text="${food.description}">
+
+                        Delicious food
+
+                    </p>
+
+
+                    <span
+                        class="food-category"
+                        th:text="${food.category}">
+
+                        Food
+
+                    </span>
+
+
+                    <!-- REAL ADD TO CART -->
+
+                    <form
+                        action="/student/cart/add"
+                        method="post">
+
+                        <input
+                            type="hidden"
+                            name="foodId"
+                            th:value="${food.id}">
+
+                        <button
+                            type="submit"
+                            class="add-cart-btn">
+
+                            + Add to Cart
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- EMPTY MENU -->
+
+            <div
+                class="empty-menu"
+                th:if="${foodItems == null or foodItems.isEmpty()}">
+
+                <h3>
+                    No food available right now
+                </h3>
+
+                <p>
+                    Please check again later.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ================= RIGHT COLUMN ================= -->
+
+        <div class="right-column">
+
+
+            <!-- ================= RUSH ================= -->
+
+            <div class="rush-card">
+
+                <div class="rush-header">
+
+                    <h2>
+                        Live Rush Meter
+                    </h2>
+
+                    <span class="live">
+                        LIVE
+                    </span>
+
+                </div>
+
+
+                <p class="rush-subtitle">
+                    Canteen crowd right now
+                </p>
+
+
+                <div class="rush-percent">
+
+                    <strong
+                        th:text="${rushPercentage + '%'}">
+
+                        0%
+
+                    </strong>
+
+                    <span
+                        th:text="${rushStatus}">
+
+                        Low
+
+                    </span>
+
+                </div>
+
+
+                <div class="progress-bar">
+
+                    <div
+                        class="progress-value"
+                        th:style="'width:' + ${rushPercentage} + '%'">
+
+                    </div>
+
+                </div>
+
+
+                <div class="rush-info">
+
+                    <div class="rush-info-row">
+
+                        <span>
+                            Active Orders
+                        </span>
+
+                        <strong
+                            th:text="${activeOrders}">
+
+                            0
+
+                        </strong>
+
+                    </div>
+
+
+                    <div class="rush-info-row">
+
+                        <span>
+                            Estimated Wait
+                        </span>
+
+                        <strong>
+                            5–15 min
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================= TOKEN ================= -->
+
+            <div class="token-card">
+
+                <h2>
+                    My Current Token
+                </h2>
+
+
+                <div class="token-box">
+
+                    <span class="token-label">
+                        YOUR TOKEN
+                    </span>
+
+
+                    <span
+                        class="token-number"
+                        th:text="${currentToken != null ? '#' + currentToken : '—'}">
+
+                        —
+
+                    </span>
+
+
+                    <span
+                        class="token-message"
+                        th:text="${currentToken != null ? 'Your order is being processed.' : 'Place an order to get your digital token'}">
+
+                        Place an order to get your digital token
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ================= QUICK INFO ================= -->
+
+            <div class="quick-card">
+
+                <h2>
+                    Quick Info
+                </h2>
+
+
+                <div class="quick-row">
+
+                    <span>
+                        Canteen Status
+                    </span>
+
+                    <strong>
+                        🟢 Open
+                    </strong>
+
+                </div>
+
+
+                <div class="quick-row">
+
+                    <span>
+                        Today's Menu
+                    </span>
+
+                    <strong
+                        th:text="${#lists.size(foodItems)}">
+
+                        0
+
+                    </strong>
+
+                </div>
+
+
+                <div class="quick-row">
+
+                    <span>
+                        Estimated Wait
+                    </span>
+
+                    <strong>
+                        5–15 min
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+</body>
+
+</html>

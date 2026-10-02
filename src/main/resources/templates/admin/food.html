@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Food Menu | ARMIET CanteenFlow</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "DM Sans", sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        .navbar {
+            height: 72px;
+            background: white;
+            border-bottom: 1px solid #e8ebf0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .brand span {
+            color: #2864e6;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 22px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #697386;
+            font-weight: 600;
+        }
+
+        .nav-links a:hover {
+            color: #2864e6;
+        }
+
+        .logout {
+            color: #e5484d !important;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1250px;
+            margin: 40px auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 34px;
+            margin-bottom: 7px;
+        }
+
+        .header p {
+            color: #697386;
+        }
+
+        .add-btn {
+            display: inline-block;
+            text-decoration: none;
+            background: #2864e6;
+            color: white;
+            padding: 14px 22px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .add-btn:hover {
+            background: #1f55ca;
+        }
+
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .food-card {
+            background: white;
+            border: 1px solid #edf0f5;
+            border-radius: 18px;
+            padding: 22px;
+            box-shadow: 0 8px 25px rgba(30, 45, 70, 0.06);
+        }
+
+        .food-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .food-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 14px;
+            background: #f3f6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 27px;
+            overflow: hidden;
+        }
+
+        .availability {
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .available {
+            background: #e9f9ef;
+            color: #18864b;
+        }
+
+        .unavailable {
+            background: #ffecee;
+            color: #c5363f;
+        }
+
+        .food-name {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            margin-top: 18px;
+        }
+
+        .food-category {
+            color: #2864e6;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .food-description {
+            color: #697386;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-top: 10px;
+            min-height: 40px;
+        }
+
+        .food-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #edf0f5;
+            gap: 10px;
+        }
+
+        .price {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            border: none;
+            padding: 8px 11px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background: #eef4ff;
+            color: #2864e6;
+        }
+
+        .toggle-btn {
+            background: #fff4df;
+            color: #a56600;
+        }
+
+        .delete-btn {
+            background: #ffecee;
+            color: #c5363f;
+        }
+
+        .action-btn:hover {
+            opacity: 0.8;
+        }
+
+        .empty {
+            background: white;
+            border-radius: 18px;
+            padding: 60px 20px;
+            text-align: center;
+            color: #697386;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 28px;
+            text-decoration: none;
+            background: #172033;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .back-btn:hover {
+            background: #2864e6;
+        }
+
+        @media (max-width: 1000px) {
+
+            .food-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 650px) {
+
+            .navbar {
+                padding: 0 4%;
+            }
+
+            .nav-links a:not(.logout) {
+                display: none;
+            }
+
+            .container {
+                width: 94%;
+                margin-top: 25px;
+            }
+
+            .header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .food-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="brand">
+        ARMIET <span>CanteenFlow</span>
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/admin/dashboard">
+            Dashboard
+        </a>
+
+        <a href="/admin/orders">
+            Orders
+        </a>
+
+        <a href="/admin/food">
+            Food Menu
+        </a>
+
+        <a href="/logout" class="logout">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<main class="container">
+
+    <section class="header">
+
+        <div>
+
+            <h1>
+                Food Menu
+            </h1>
+
+            <p>
+                Manage food items, prices and availability.
+            </p>
+
+        </div>
+
+        <a href="/admin/food/add"
+           class="add-btn">
+            + Add Food
+        </a>
+
+    </section>
+
+
+    <section class="food-grid"
+             th:if="${not #lists.isEmpty(foodItems)}">
+
+        <article class="food-card"
+                 th:each="food : ${foodItems}">
+
+            <div class="food-top">
+
+                <div class="food-icon">
+
+                    <span th:if="${food.image_url == null or food.image_url == ''}">
+                        &#127860;
+                    </span>
+
+                    <span th:if="${food.image_url != null and food.image_url != ''}"
+                          th:text="${food.image_url}">
+                        &#127860;
+                    </span>
+
+                </div>
+
+                <span class="availability"
+                      th:classappend="${food.available == 1 ? ' available' : ' unavailable'}"
+                      th:text="${food.available == 1 ? 'AVAILABLE' : 'UNAVAILABLE'}">
+                    AVAILABLE
+                </span>
+
+            </div>
+
+
+            <div class="food-name"
+                 th:text="${food.name}">
+                Vada Pav
+            </div>
+
+
+            <div class="food-category"
+                 th:text="${food.category}">
+                Snacks
+            </div>
+
+
+            <div class="food-description"
+                 th:text="${food.description}">
+                Delicious food item.
+            </div>
+
+
+            <div class="food-bottom">
+
+                <div class="price">
+
+                    <span>&#8377;</span>
+
+                    <span th:text="${food.price}">
+                        20
+                    </span>
+
+                </div>
+
+
+                <div class="actions">
+
+                    <!-- EDIT - WILL CONNECT NEXT -->
+
+                    <a th:href="@{'/admin/food/edit/' + ${food.id}}"
+                       class="action-btn edit-btn"
+                       style="text-decoration:none;">
+                        Edit
+                    </a>
+
+
+                    <!-- TOGGLE AVAILABILITY -->
+
+                    <form action="/admin/food/toggle"
+                          method="post"
+                          style="display:inline;">
+
+                        <input type="hidden"
+                               name="foodId"
+                               th:value="${food.id}">
+
+                        <button type="submit"
+                                class="action-btn toggle-btn">
+
+                            <span th:if="${food.available == 1}">
+                                Make Unavailable
+                            </span>
+
+                            <span th:if="${food.available == 0}">
+                                Make Available
+                            </span>
+
+                        </button>
+
+                    </form>
+
+
+                    <!-- DELETE FOOD -->
+
+                    <form action="/admin/food/delete"
+                          method="post"
+                          style="display:inline;"
+                          onsubmit="return confirm('Are you sure you want to delete this food item?');">
+
+                        <input type="hidden"
+                               name="foodId"
+                               th:value="${food.id}">
+
+                        <button type="submit"
+                                class="action-btn delete-btn">
+                            Delete
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <section class="empty"
+             th:if="${#lists.isEmpty(foodItems)}">
+
+        <h2>
+            No food items found
+        </h2>
+
+        <p style="margin-top:8px;">
+            Add food items to your canteen menu.
+        </p>
+
+    </section>
+
+
+    <a href="/admin/dashboard"
+       class="back-btn">
+        ? Back to Dashboard
+    </a>
+
+</main>
+
+</body>
+</html>

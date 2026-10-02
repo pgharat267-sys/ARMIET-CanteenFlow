@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | ARMIET CanteenFlow</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "DM Sans", sans-serif;
+            background: #f5f7fb;
+            color: #172033;
+        }
+
+        .navbar {
+            height: 72px;
+            background: white;
+            border-bottom: 1px solid #e8ebf0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 6%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            color: #172033;
+        }
+
+        .brand span {
+            color: #2864e6;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .admin-name {
+            font-weight: 600;
+        }
+
+        .admin-badge {
+            background: #eef4ff;
+            color: #2864e6;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .logout {
+            text-decoration: none;
+            color: #e5484d;
+            font-weight: 600;
+        }
+
+        .container {
+            width: 88%;
+            max-width: 1250px;
+            margin: 40px auto;
+        }
+
+        .welcome {
+            margin-bottom: 30px;
+        }
+
+        .welcome h1 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: #697386;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: 0 8px 25px rgba(30, 45, 70, 0.06);
+            border: 1px solid #edf0f5;
+        }
+
+        .stat-title {
+            color: #697386;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .stat-value {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .stat-small {
+            margin-top: 8px;
+            color: #697386;
+            font-size: 13px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 26px;
+            border: 1px solid #edf0f5;
+            box-shadow: 0 8px 25px rgba(30, 45, 70, 0.06);
+        }
+
+        .card h2 {
+            font-family: "Space Grotesk", sans-serif;
+            margin-bottom: 20px;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .orders-table th {
+            text-align: left;
+            font-size: 13px;
+            color: #697386;
+            padding: 12px;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .orders-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #f0f2f5;
+            font-size: 14px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            background: #eef4ff;
+            color: #2864e6;
+        }
+
+        .quick-actions {
+            display: grid;
+            gap: 12px;
+        }
+
+        .action {
+            display: block;
+            text-decoration: none;
+            padding: 16px;
+            border-radius: 12px;
+            background: #f5f7fb;
+            color: #172033;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .action:hover {
+            background: #eef4ff;
+            color: #2864e6;
+        }
+
+        .sales-box {
+            margin-top: 24px;
+            padding: 20px;
+            background: #f8faff;
+            border-radius: 14px;
+        }
+
+        .sales-box p {
+            color: #697386;
+            font-size: 14px;
+            margin-bottom: 7px;
+        }
+
+        .sales-box strong {
+            font-size: 26px;
+            font-family: "Space Grotesk", sans-serif;
+        }
+
+        .section-icon {
+            font-size: 20px;
+        }
+
+        @media (max-width: 900px) {
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .orders-table {
+                min-width: 700px;
+            }
+
+            .card {
+                overflow-x: auto;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                padding: 0 4%;
+            }
+
+            .admin-info {
+                gap: 8px;
+            }
+
+            .admin-name {
+                display: none;
+            }
+
+            .container {
+                width: 92%;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome h1 {
+                font-size: 28px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="brand">
+        ARMIET <span>CanteenFlow</span>
+    </div>
+
+    <div class="admin-info">
+
+        <span class="admin-name"
+              th:text="${adminName}">
+            Admin
+        </span>
+
+        <span class="admin-badge">
+            ADMIN
+        </span>
+
+        <a href="/logout" class="logout">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<main class="container">
+
+    <section class="welcome">
+
+        <h1>
+            Admin Dashboard <span class="section-icon">&#9881;</span>
+        </h1>
+
+        <p>
+            Manage your college canteen from one place.
+        </p>
+
+    </section>
+
+
+    <!-- STATISTICS -->
+
+    <section class="stats">
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+                Total Orders
+            </div>
+
+            <div class="stat-value"
+                 th:text="${totalOrders}">
+                0
+            </div>
+
+            <div class="stat-small">
+                All-time orders
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+                Active Orders
+            </div>
+
+            <div class="stat-value"
+                 th:text="${activeOrders}">
+                0
+            </div>
+
+            <div class="stat-small">
+                Currently processing
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+                Food Items
+            </div>
+
+            <div class="stat-value"
+                 th:text="${totalFood}">
+                0
+            </div>
+
+            <div class="stat-small"
+                 th:text="${availableFood + ' currently available'}">
+                Available
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-title">
+                Today's Sales
+            </div>
+
+            <div class="stat-value">
+
+                <span>&#8377;</span><span th:text="${todaySales}">
+                    0
+                </span>
+
+            </div>
+
+            <div class="stat-small">
+                Today's revenue
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="dashboard-grid">
+
+
+        <!-- RECENT ORDERS -->
+
+        <div class="card">
+
+            <h2>
+                Recent Orders <span class="section-icon">&#128230;</span>
+            </h2>
+
+            <table class="orders-table">
+
+                <thead>
+
+                <tr>
+
+                    <th>
+                        Token
+                    </th>
+
+                    <th>
+                        Customer
+                    </th>
+
+                    <th>
+                        Amount
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                <tr th:each="order : ${recentOrders}">
+
+                    <td>
+                        <strong>
+                            #<span th:text="${order.token_number}">
+                                1
+                            </span>
+                        </strong>
+                    </td>
+
+                    <td th:text="${order.customer_name}">
+                        Student
+                    </td>
+
+                    <td>
+                        <span>&#8377;</span><span th:text="${order.total_amount}">
+                            0
+                        </span>
+                    </td>
+
+                    <td>
+
+                        <span class="status"
+                              th:text="${order.status}">
+                            PLACED
+                        </span>
+
+                    </td>
+
+                </tr>
+
+
+                <tr th:if="${#lists.isEmpty(recentOrders)}">
+
+                    <td colspan="4"
+                        style="text-align:center; color:#697386; padding:30px;">
+
+                        No orders yet.
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- QUICK ACTIONS -->
+
+        <div class="card">
+
+            <h2>
+                Quick Actions <span class="section-icon">&#9889;</span>
+            </h2>
+
+            <div class="quick-actions">
+
+                <a href="/admin/orders"
+                   class="action">
+                    &#128230; Manage Orders
+                </a>
+
+                <a href="/admin/food"
+                   class="action">
+                    &#127828; Manage Food Menu
+                </a>
+
+                <a href="/admin/sales"
+                   class="action">
+                    &#128202; Sales &amp; Reports
+                </a>
+
+            </div>
+
+
+            <div class="sales-box">
+
+                <p>
+                    Total Sales
+                </p>
+
+                <strong>
+                    <span>&#8377;</span><span th:text="${totalSales}">
+                        0
+                    </span>
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+</body>
+</html>

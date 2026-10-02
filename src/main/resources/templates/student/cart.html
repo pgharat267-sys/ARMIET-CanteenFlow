@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Cart | ARMIET CanteenFlow</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+
+        /* ==============================
+           NAVBAR
+        ============================== */
+
+        .navbar {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 7%;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .logo span {
+            color: #111827;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            text-decoration: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            background: #f3f4f6;
+            color: #374151;
+            font-weight: 600;
+        }
+
+        .nav-btn:hover {
+            background: #e5e7eb;
+        }
+
+        /* ==============================
+           PAGE
+        ============================== */
+
+        .container {
+            max-width: 1100px;
+            margin: 45px auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            margin-bottom: 7px;
+        }
+
+        .page-header p {
+            color: #6b7280;
+        }
+
+        /* ==============================
+           LAYOUT
+        ============================== */
+
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 25px;
+            align-items: start;
+        }
+
+        /* ==============================
+           CART CARD
+        ============================== */
+
+        .cart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        }
+
+        .cart-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .cart-top h2 {
+            font-size: 21px;
+        }
+
+        .clear-btn {
+            border: none;
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .clear-btn:hover {
+            background: #fecaca;
+        }
+
+        /* ==============================
+           CART ITEM
+        ============================== */
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid #e5e7eb;
+            gap: 15px;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .food-info {
+            flex: 1;
+        }
+
+        .food-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .food-category {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        .food-price {
+            margin-top: 8px;
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        /* ==============================
+           QUANTITY
+        ============================== */
+
+        .quantity-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quantity-form {
+            display: inline;
+        }
+
+        .quantity-btn {
+            width: 34px;
+            height: 34px;
+            border: none;
+            border-radius: 7px;
+            background: #eef2ff;
+            color: #2563eb;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .quantity-btn:hover {
+            background: #dbeafe;
+        }
+
+        .quantity {
+            min-width: 28px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* ==============================
+           ITEM TOTAL
+        ============================== */
+
+        .item-total {
+            min-width: 85px;
+            text-align: right;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        /* ==============================
+           REMOVE
+        ============================== */
+
+        .remove-form {
+            margin-left: 10px;
+        }
+
+        .remove-btn {
+            border: none;
+            background: transparent;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .remove-btn:hover {
+            text-decoration: underline;
+        }
+
+        /* ==============================
+           EMPTY CART
+        ============================== */
+
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 55px;
+            margin-bottom: 15px;
+        }
+
+        .empty-cart h2 {
+            margin-bottom: 8px;
+        }
+
+        .empty-cart p {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        .shop-btn {
+            display: inline-block;
+            text-decoration: none;
+            background: #2563eb;
+            color: white;
+            padding: 12px 22px;
+            border-radius: 9px;
+            font-weight: 600;
+        }
+
+        /* ==============================
+           SUMMARY
+        ============================== */
+
+        .summary-card {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+            position: sticky;
+            top: 20px;
+        }
+
+        .summary-card h2 {
+            margin-bottom: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            color: #6b7280;
+        }
+
+        .summary-total {
+            border-top: 1px solid #e5e7eb;
+            margin-top: 10px;
+            padding-top: 18px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .total-price {
+            color: #2563eb;
+        }
+
+        /* ==============================
+           PLACE ORDER
+        ============================== */
+
+        .checkout-form {
+            margin-top: 20px;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            border: none;
+            background: #16a34a;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .checkout-btn:hover {
+            background: #15803d;
+        }
+
+        .checkout-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .continue-btn {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            margin-top: 12px;
+            padding: 13px;
+            border-radius: 10px;
+            background: #f3f4f6;
+            color: #374151;
+            font-weight: 600;
+        }
+
+        .continue-btn:hover {
+            background: #e5e7eb;
+        }
+
+        /* ==============================
+           NOTE
+        ============================== */
+
+        .order-note {
+            margin-top: 18px;
+            padding: 13px;
+            background: #eff6ff;
+            color: #1d4ed8;
+            border-radius: 9px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* ==============================
+           MOBILE
+        ============================== */
+
+        @media (max-width: 800px) {
+
+            .cart-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-card {
+                position: static;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .container {
+                margin: 25px auto;
+                padding: 15px;
+            }
+
+            .page-header h1 {
+                font-size: 27px;
+            }
+
+            .cart-card {
+                padding: 18px;
+            }
+
+            .cart-item {
+                flex-wrap: wrap;
+            }
+
+            .item-total {
+                margin-left: auto;
+            }
+
+            .quantity-area {
+                order: 3;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- ==============================
+     NAVBAR
+============================== -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        ARMIET <span>CanteenFlow</span>
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/student/dashboard"
+           class="nav-btn">
+            Dashboard
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- ==============================
+     MAIN CONTAINER
+============================== -->
+
+<div class="container">
+
+    <div class="page-header">
+
+        <h1>
+            🛒 My Cart
+        </h1>
+
+        <p>
+            Review your items before placing your order.
+        </p>
+
+    </div>
+
+
+    <!-- ==============================
+         EMPTY CART
+    ============================== -->
+
+    <div th:if="${cartItems.isEmpty()}"
+         class="cart-card empty-cart">
+
+        <div class="empty-icon">
+            🛒
+        </div>
+
+        <h2>
+            Your cart is empty
+        </h2>
+
+        <p>
+            Add some delicious food from the canteen menu.
+        </p>
+
+        <a href="/student/dashboard"
+           class="shop-btn">
+
+            Browse Menu →
+
+        </a>
+
+    </div>
+
+
+    <!-- ==============================
+         CART WITH ITEMS
+    ============================== -->
+
+    <div th:unless="${cartItems.isEmpty()}"
+         class="cart-layout">
+
+
+        <!-- ==============================
+             LEFT CART
+        ============================== -->
+
+        <div class="cart-card">
+
+            <div class="cart-top">
+
+                <h2>
+                    Cart Items
+                </h2>
+
+                <!-- CLEAR CART -->
+
+                <form action="/student/cart/clear"
+                      method="post">
+
+                    <button type="submit"
+                            class="clear-btn">
+
+                        Clear Cart
+
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <!-- ==============================
+                 CART ITEMS
+            ============================== -->
+
+            <div class="cart-item"
+                 th:each="item : ${cartItems}">
+
+                <!-- FOOD INFORMATION -->
+
+                <div class="food-info">
+
+                    <div class="food-name"
+                         th:text="${item.name}">
+
+                        Vada Pav
+
+                    </div>
+
+                    <div class="food-category"
+                         th:text="${item.category}">
+
+                        Snacks
+
+                    </div>
+
+                    <div class="food-price">
+
+                        ₹<span th:text="${item.price}">
+                            20
+                        </span>
+
+                        each
+
+                    </div>
+
+                </div>
+
+
+                <!-- QUANTITY -->
+
+                <div class="quantity-area">
+
+                    <!-- DECREASE -->
+
+                    <form action="/student/cart/decrease"
+                          method="post"
+                          class="quantity-form">
+
+                        <input type="hidden"
+                               name="foodId"
+                               th:value="${item.id}">
+
+                        <button type="submit"
+                                class="quantity-btn">
+
+                            −
+
+                        </button>
+
+                    </form>
+
+
+                    <!-- QUANTITY -->
+
+                    <span class="quantity"
+                          th:text="${item.quantity}">
+
+                        1
+
+                    </span>
+
+
+                    <!-- INCREASE -->
+
+                    <form action="/student/cart/increase"
+                          method="post"
+                          class="quantity-form">
+
+                        <input type="hidden"
+                               name="foodId"
+                               th:value="${item.id}">
+
+                        <button type="submit"
+                                class="quantity-btn">
+
+                            +
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                <!-- ITEM TOTAL -->
+
+                <div class="item-total">
+
+                    ₹<span th:text="${item.itemTotal}">
+                        20
+                    </span>
+
+                </div>
+
+
+                <!-- REMOVE -->
+
+                <form action="/student/cart/remove"
+                      method="post"
+                      class="remove-form">
+
+                    <input type="hidden"
+                           name="foodId"
+                           th:value="${item.id}">
+
+                    <button type="submit"
+                            class="remove-btn">
+
+                        Remove
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+        <!-- ==============================
+             RIGHT SUMMARY
+        ============================== -->
+
+        <div class="summary-card">
+
+            <h2>
+                Order Summary
+            </h2>
+
+
+            <div class="summary-row">
+
+                <span>
+                    Items
+                </span>
+
+                <span
+                    th:text="${cartItems.size()}">
+
+                    1
+
+                </span>
+
+            </div>
+
+
+            <div class="summary-row">
+
+                <span>
+                    Canteen
+                </span>
+
+                <span>
+                    ARMIET
+                </span>
+
+            </div>
+
+
+            <div class="summary-total">
+
+                <span>
+                    Total
+                </span>
+
+                <span class="total-price">
+
+                    ₹<span th:text="${cartTotal}">
+                        20
+                    </span>
+
+                </span>
+
+            </div>
+
+
+            <!-- ==============================
+                 REAL PLACE ORDER FORM
+            ============================== -->
+
+            <form action="/student/order/place"
+                  method="post"
+                  class="checkout-form">
+
+                <button type="submit"
+                        class="checkout-btn">
+
+                    🎟️ Place Order →
+
+                </button>
+
+            </form>
+
+
+            <!-- CONTINUE SHOPPING -->
+
+            <a href="/student/dashboard"
+               class="continue-btn">
+
+                ← Continue Shopping
+
+            </a>
+
+
+            <div class="order-note">
+
+                🔒 Your order will be securely saved
+                and you'll receive a digital token
+                after placing the order.
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
