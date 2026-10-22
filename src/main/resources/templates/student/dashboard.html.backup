@@ -1,0 +1,2284 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Student Dashboard | ARMIET CanteenFlow
+    </title>
+
+    <link rel="stylesheet"
+          href="/css/style.css">
+
+    <style>
+
+        :root {
+
+            --red: #E21B23;
+            --red-dark: #B9151B;
+            --red-light: #FFF1F2;
+            --red-soft: #FFE4E6;
+
+            --black: #111111;
+            --white: #FFFFFF;
+
+            --background: #F7F7F7;
+            --border: #E7E7E7;
+
+            --text: #171717;
+            --muted: #777777;
+
+            --green: #16834B;
+            --green-light: #E9F8EF;
+
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            background:
+                radial-gradient(
+                    circle at 90% 5%,
+                    rgba(226, 27, 35, 0.06),
+                    transparent 30%
+                ),
+                var(--background);
+
+            color: var(--text);
+
+            font-family:
+                'DM Sans',
+                Arial,
+                sans-serif;
+
+        }
+
+
+        /* ================= NAVBAR ================= */
+
+        .student-navbar {
+
+            min-height: 82px;
+
+            background:
+                rgba(255,255,255,0.97);
+
+            border-bottom:
+                1px solid var(--border);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content:
+                space-between;
+
+            padding:
+                0 5%;
+
+            position:
+                sticky;
+
+            top: 0;
+
+            z-index: 1000;
+
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            text-decoration: none;
+
+        }
+
+
+        .brand-logo {
+
+            width: 180px;
+
+            height: 68px;
+
+            object-fit: contain;
+
+            display: block;
+
+        }
+
+
+        .student-user {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+        }
+
+
+        .user-info {
+
+            text-align: right;
+
+            margin-right: 8px;
+
+        }
+
+
+        .user-name {
+
+            display: block;
+
+            font-size: 14px;
+
+            font-weight: 800;
+
+        }
+
+
+        .user-email {
+
+            display: block;
+
+            color: #888888;
+
+            font-size: 12px;
+
+            margin-top: 4px;
+
+        }
+
+
+        .nav-btn {
+
+            text-decoration: none;
+
+            color: var(--black);
+
+            border:
+                1px solid #DADADA;
+
+            padding:
+                11px 18px;
+
+            border-radius: 10px;
+
+            font-weight: 700;
+
+            font-size: 13px;
+
+            background: white;
+
+            transition: 0.25s;
+
+        }
+
+
+        .nav-btn:hover {
+
+            border-color:
+                var(--red);
+
+            color:
+                var(--red);
+
+            background:
+                var(--red-light);
+
+            transform:
+                translateY(-1px);
+
+        }
+
+
+        /* ================= MAIN ================= */
+
+        .dashboard-container {
+
+            width: 90%;
+
+            max-width: 1250px;
+
+            margin: auto;
+
+            padding:
+                52px 0 75px;
+
+        }
+
+
+        /* ================= WELCOME ================= */
+
+        .welcome-section {
+
+            margin-bottom: 28px;
+
+        }
+
+
+        .welcome-tag {
+
+            color:
+                var(--red);
+
+            font-size: 12px;
+
+            font-weight: 900;
+
+            letter-spacing:
+                1.4px;
+
+        }
+
+
+        .welcome-section h1 {
+
+            margin:
+                12px 0;
+
+            font-family:
+                'Space Grotesk',
+                Arial,
+                sans-serif;
+
+            font-size: 44px;
+
+            line-height: 1.1;
+
+            letter-spacing:
+                -1px;
+
+            color:
+                var(--black);
+
+        }
+
+
+        .welcome-section h1 span {
+
+            color:
+                var(--red);
+
+        }
+
+
+        .welcome-section p {
+
+            margin: 0;
+
+            color:
+                var(--muted);
+
+            font-size: 16px;
+
+        }
+
+
+        /* ================= CANTEEN STATUS ================= */
+
+        .canteen-status {
+
+            background:
+                var(--white);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 18px;
+
+            padding:
+                18px 20px;
+
+            margin-bottom:
+                30px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content:
+                space-between;
+
+            gap: 20px;
+
+            box-shadow:
+                0 8px 25px
+                rgba(0,0,0,0.04);
+
+        }
+
+
+        .canteen-status.live {
+
+            background:
+                var(--green-light);
+
+            border-color:
+                #BFE8CF;
+
+        }
+
+
+        .canteen-status.closed {
+
+            background:
+                var(--red-light);
+
+            border-color:
+                #F3C5C8;
+
+        }
+
+
+        .status-content {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+        }
+
+
+        .status-icon {
+
+            width: 45px;
+
+            height: 45px;
+
+            border-radius: 13px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            background:
+                rgba(255,255,255,0.55);
+
+            font-size: 20px;
+
+        }
+
+
+        .status-text h2 {
+
+            margin:
+                0 0 4px;
+
+            font-size: 17px;
+
+        }
+
+
+        .status-text p {
+
+            margin: 0;
+
+            font-size: 12px;
+
+            color:
+                #4E7E62;
+
+        }
+
+
+        .closed .status-text p {
+
+            color:
+                #9A4D52;
+
+        }
+
+
+        .status-label {
+
+            padding:
+                9px 13px;
+
+            border-radius: 20px;
+
+            color:
+                white;
+
+            background:
+                var(--green);
+
+            font-size: 11px;
+
+            font-weight: 900;
+
+            white-space: nowrap;
+
+        }
+
+
+        .closed .status-label {
+
+            background:
+                var(--red);
+
+        }
+
+
+        /* ================= STATS ================= */
+
+        .stats-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3,1fr);
+
+            gap: 18px;
+
+            margin-bottom:
+                28px;
+
+        }
+
+
+        .stat-card {
+
+            background:
+                white;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 18px;
+
+            padding:
+                25px;
+
+            min-height:
+                145px;
+
+            position: relative;
+
+            transition:
+                0.25s;
+
+        }
+
+
+        .stat-card:hover {
+
+            transform:
+                translateY(-3px);
+
+            box-shadow:
+                0 14px 30px
+                rgba(0,0,0,0.06);
+
+        }
+
+
+        .stat-label {
+
+            color:
+                #777777;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            letter-spacing:
+                .7px;
+
+        }
+
+
+        .stat-value {
+
+            margin-top:
+                18px;
+
+            font-family:
+                'Space Grotesk',
+                Arial,
+                sans-serif;
+
+            font-size: 34px;
+
+            font-weight: 900;
+
+        }
+
+
+        .stat-description {
+
+            color:
+                #888888;
+
+            font-size: 12px;
+
+            margin-top: 7px;
+
+        }
+
+
+        .stat-icon {
+
+            position: absolute;
+
+            right: 22px;
+
+            top: 48px;
+
+            width: 48px;
+
+            height: 48px;
+
+            border-radius: 14px;
+
+            background:
+                var(--red-light);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 22px;
+
+        }
+
+
+        /* ================= MAIN GRID ================= */
+
+        .dashboard-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                1.65fr 1fr;
+
+            gap: 25px;
+
+            align-items: start;
+
+        }
+
+
+        /* ================= MENU ================= */
+
+        .menu-section {
+
+            background:
+                white;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 20px;
+
+            padding:
+                28px;
+
+        }
+
+
+        .section-heading {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content:
+                space-between;
+
+            margin-bottom:
+                22px;
+
+        }
+
+
+        .section-heading h2 {
+
+            margin: 0;
+
+            font-family:
+                'Space Grotesk',
+                Arial,
+                sans-serif;
+
+            font-size: 24px;
+
+        }
+
+
+        .section-heading p {
+
+            margin:
+                7px 0 0;
+
+            color:
+                #888888;
+
+            font-size: 13px;
+
+        }
+
+
+        .item-count {
+
+            color:
+                var(--red);
+
+            font-weight:
+                800;
+
+            font-size:
+                13px;
+
+        }
+
+
+        /* ================= FOOD GRID ================= */
+
+        .food-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2,1fr);
+
+            gap:
+                18px;
+
+        }
+
+
+        .food-card {
+
+            border:
+                1px solid #E8E8E8;
+
+            border-radius:
+                16px;
+
+            padding:
+                14px;
+
+            background:
+                white;
+
+            transition:
+                0.25s;
+
+            overflow:
+                hidden;
+
+        }
+
+
+        .food-card:hover {
+
+            transform:
+                translateY(-3px);
+
+            box-shadow:
+                0 12px 28px
+                rgba(0,0,0,0.07);
+
+            border-color:
+                #F0A0A4;
+
+        }
+
+
+        .food-image-box {
+
+            width:
+                100%;
+
+            height:
+                170px;
+
+            border-radius:
+                13px;
+
+            overflow:
+                hidden;
+
+            background:
+                var(--red-light);
+
+            margin-bottom:
+                14px;
+
+        }
+
+
+        .food-image {
+
+            width:
+                100%;
+
+            height:
+                100%;
+
+            object-fit:
+                cover;
+
+            display:
+                block;
+
+        }
+
+
+        .food-emoji {
+
+            width:
+                100%;
+
+            height:
+                100%;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            font-size:
+                50px;
+
+        }
+
+
+        .food-top {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+        }
+
+
+        .food-price {
+
+            color:
+                var(--red);
+
+            font-size:
+                14px;
+
+            font-weight:
+                900;
+
+        }
+
+
+        .food-card h3 {
+
+            margin:
+                10px 0 7px;
+
+            font-family:
+                'Space Grotesk',
+                Arial,
+                sans-serif;
+
+            font-size:
+                17px;
+
+        }
+
+
+        .food-description {
+
+            margin:
+                0;
+
+            color:
+                #888888;
+
+            font-size:
+                12px;
+
+            line-height:
+                1.5;
+
+            min-height:
+                32px;
+
+        }
+
+
+        .food-category {
+
+            display:
+                inline-block;
+
+            margin-top:
+                11px;
+
+            padding:
+                5px 9px;
+
+            background:
+                #F3F3F3;
+
+            color:
+                #666666;
+
+            border-radius:
+                7px;
+
+            font-size:
+                10px;
+
+        }
+
+
+        .add-cart-btn {
+
+            width:
+                100%;
+
+            margin-top:
+                14px;
+
+            border:
+                none;
+
+            background:
+                var(--red);
+
+            color:
+                white;
+
+            padding:
+                12px;
+
+            border-radius:
+                9px;
+
+            font-weight:
+                800;
+
+            cursor:
+                pointer;
+
+            transition:
+                0.2s;
+
+        }
+
+
+        .add-cart-btn:hover {
+
+            background:
+                var(--red-dark);
+
+            transform:
+                translateY(-1px);
+
+        }
+
+
+        .add-cart-btn.closed {
+
+            background:
+                #BDBDBD;
+
+            cursor:
+                not-allowed;
+
+        }
+
+
+        /* ================= RIGHT COLUMN ================= */
+
+        .right-column {
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            gap:
+                18px;
+
+        }
+
+
+        /* ================= LIVE OVERVIEW ================= */
+
+        .overview-card {
+
+            background:
+                white;
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                20px;
+
+            padding:
+                26px;
+
+        }
+
+
+        .overview-top {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            margin-bottom:
+                20px;
+
+        }
+
+
+        .small-label {
+
+            display:
+                block;
+
+            color:
+                #999999;
+
+            font-size:
+                10px;
+
+            font-weight:
+                800;
+
+            letter-spacing:
+                1px;
+
+        }
+
+
+        .overview-top h2 {
+
+            margin:
+                6px 0 0;
+
+            font-family:
+                'Space Grotesk',
+                Arial,
+                sans-serif;
+
+            font-size:
+                22px;
+
+        }
+
+
+        .live-status {
+
+            display:
+                inline-flex;
+
+            align-items:
+                center;
+
+            gap:
+                6px;
+
+            padding:
+                7px 10px;
+
+            border-radius:
+                20px;
+
+            background:
+                var(--green-light);
+
+            color:
+                var(--green);
+
+            font-size:
+                10px;
+
+            font-weight:
+                900;
+
+        }
+
+
+        .live-status span {
+
+            width:
+                7px;
+
+            height:
+                7px;
+
+            border-radius:
+                50%;
+
+            background:
+                var(--green);
+
+        }
+
+
+        .closed-status {
+
+            background:
+                var(--red-light);
+
+            color:
+                var(--red);
+
+        }
+
+
+        .closed-status span {
+
+            background:
+                var(--red);
+
+        }
+
+
+        /* ================= RUSH ================= */
+
+        .rush-card {
+
+            background:
+                #F8F8F8;
+
+            border:
+                1px solid #EAEAEA;
+
+            border-radius:
+                15px;
+
+            padding:
+                20px;
+
+        }
+
+
+        .rush-header {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+        }
+
+
+        .rush-header h3 {
+
+            margin:
+                7px 0 0;
+
+            font-size:
+                20px;
+
+        }
+
+
+        .rush-percentage {
+
+            color:
+                var(--red);
+
+            font-family:
+                'Space Grotesk',
+                Arial,
+                sans-serif;
+
+            font-size:
+                27px;
+
+            font-weight:
+                900;
+
+        }
+
+
+        .progress-bar {
+
+            height:
+                9px;
+
+            margin:
+                18px 0 10px;
+
+            background:
+                #DEDEDE;
+
+            border-radius:
+                20px;
+
+            overflow:
+                hidden;
+
+        }
+
+
+        .progress-value {
+
+            height:
+                100%;
+
+            background:
+                var(--red);
+
+            border-radius:
+                20px;
+
+        }
+
+
+        .rush-message {
+
+            color:
+                #888888;
+
+            font-size:
+                11px;
+
+            margin:
+                0;
+
+        }
+
+
+        /* ================= TOKEN GRID ================= */
+
+        .token-grid {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap:
+                12px;
+
+            margin-top:
+                14px;
+
+        }
+
+
+        .token-box {
+
+            background:
+                #F8F8F8;
+
+            border:
+                1px solid #EAEAEA;
+
+            border-radius:
+                14px;
+
+            padding:
+                20px;
+
+        }
+
+
+        .token-box.highlight {
+
+            background:
+                var(--red-light);
+
+            border-color:
+                var(--red-soft);
+
+        }
+
+
+        .token-box strong {
+
+            display:
+                block;
+
+            margin-top:
+                8px;
+
+            font-family:
+                'Space Grotesk',
+                Arial,
+                sans-serif;
+
+            font-size:
+                27px;
+
+        }
+
+
+        .token-box.highlight strong {
+
+            color:
+                var(--red);
+
+        }
+
+
+        /* ================= QUICK INFO ================= */
+
+        .quick-card {
+
+            background:
+                white;
+
+            border:
+                1px solid var(--border);
+
+            border-radius:
+                20px;
+
+            padding:
+                26px;
+
+        }
+
+
+        .quick-card h2 {
+
+            margin:
+                0 0 17px;
+
+            font-family:
+                'Space Grotesk',
+                Arial,
+                sans-serif;
+
+            font-size:
+                20px;
+
+        }
+
+
+        .quick-row {
+
+            display:
+                flex;
+
+            justify-content:
+                space-between;
+
+            padding:
+                12px 0;
+
+            border-bottom:
+                1px solid #EEEEEE;
+
+            font-size:
+                13px;
+
+        }
+
+
+        .quick-row:last-child {
+
+            border-bottom:
+                none;
+
+        }
+
+
+        .quick-row span {
+
+            color:
+                #777777;
+
+        }
+
+
+        .status-live-text {
+
+            color:
+                var(--green);
+
+        }
+
+
+        .status-closed-text {
+
+            color:
+                var(--red);
+
+        }
+
+
+        /* ================= EMPTY ================= */
+
+        .empty-menu {
+
+            padding:
+                50px 20px;
+
+            text-align:
+                center;
+
+            color:
+                #888888;
+
+        }
+
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 950px) {
+
+            .dashboard-grid {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .right-column {
+
+                display:
+                    grid;
+
+                grid-template-columns:
+                    1fr 1fr;
+
+            }
+
+        }
+
+
+        @media (max-width: 750px) {
+
+            .brand-logo {
+
+                width:
+                    150px;
+
+                height:
+                    58px;
+
+            }
+
+
+            .user-info {
+
+                display:
+                    none;
+
+            }
+
+        }
+
+
+        @media (max-width: 650px) {
+
+            .student-navbar {
+
+                padding:
+                    0 4%;
+
+            }
+
+
+            .brand-logo {
+
+                width:
+                    140px;
+
+                height:
+                    52px;
+
+            }
+
+
+            .dashboard-container {
+
+                width:
+                    92%;
+
+                padding-top:
+                    30px;
+
+            }
+
+
+            .welcome-section h1 {
+
+                font-size:
+                    32px;
+
+            }
+
+
+            .stats-grid {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .food-grid {
+
+                grid-template-columns:
+                    1fr;
+
+            }
+
+
+            .right-column {
+
+                display:
+                    flex;
+
+            }
+
+
+            .student-user {
+
+                gap:
+                    5px;
+
+            }
+
+
+            .nav-btn {
+
+                padding:
+                    9px 10px;
+
+                font-size:
+                    11px;
+
+            }
+
+
+            .canteen-status {
+
+                align-items:
+                    flex-start;
+
+                flex-direction:
+                    column;
+
+            }
+
+
+            .status-label {
+
+                align-self:
+                    flex-start;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<header class="student-navbar">
+
+
+<a href="/student/dashboard"
+   class="brand">
+
+
+<img
+    src="/images/student-logo.jpeg"
+    alt="ARMIET CanteenFlow Logo"
+    class="brand-logo"
+>
+
+
+</a>
+
+
+<div class="student-user">
+
+
+<div class="user-info">
+
+    <span
+        class="user-name"
+        th:text="${userName}">
+
+        Student
+
+    </span>
+
+
+    <span
+        class="user-email"
+        th:text="${userEmail}">
+
+        student@email.com
+
+    </span>
+
+</div>
+
+
+<a
+    href="/student/orders"
+    class="nav-btn">
+
+    📋 My Orders
+
+</a>
+
+
+<a
+    href="/student/cart"
+    class="nav-btn">
+
+    🛒 Cart
+
+</a>
+
+
+<a
+    href="/logout"
+    class="nav-btn">
+
+    Logout
+
+</a>
+
+
+</div>
+
+</header>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="dashboard-container">
+
+
+<!-- ================= WELCOME ================= -->
+
+<section class="welcome-section">
+
+
+<span class="welcome-tag">
+
+    STUDENT DASHBOARD
+
+</span>
+
+
+<h1>
+
+    Welcome,
+
+    <span th:text="${userName}">
+        Student
+    </span>
+
+    👋
+
+</h1>
+
+
+<p>
+
+    Your smart canteen at a glance.
+    Order faster and skip the queue.
+
+</p>
+
+
+</section>
+
+
+<!-- ================= CANTEEN STATUS ================= -->
+
+<section
+    class="canteen-status"
+    th:classappend="${canteenLive ? ' live' : ' closed'}">
+
+
+<div class="status-content">
+
+
+<div class="status-icon">
+
+    <span th:if="${canteenLive}">
+        🟢
+    </span>
+
+    <span th:unless="${canteenLive}">
+        🔴
+    </span>
+
+</div>
+
+
+<div class="status-text">
+
+
+<h2 th:if="${canteenLive}">
+    Canteen is LIVE
+</h2>
+
+
+<h2 th:unless="${canteenLive}">
+    Canteen is CLOSED
+</h2>
+
+
+<p th:if="${canteenLive}">
+    You can browse the menu and place your food order.
+</p>
+
+
+<p th:unless="${canteenLive}">
+    New orders are currently disabled.
+    You can still track existing orders.
+</p>
+
+
+</div>
+
+</div>
+
+
+<span
+    class="status-label"
+    th:text="${canteenLive ? '🟢 CANTEEN LIVE' : '🔴 CANTEEN CLOSED'}">
+
+    CANTEEN LIVE
+
+</span>
+
+
+</section>
+
+
+<!-- ================= STATS ================= -->
+
+<section class="stats-grid">
+
+
+<div class="stat-card">
+
+
+<span class="stat-label">
+    CANTEEN RUSH
+</span>
+
+
+<div
+    class="stat-value"
+    th:text="${rushPercentage + '%'}">
+
+    0%
+
+</div>
+
+
+<div
+    class="stat-description"
+    th:text="${rushStatus}">
+
+    Low
+
+</div>
+
+
+<div class="stat-icon">
+    🔥
+</div>
+
+
+</div>
+
+
+<div class="stat-card">
+
+
+<span class="stat-label">
+    ACTIVE ORDERS
+</span>
+
+
+<div
+    class="stat-value"
+    th:text="${activeOrders}">
+
+    0
+
+</div>
+
+
+<div class="stat-description">
+    Orders being processed
+</div>
+
+
+<div class="stat-icon">
+    📦
+</div>
+
+
+</div>
+
+
+<div class="stat-card">
+
+
+<span class="stat-label">
+    DIGITAL TOKEN
+</span>
+
+
+<div
+    class="stat-value"
+    th:text="${currentToken > 0 ? '#' + currentToken : '—'}">
+
+    —
+
+</div>
+
+
+<div class="stat-description">
+    Current serving token
+</div>
+
+
+<div class="stat-icon">
+    🎫
+</div>
+
+
+</div>
+
+
+</section>
+
+
+<!-- ================= MAIN GRID ================= -->
+
+<section class="dashboard-grid">
+
+
+<!-- ================= MENU ================= -->
+
+<div class="menu-section">
+
+
+<div class="section-heading">
+
+
+<div>
+
+<h2>
+    Today's Menu
+</h2>
+
+
+<p th:if="${canteenLive}">
+    Fresh food available now
+</p>
+
+
+<p th:unless="${canteenLive}">
+    Menu is visible, but ordering is closed
+</p>
+
+
+</div>
+
+
+<span
+    class="item-count"
+    th:text="${#lists.size(foodItems) + ' items'}">
+
+    0 items
+
+</span>
+
+
+</div>
+
+
+<div
+    class="food-grid"
+    th:if="${foodItems != null and !foodItems.isEmpty()}">
+
+
+<div
+    class="food-card"
+    th:each="food : ${foodItems}">
+
+
+<!-- FOOD IMAGE -->
+
+<div class="food-image-box">
+
+
+<img
+    th:if="${food.image_url != null and #strings.startsWith(food.image_url, '/uploads/')}"
+    th:src="${food.image_url}"
+    th:alt="${food.name}"
+    class="food-image"
+>
+
+
+<div
+    th:unless="${food.image_url != null and #strings.startsWith(food.image_url, '/uploads/')}"
+    class="food-emoji"
+    th:text="${food.image_url != null and !#strings.isEmpty(food.image_url) ? food.image_url : '🍴'}">
+
+    🍴
+
+</div>
+
+
+</div>
+
+
+<div class="food-top">
+
+    <span></span>
+
+    <span
+        class="food-price"
+        th:text="'₹' + ${food.price}">
+
+        ₹0
+
+    </span>
+
+</div>
+
+
+<h3
+    th:text="${food.name}">
+
+    Food Name
+
+</h3>
+
+
+<p
+    class="food-description"
+    th:text="${food.description}">
+
+    Delicious food
+
+</p>
+
+
+<span
+    class="food-category"
+    th:text="${food.category}">
+
+    Food
+
+</span>
+
+
+<form
+    action="/student/cart/add"
+    method="post">
+
+
+<input
+    type="hidden"
+    name="foodId"
+    th:value="${food.id}"
+>
+
+
+<button
+    type="submit"
+    class="add-cart-btn"
+    th:if="${canteenLive}">
+
+    + Add to Cart
+
+</button>
+
+
+<button
+    type="button"
+    class="add-cart-btn closed"
+    disabled
+    th:unless="${canteenLive}">
+
+    🔒 Ordering Closed
+
+</button>
+
+
+</form>
+
+
+</div>
+
+
+</div>
+
+
+<div
+    class="empty-menu"
+    th:if="${foodItems == null or foodItems.isEmpty()}">
+
+
+<h3>
+    No food available right now
+</h3>
+
+
+<p>
+    Please check again later.
+</p>
+
+
+</div>
+
+
+</div>
+
+
+<!-- ================= RIGHT COLUMN ================= -->
+
+<div class="right-column">
+
+
+<!-- ================= LIVE OVERVIEW ================= -->
+
+<div class="overview-card">
+
+
+<div class="overview-top">
+
+
+<div>
+
+<span class="small-label">
+    CANTEEN STATUS
+</span>
+
+
+<h2>
+    Live Overview
+</h2>
+
+</div>
+
+
+<span
+    class="live-status"
+    th:if="${canteenLive}">
+
+    <span></span>
+
+    LIVE
+
+</span>
+
+
+<span
+    class="live-status closed-status"
+    th:unless="${canteenLive}">
+
+    <span></span>
+
+    CLOSED
+
+</span>
+
+
+</div>
+
+
+<!-- RUSH -->
+
+<div class="rush-card">
+
+
+<div class="rush-header">
+
+
+<div>
+
+<span class="small-label">
+    CURRENT RUSH
+</span>
+
+
+<h3
+    th:text="${rushStatus}">
+
+    Low
+
+</h3>
+
+</div>
+
+
+<div
+    class="rush-percentage"
+    th:text="${rushPercentage + '%'}">
+
+    0%
+
+</div>
+
+
+</div>
+
+
+<div class="progress-bar">
+
+
+<div
+    class="progress-value"
+    th:style="'width:' + ${rushPercentage} + '%'">
+
+</div>
+
+
+</div>
+
+
+<p
+    class="rush-message"
+    th:if="${rushPercentage < 50}">
+
+    Good time to visit the canteen.
+
+</p>
+
+
+<p
+    class="rush-message"
+    th:if="${rushPercentage >= 50 and rushPercentage < 80}">
+
+    Canteen is getting busy.
+
+</p>
+
+
+<p
+    class="rush-message"
+    th:if="${rushPercentage >= 80}">
+
+    Canteen is very busy right now.
+
+</p>
+
+
+</div>
+
+
+<!-- TOKEN / WAIT -->
+
+<div class="token-grid">
+
+
+<div class="token-box">
+
+
+<span class="small-label">
+    SERVING NOW
+</span>
+
+
+<strong
+    th:text="${currentToken > 0 ? '#' + currentToken : '—'}">
+
+    —
+
+</strong>
+
+
+</div>
+
+
+<div class="token-box highlight">
+
+
+<span class="small-label">
+    EST. WAIT
+</span>
+
+
+<strong
+    th:text="${estimatedWait + ' min'}">
+
+    0 min
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+<!-- ================= QUICK INFO ================= -->
+
+<div class="quick-card">
+
+
+<h2>
+    Quick Info
+</h2>
+
+
+<div class="quick-row">
+
+
+<span>
+    Canteen Status
+</span>
+
+
+<strong
+    class="status-live-text"
+    th:if="${canteenLive}">
+
+    🟢 LIVE
+
+</strong>
+
+
+<strong
+    class="status-closed-text"
+    th:unless="${canteenLive}">
+
+    🔴 CLOSED
+
+</strong>
+
+
+</div>
+
+
+<div class="quick-row">
+
+
+<span>
+    Active Orders
+</span>
+
+
+<strong
+    th:text="${activeOrders}">
+
+    0
+
+</strong>
+
+
+</div>
+
+
+<div class="quick-row">
+
+
+<span>
+    Current Token
+</span>
+
+
+<strong
+    th:text="${currentToken > 0 ? '#' + currentToken : '—'}">
+
+    —
+
+</strong>
+
+
+</div>
+
+
+<div class="quick-row">
+
+
+<span>
+    Estimated Wait
+</span>
+
+
+<strong
+    th:text="${estimatedWait + ' min'}">
+
+    0 min
+
+</strong>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+</section>
+
+
+</main>
+
+
+</body>
+
+</html>

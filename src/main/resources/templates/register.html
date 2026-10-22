@@ -38,16 +38,27 @@
             margin-bottom: 28px;
         }
 
+        /* =========================
+           ARMIET CANTEENFLOW LOGO
+        ========================= */
+
         .register-logo-icon {
-            width: 58px;
-            height: 58px;
+            width: 78px;
+            height: 78px;
             margin: 0 auto 12px;
-            border-radius: 16px;
-            background: #ff6b35;
+            border-radius: 18px;
+            background: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            overflow: hidden;
+        }
+
+        .register-logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
         }
 
         .register-logo h1 {
@@ -149,6 +160,11 @@
                 padding: 30px 22px;
             }
 
+            .register-logo-icon {
+                width: 70px;
+                height: 70px;
+            }
+
         }
 
     </style>
@@ -163,8 +179,15 @@
 
             <div class="register-logo">
 
+                <!-- ARMIET CANTEENFLOW LOGO -->
+
                 <div class="register-logo-icon">
-                    🍴
+
+                    <img
+                        src="/images/armiet-canteenflow-logo.png"
+                        alt="ARMIET CanteenFlow Logo"
+                    >
+
                 </div>
 
                 <h1>Create Account</h1>
@@ -177,7 +200,9 @@
             <!-- Error Message -->
 
             <div th:if="${error}" class="error-message">
+
                 <span th:text="${error}"></span>
+
             </div>
 
 

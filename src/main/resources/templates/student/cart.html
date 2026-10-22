@@ -12,17 +12,40 @@
 
     <style>
 
+        /* ==================================================
+           ARMIET CANTEENFLOW
+           RED + BLACK + WHITE FOOD THEME
+        ================================================== */
+
+        :root {
+            --red: #E21B23;
+            --red-dark: #B9151B;
+            --red-light: #FFF1F2;
+
+            --black: #111111;
+            --white: #FFFFFF;
+
+            --background: #F7F7F7;
+            --border: #E7E7E7;
+
+            --text: #171717;
+            --muted: #6B6B6B;
+        }
+
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+
         body {
             font-family: Arial, sans-serif;
-            background: #f5f7fb;
-            color: #1f2937;
+            background: var(--background);
+            color: var(--text);
         }
+
 
         /* ==============================
            NAVBAR
@@ -30,41 +53,79 @@
 
         .navbar {
             height: 70px;
-            background: white;
+
+            background: rgba(255, 255, 255, 0.97);
+
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             padding: 0 7%;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+
+            border-bottom: 1px solid var(--border);
+
+            position: sticky;
+            top: 0;
+
+            z-index: 1000;
         }
+
+
+        /* ==============================
+           LOGO
+        ============================== */
 
         .logo {
-            font-size: 23px;
-            font-weight: bold;
-            color: #2563eb;
+            display: flex;
+            align-items: center;
+
+            text-decoration: none;
         }
 
-        .logo span {
-            color: #111827;
+
+        .logo img {
+            width: 58px;
+            height: 58px;
+
+            object-fit: contain;
+
+            display: block;
         }
+
+
+        /* ==============================
+           NAVIGATION
+        ============================== */
 
         .nav-links {
             display: flex;
             gap: 10px;
         }
 
+
         .nav-btn {
             text-decoration: none;
+
             padding: 10px 18px;
+
             border-radius: 8px;
-            background: #f3f4f6;
-            color: #374151;
+
+            background: var(--black);
+
+            color: white;
+
             font-weight: 600;
+
+            transition: 0.25s ease;
         }
 
+
         .nav-btn:hover {
-            background: #e5e7eb;
+            background: var(--red);
+
+            transform: translateY(-1px);
         }
+
 
         /* ==============================
            PAGE
@@ -72,22 +133,29 @@
 
         .container {
             max-width: 1100px;
+
             margin: 45px auto;
+
             padding: 20px;
         }
+
 
         .page-header {
             margin-bottom: 25px;
         }
 
+
         .page-header h1 {
             font-size: 32px;
+
             margin-bottom: 7px;
         }
 
+
         .page-header p {
-            color: #6b7280;
+            color: var(--muted);
         }
+
 
         /* ==============================
            LAYOUT
@@ -95,10 +163,14 @@
 
         .cart-layout {
             display: grid;
+
             grid-template-columns: 1fr 350px;
+
             gap: 25px;
+
             align-items: start;
         }
+
 
         /* ==============================
            CART CARD
@@ -106,35 +178,63 @@
 
         .cart-card {
             background: white;
+
             border-radius: 16px;
+
             padding: 25px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+
+            border: 1px solid var(--border);
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.05);
         }
+
 
         .cart-top {
             display: flex;
+
             justify-content: space-between;
+
             align-items: center;
+
             margin-bottom: 20px;
         }
+
 
         .cart-top h2 {
             font-size: 21px;
         }
 
+
+        /* ==============================
+           CLEAR CART
+        ============================== */
+
         .clear-btn {
             border: none;
-            background: #fee2e2;
-            color: #dc2626;
+
+            background: var(--red-light);
+
+            color: var(--red);
+
             padding: 9px 14px;
+
             border-radius: 8px;
+
             font-weight: 600;
+
             cursor: pointer;
+
+            transition: 0.2s ease;
         }
 
+
         .clear-btn:hover {
-            background: #fecaca;
+            background: var(--red);
+
+            color: white;
         }
+
 
         /* ==============================
            CART ITEM
@@ -142,37 +242,53 @@
 
         .cart-item {
             display: flex;
+
             justify-content: space-between;
+
             align-items: center;
+
             padding: 20px 0;
-            border-bottom: 1px solid #e5e7eb;
+
+            border-bottom: 1px solid #E5E5E5;
+
             gap: 15px;
         }
+
 
         .cart-item:last-child {
             border-bottom: none;
         }
 
+
         .food-info {
             flex: 1;
         }
 
+
         .food-name {
             font-size: 18px;
+
             font-weight: bold;
+
             margin-bottom: 5px;
         }
 
+
         .food-category {
-            color: #6b7280;
+            color: var(--muted);
+
             font-size: 13px;
         }
 
+
         .food-price {
             margin-top: 8px;
-            color: #2563eb;
+
+            color: var(--red);
+
             font-weight: bold;
         }
+
 
         /* ==============================
            QUANTITY
@@ -180,35 +296,56 @@
 
         .quantity-area {
             display: flex;
+
             align-items: center;
+
             gap: 8px;
         }
+
 
         .quantity-form {
             display: inline;
         }
 
+
         .quantity-btn {
             width: 34px;
+
             height: 34px;
-            border: none;
+
+            border: 1px solid #F0C4C6;
+
             border-radius: 7px;
-            background: #eef2ff;
-            color: #2563eb;
+
+            background: var(--red-light);
+
+            color: var(--red);
+
             font-size: 18px;
+
             font-weight: bold;
+
             cursor: pointer;
+
+            transition: 0.2s ease;
         }
 
+
         .quantity-btn:hover {
-            background: #dbeafe;
+            background: var(--red);
+
+            color: white;
         }
+
 
         .quantity {
             min-width: 28px;
+
             text-align: center;
+
             font-weight: bold;
         }
+
 
         /* ==============================
            ITEM TOTAL
@@ -216,10 +353,16 @@
 
         .item-total {
             min-width: 85px;
+
             text-align: right;
+
             font-size: 17px;
+
             font-weight: bold;
+
+            color: var(--black);
         }
+
 
         /* ==============================
            REMOVE
@@ -229,18 +372,26 @@
             margin-left: 10px;
         }
 
+
         .remove-btn {
             border: none;
+
             background: transparent;
-            color: #ef4444;
+
+            color: var(--red);
+
             cursor: pointer;
+
             font-size: 13px;
+
             font-weight: 600;
         }
+
 
         .remove-btn:hover {
             text-decoration: underline;
         }
+
 
         /* ==============================
            EMPTY CART
@@ -248,32 +399,55 @@
 
         .empty-cart {
             text-align: center;
+
             padding: 60px 20px;
         }
 
+
         .empty-icon {
             font-size: 55px;
+
             margin-bottom: 15px;
         }
+
 
         .empty-cart h2 {
             margin-bottom: 8px;
         }
 
+
         .empty-cart p {
-            color: #6b7280;
+            color: var(--muted);
+
             margin-bottom: 20px;
         }
 
+
         .shop-btn {
             display: inline-block;
+
             text-decoration: none;
-            background: #2563eb;
+
+            background: var(--red);
+
             color: white;
+
             padding: 12px 22px;
+
             border-radius: 9px;
+
             font-weight: 600;
+
+            transition: 0.25s ease;
         }
+
+
+        .shop-btn:hover {
+            background: var(--red-dark);
+
+            transform: translateY(-1px);
+        }
+
 
         /* ==============================
            SUMMARY
@@ -281,37 +455,59 @@
 
         .summary-card {
             background: white;
+
             border-radius: 16px;
+
             padding: 25px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+
+            border: 1px solid var(--border);
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.05);
+
             position: sticky;
-            top: 20px;
+
+            top: 90px;
         }
+
 
         .summary-card h2 {
             margin-bottom: 20px;
         }
 
+
         .summary-row {
             display: flex;
+
             justify-content: space-between;
+
             padding: 12px 0;
-            color: #6b7280;
+
+            color: var(--muted);
         }
 
+
         .summary-total {
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid #E5E5E5;
+
             margin-top: 10px;
+
             padding-top: 18px;
+
             display: flex;
+
             justify-content: space-between;
+
             font-size: 21px;
+
             font-weight: bold;
         }
 
+
         .total-price {
-            color: #2563eb;
+            color: var(--red);
         }
+
 
         /* ==============================
            PLACE ORDER
@@ -321,42 +517,76 @@
             margin-top: 20px;
         }
 
+
         .checkout-btn {
             width: 100%;
+
             border: none;
-            background: #16a34a;
+
+            background: var(--red);
+
             color: white;
+
             padding: 15px;
+
             border-radius: 10px;
+
             font-size: 16px;
+
             font-weight: bold;
+
             cursor: pointer;
+
+            transition: 0.25s ease;
         }
+
 
         .checkout-btn:hover {
-            background: #15803d;
+            background: var(--red-dark);
+
+            transform: translateY(-1px);
+
+            box-shadow:
+                0 10px 20px rgba(226, 27, 35, 0.22);
         }
 
+
         .checkout-btn:disabled {
-            background: #9ca3af;
+            background: #9CA3AF;
+
             cursor: not-allowed;
         }
 
+
         .continue-btn {
             display: block;
+
             text-align: center;
+
             text-decoration: none;
+
             margin-top: 12px;
+
             padding: 13px;
+
             border-radius: 10px;
-            background: #f3f4f6;
-            color: #374151;
+
+            background: #F3F3F3;
+
+            color: var(--black);
+
             font-weight: 600;
+
+            transition: 0.2s ease;
         }
 
+
         .continue-btn:hover {
-            background: #e5e7eb;
+            background: var(--red-light);
+
+            color: var(--red);
         }
+
 
         /* ==============================
            NOTE
@@ -364,13 +594,22 @@
 
         .order-note {
             margin-top: 18px;
+
             padding: 13px;
-            background: #eff6ff;
-            color: #1d4ed8;
+
+            background: var(--red-light);
+
+            color: #8F2025;
+
+            border: 1px solid #FFD4D6;
+
             border-radius: 9px;
+
             font-size: 13px;
+
             line-height: 1.5;
         }
+
 
         /* ==============================
            MOBILE
@@ -387,47 +626,60 @@
             }
         }
 
+
         @media (max-width: 600px) {
 
             .navbar {
                 padding: 0 20px;
             }
 
-            .logo {
-                font-size: 18px;
+
+            .logo img {
+                width: 50px;
+                height: 50px;
             }
+
 
             .container {
                 margin: 25px auto;
+
                 padding: 15px;
             }
+
 
             .page-header h1 {
                 font-size: 27px;
             }
 
+
             .cart-card {
                 padding: 18px;
             }
+
 
             .cart-item {
                 flex-wrap: wrap;
             }
 
+
             .item-total {
                 margin-left: auto;
             }
 
+
             .quantity-area {
                 order: 3;
             }
+
         }
 
     </style>
 
 </head>
 
+
 <body>
+
 
 <!-- ==============================
      NAVBAR
@@ -435,15 +687,24 @@
 
 <nav class="navbar">
 
-    <div class="logo">
-        ARMIET <span>CanteenFlow</span>
-    </div>
+    <a href="/student/dashboard" class="logo">
+
+        <img
+            src="/images/armiet-canteenflow-logo.png"
+            alt="ARMIET CanteenFlow Logo"
+        >
+
+    </a>
+
 
     <div class="nav-links">
 
-        <a href="/student/dashboard"
-           class="nav-btn">
+        <a
+            href="/student/dashboard"
+            class="nav-btn">
+
             Dashboard
+
         </a>
 
     </div>
@@ -456,6 +717,7 @@
 ============================== -->
 
 <div class="container">
+
 
     <div class="page-header">
 
@@ -474,23 +736,28 @@
          EMPTY CART
     ============================== -->
 
-    <div th:if="${cartItems.isEmpty()}"
-         class="cart-card empty-cart">
+    <div
+        th:if="${cartItems.isEmpty()}"
+        class="cart-card empty-cart">
 
         <div class="empty-icon">
             🛒
         </div>
 
+
         <h2>
             Your cart is empty
         </h2>
+
 
         <p>
             Add some delicious food from the canteen menu.
         </p>
 
-        <a href="/student/dashboard"
-           class="shop-btn">
+
+        <a
+            href="/student/dashboard"
+            class="shop-btn">
 
             Browse Menu →
 
@@ -503,8 +770,9 @@
          CART WITH ITEMS
     ============================== -->
 
-    <div th:unless="${cartItems.isEmpty()}"
-         class="cart-layout">
+    <div
+        th:unless="${cartItems.isEmpty()}"
+        class="cart-layout">
 
 
         <!-- ==============================
@@ -513,19 +781,21 @@
 
         <div class="cart-card">
 
+
             <div class="cart-top">
 
                 <h2>
                     Cart Items
                 </h2>
 
-                <!-- CLEAR CART -->
 
-                <form action="/student/cart/clear"
-                      method="post">
+                <form
+                    action="/student/cart/clear"
+                    method="post">
 
-                    <button type="submit"
-                            class="clear-btn">
+                    <button
+                        type="submit"
+                        class="clear-btn">
 
                         Clear Cart
 
@@ -540,26 +810,32 @@
                  CART ITEMS
             ============================== -->
 
-            <div class="cart-item"
-                 th:each="item : ${cartItems}">
+            <div
+                class="cart-item"
+                th:each="item : ${cartItems}">
+
 
                 <!-- FOOD INFORMATION -->
 
                 <div class="food-info">
 
-                    <div class="food-name"
-                         th:text="${item.name}">
+                    <div
+                        class="food-name"
+                        th:text="${item.name}">
 
                         Vada Pav
 
                     </div>
 
-                    <div class="food-category"
-                         th:text="${item.category}">
+
+                    <div
+                        class="food-category"
+                        th:text="${item.category}">
 
                         Snacks
 
                     </div>
+
 
                     <div class="food-price">
 
@@ -578,18 +854,22 @@
 
                 <div class="quantity-area">
 
+
                     <!-- DECREASE -->
 
-                    <form action="/student/cart/decrease"
-                          method="post"
-                          class="quantity-form">
+                    <form
+                        action="/student/cart/decrease"
+                        method="post"
+                        class="quantity-form">
 
-                        <input type="hidden"
-                               name="foodId"
-                               th:value="${item.id}">
+                        <input
+                            type="hidden"
+                            name="foodId"
+                            th:value="${item.id}">
 
-                        <button type="submit"
-                                class="quantity-btn">
+                        <button
+                            type="submit"
+                            class="quantity-btn">
 
                             −
 
@@ -600,8 +880,9 @@
 
                     <!-- QUANTITY -->
 
-                    <span class="quantity"
-                          th:text="${item.quantity}">
+                    <span
+                        class="quantity"
+                        th:text="${item.quantity}">
 
                         1
 
@@ -610,16 +891,19 @@
 
                     <!-- INCREASE -->
 
-                    <form action="/student/cart/increase"
-                          method="post"
-                          class="quantity-form">
+                    <form
+                        action="/student/cart/increase"
+                        method="post"
+                        class="quantity-form">
 
-                        <input type="hidden"
-                               name="foodId"
-                               th:value="${item.id}">
+                        <input
+                            type="hidden"
+                            name="foodId"
+                            th:value="${item.id}">
 
-                        <button type="submit"
-                                class="quantity-btn">
+                        <button
+                            type="submit"
+                            class="quantity-btn">
 
                             +
 
@@ -643,16 +927,19 @@
 
                 <!-- REMOVE -->
 
-                <form action="/student/cart/remove"
-                      method="post"
-                      class="remove-form">
+                <form
+                    action="/student/cart/remove"
+                    method="post"
+                    class="remove-form">
 
-                    <input type="hidden"
-                           name="foodId"
-                           th:value="${item.id}">
+                    <input
+                        type="hidden"
+                        name="foodId"
+                        th:value="${item.id}">
 
-                    <button type="submit"
-                            class="remove-btn">
+                    <button
+                        type="submit"
+                        class="remove-btn">
 
                         Remove
 
@@ -682,11 +969,8 @@
                     Items
                 </span>
 
-                <span
-                    th:text="${cartItems.size()}">
-
+                <span th:text="${cartItems.size()}">
                     1
-
                 </span>
 
             </div>
@@ -726,12 +1010,14 @@
                  REAL PLACE ORDER FORM
             ============================== -->
 
-            <form action="/student/order/place"
-                  method="post"
-                  class="checkout-form">
+            <form
+                action="/student/order/place"
+                method="post"
+                class="checkout-form">
 
-                <button type="submit"
-                        class="checkout-btn">
+                <button
+                    type="submit"
+                    class="checkout-btn">
 
                     🎟️ Place Order →
 
@@ -742,8 +1028,9 @@
 
             <!-- CONTINUE SHOPPING -->
 
-            <a href="/student/dashboard"
-               class="continue-btn">
+            <a
+                href="/student/dashboard"
+                class="continue-btn">
 
                 ← Continue Shopping
 

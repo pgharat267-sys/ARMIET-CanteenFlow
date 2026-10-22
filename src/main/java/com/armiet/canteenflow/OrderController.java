@@ -32,6 +32,14 @@ public class OrderController {
             return "redirect:/login";
         }
 
+        // ==================================================
+        // CHECK CANTEEN LIVE STATUS
+        // ==================================================
+
+        if (!isCanteenLive()) {
+            return "redirect:/student/dashboard";
+        }
+
         int userId =
                 ((Number) session.getAttribute("userId")).intValue();
 
@@ -102,22 +110,22 @@ public class OrderController {
         // GENERATE DIGITAL TOKEN
         // ==================================================
 
-        Integer lastToken =
+        ensureTokenSettings();
+
+        Integer nextToken =
                 jdbcTemplate.queryForObject(
                         """
-                        SELECT MAX(token_number)
-                        FROM orders
+                        SELECT next_token
+                        FROM token_settings
+                        WHERE id = 1
                         """,
                         Integer.class
                 );
 
-        int tokenNumber;
-
-        if (lastToken == null) {
-            tokenNumber = 1;
-        } else {
-            tokenNumber = lastToken + 1;
-        }
+        int tokenNumber =
+                (nextToken == null || nextToken < 1)
+                        ? 1
+                        : nextToken;
 
         // ==================================================
         // CREATE ORDER
@@ -144,6 +152,19 @@ public class OrderController {
                 "CASH_AT_COUNTER",
                 "PENDING",
                 null
+        );
+
+        // ==================================================
+        // MOVE TOKEN COUNTER TO NEXT NUMBER
+        // ==================================================
+
+        jdbcTemplate.update(
+                """
+                UPDATE token_settings
+                SET next_token = ?
+                WHERE id = 1
+                """,
+                tokenNumber + 1
         );
 
         // ==================================================
@@ -356,6 +377,99 @@ public class OrderController {
 
 
     // ==================================================
+    // TOKEN SETTINGS
+    // ==================================================
+
+    private void ensureTokenSettings() {
+
+        jdbcTemplate.execute("""
+            CREATE TABLE IF NOT EXISTS token_settings (
+                id INTEGER PRIMARY KEY,
+                next_token INTEGER NOT NULL DEFAULT 1
+            )
+        """);
+
+        Integer count =
+                jdbcTemplate.queryForObject(
+                        "SELECT COUNT(*) FROM token_settings",
+                        Integer.class
+                );
+
+        if (count == null || count == 0) {
+
+            Integer nextToken =
+                    jdbcTemplate.queryForObject(
+                            """
+                            SELECT COALESCE(
+                                MAX(token_number), 0
+                            ) + 1
+                            FROM orders
+                            """,
+                            Integer.class
+                    );
+
+            if (nextToken == null || nextToken < 1) {
+                nextToken = 1;
+            }
+
+            jdbcTemplate.update(
+                    """
+                    INSERT INTO token_settings
+                    (id, next_token)
+                    VALUES (1, ?)
+                    """,
+                    nextToken
+            );
+        }
+    }
+
+
+    // ==================================================
+    // CANTEEN LIVE STATUS
+    // ==================================================
+
+    private boolean isCanteenLive() {
+
+        jdbcTemplate.execute("""
+            CREATE TABLE IF NOT EXISTS canteen_settings (
+                id INTEGER PRIMARY KEY,
+                is_live INTEGER NOT NULL DEFAULT 1
+            )
+        """);
+
+        Integer count =
+                jdbcTemplate.queryForObject(
+                        "SELECT COUNT(*) FROM canteen_settings",
+                        Integer.class
+                );
+
+        if (count == null || count == 0) {
+
+            jdbcTemplate.update(
+                    """
+                    INSERT INTO canteen_settings
+                    (id, is_live)
+                    VALUES (1, 1)
+                    """
+            );
+        }
+
+        Integer liveValue =
+                jdbcTemplate.queryForObject(
+                        """
+                        SELECT is_live
+                        FROM canteen_settings
+                        WHERE id = 1
+                        """,
+                        Integer.class
+                );
+
+        return liveValue != null &&
+                liveValue == 1;
+    }
+
+
+    // ==================================================
     // FIND FOOD COLUMN
     // ==================================================
 
@@ -398,8 +512,8 @@ public class OrderController {
 
         throw new IllegalStateException(
                 "Could not find the food item column in order_items table. "
-                + "Available columns: "
-                + columns
+                        + "Available columns: "
+                        + columns
         );
     }
 

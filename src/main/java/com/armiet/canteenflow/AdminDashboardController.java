@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -26,17 +28,72 @@ public class AdminDashboardController {
         // ==============================
         // ADMIN SECURITY CHECK
         // ==============================
-        Object roleObject = session.getAttribute("userRole");
+
+        Object roleObject =
+                session.getAttribute("userRole");
 
         if (roleObject == null ||
-                !"ADMIN".equalsIgnoreCase(roleObject.toString())) {
+                !"ADMIN".equalsIgnoreCase(
+                        roleObject.toString())) {
 
             return "redirect:/login";
         }
 
         // ==============================
+        // CREATE CANTEEN SETTINGS TABLE
+        // ==============================
+
+        jdbcTemplate.execute("""
+            CREATE TABLE IF NOT EXISTS canteen_settings (
+                id INTEGER PRIMARY KEY,
+                is_live INTEGER NOT NULL DEFAULT 1
+            )
+        """);
+
+        // ==============================
+        // CREATE DEFAULT LIVE SETTING
+        // ==============================
+
+        Integer settingsCount =
+                jdbcTemplate.queryForObject(
+                        "SELECT COUNT(*) FROM canteen_settings",
+                        Integer.class
+                );
+
+        if (settingsCount == null ||
+                settingsCount == 0) {
+
+            jdbcTemplate.update(
+                    """
+                    INSERT INTO canteen_settings
+                    (id, is_live)
+                    VALUES (1, 1)
+                    """
+            );
+        }
+
+        // ==============================
+        // GET CANTEEN STATUS
+        // ==============================
+
+        Integer liveValue =
+                jdbcTemplate.queryForObject(
+                        """
+                        SELECT is_live
+                        FROM canteen_settings
+                        WHERE id = 1
+                        """,
+                        Integer.class
+                );
+
+        boolean canteenLive =
+                liveValue != null &&
+                liveValue == 1;
+
+        // ==============================
         // ADMIN INFORMATION
         // ==============================
+
         model.addAttribute(
                 "adminName",
                 session.getAttribute("userName")
@@ -45,6 +102,7 @@ public class AdminDashboardController {
         // ==============================
         // TOTAL FOOD ITEMS
         // ==============================
+
         Integer totalFood =
                 jdbcTemplate.queryForObject(
                         "SELECT COUNT(*) FROM food_items",
@@ -54,15 +112,21 @@ public class AdminDashboardController {
         // ==============================
         // AVAILABLE FOOD
         // ==============================
+
         Integer availableFood =
                 jdbcTemplate.queryForObject(
-                        "SELECT COUNT(*) FROM food_items WHERE available = 1",
+                        """
+                        SELECT COUNT(*)
+                        FROM food_items
+                        WHERE available = 1
+                        """,
                         Integer.class
                 );
 
         // ==============================
         // TOTAL ORDERS
         // ==============================
+
         Integer totalOrders =
                 jdbcTemplate.queryForObject(
                         "SELECT COUNT(*) FROM orders",
@@ -72,12 +136,14 @@ public class AdminDashboardController {
         // ==============================
         // ACTIVE ORDERS
         // ==============================
+
         Integer activeOrders =
                 jdbcTemplate.queryForObject(
                         """
                         SELECT COUNT(*)
                         FROM orders
-                        WHERE status IN ('PLACED', 'PREPARING', 'READY')
+                        WHERE status IN
+                        ('PLACED', 'PREPARING', 'READY')
                         """,
                         Integer.class
                 );
@@ -85,10 +151,13 @@ public class AdminDashboardController {
         // ==============================
         // TOTAL SALES
         // ==============================
+
         Double totalSales =
                 jdbcTemplate.queryForObject(
                         """
-                        SELECT COALESCE(SUM(total_amount), 0)
+                        SELECT COALESCE(
+                            SUM(total_amount), 0
+                        )
                         FROM orders
                         WHERE status != 'CANCELLED'
                         """,
@@ -98,13 +167,17 @@ public class AdminDashboardController {
         // ==============================
         // TODAY'S SALES
         // ==============================
+
         Double todaySales =
                 jdbcTemplate.queryForObject(
                         """
-                        SELECT COALESCE(SUM(total_amount), 0)
+                        SELECT COALESCE(
+                            SUM(total_amount), 0
+                        )
                         FROM orders
                         WHERE status != 'CANCELLED'
-                        AND DATE(order_time) = DATE('now')
+                        AND DATE(order_time) =
+                            DATE('now')
                         """,
                         Double.class
                 );
@@ -112,6 +185,7 @@ public class AdminDashboardController {
         // ==============================
         // RECENT ORDERS
         // ==============================
+
         List<Map<String, Object>> recentOrders =
                 jdbcTemplate.queryForList(
                         """
@@ -134,14 +208,95 @@ public class AdminDashboardController {
         // ==============================
         // SEND DATA TO PAGE
         // ==============================
-        model.addAttribute("totalFood", totalFood);
-        model.addAttribute("availableFood", availableFood);
-        model.addAttribute("totalOrders", totalOrders);
-        model.addAttribute("activeOrders", activeOrders);
-        model.addAttribute("totalSales", totalSales);
-        model.addAttribute("todaySales", todaySales);
-        model.addAttribute("recentOrders", recentOrders);
+
+        model.addAttribute(
+                "totalFood",
+                totalFood
+        );
+
+        model.addAttribute(
+                "availableFood",
+                availableFood
+        );
+
+        model.addAttribute(
+                "totalOrders",
+                totalOrders
+        );
+
+        model.addAttribute(
+                "activeOrders",
+                activeOrders
+        );
+
+        model.addAttribute(
+                "totalSales",
+                totalSales
+        );
+
+        model.addAttribute(
+                "todaySales",
+                todaySales
+        );
+
+        model.addAttribute(
+                "recentOrders",
+                recentOrders
+        );
+
+        // ==============================
+        // CANTEEN LIVE / CLOSED STATUS
+        // ==============================
+
+        model.addAttribute(
+                "canteenLive",
+                canteenLive
+        );
 
         return "admin/dashboard";
+    }
+
+
+    // ==========================================
+    // CHANGE CANTEEN LIVE / CLOSED STATUS
+    // ==========================================
+
+    @PostMapping("/admin/canteen/status")
+    public String changeCanteenStatus(
+            @RequestParam boolean live,
+            HttpSession session) {
+
+        // ==============================
+        // ADMIN SECURITY CHECK
+        // ==============================
+
+        Object roleObject =
+                session.getAttribute("userRole");
+
+        if (roleObject == null ||
+                !"ADMIN".equalsIgnoreCase(
+                        roleObject.toString())) {
+
+            return "redirect:/login";
+        }
+
+        // ==============================
+        // UPDATE CANTEEN STATUS
+        // ==============================
+
+        jdbcTemplate.update(
+                """
+                UPDATE canteen_settings
+                SET is_live = ?
+                WHERE id = 1
+                """,
+                live ? 1 : 0
+        );
+
+        // ==============================
+        // RETURN TO DASHBOARD
+        // ==============================
+
+        return "redirect:/admin/dashboard";
     }
 }

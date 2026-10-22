@@ -3,154 +3,321 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0">
 
     <title>Sales & Reports | ARMIET CanteenFlow</title>
 
     <style>
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f7fb;
-            color: #1f2937;
+        :root {
+            --red: #E21B23;
+            --red-dark: #B9151B;
+            --red-light: #FFF1F2;
+            --red-soft: #FFE4E6;
+
+            --black: #111111;
+            --dark: #181818;
+
+            --white: #FFFFFF;
+
+            --background: #F7F7F7;
+            --border: #E7E7E7;
+
+            --text: #171717;
+            --muted: #6B6B6B;
+
+            --green: #16834B;
         }
 
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        /* ==============================
+           NAVBAR
+        ============================== */
+
         .navbar {
-            background: #111827;
-            color: white;
-            padding: 18px 6%;
+            min-height: 74px;
+
+            background: var(--white);
+
+            border-bottom: 1px solid var(--border);
+
             display: flex;
             align-items: center;
             justify-content: space-between;
+
+            padding: 0 6%;
+
             gap: 20px;
             flex-wrap: wrap;
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .logo {
-            font-size: 22px;
-            font-weight: bold;
+        .brand {
+            display: flex;
+            align-items: center;
+
+            text-decoration: none;
         }
 
-        .logo span {
-            color: #60a5fa;
+        .brand img {
+            width: 58px;
+            height: 58px;
+
+            object-fit: contain;
+            display: block;
         }
 
         .nav-links {
             display: flex;
-            gap: 10px;
+            align-items: center;
+
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .nav-links a {
-            color: #d1d5db;
+            color: #555555;
+
             text-decoration: none;
+
             padding: 9px 13px;
+
             border-radius: 8px;
+
             font-size: 14px;
+            font-weight: 700;
+
+            transition: 0.2s;
         }
 
-        .nav-links a:hover,
-        .nav-links .active {
-            background: #2563eb;
-            color: white;
+        .nav-links a:hover {
+            color: var(--red);
+            background: var(--red-light);
         }
+
+        .nav-links .active {
+            background: var(--red);
+            color: var(--white);
+        }
+
+        .nav-links .active:hover {
+            background: var(--red-dark);
+            color: var(--white);
+        }
+
+        .nav-links a:last-child {
+            color: var(--red);
+        }
+
+        .nav-links a:last-child:hover {
+            background: var(--red-light);
+        }
+
+        /* ==============================
+           CONTAINER
+        ============================== */
 
         .container {
             width: 90%;
             max-width: 1250px;
-            margin: 35px auto;
+
+            margin: 38px auto 60px;
         }
 
+        /* ==============================
+           PAGE HEADER
+        ============================== */
+
         .page-header {
-            margin-bottom: 25px;
+            margin-bottom: 28px;
+        }
+
+        .page-label {
+            display: inline-block;
+
+            background: var(--red-soft);
+            color: var(--red-dark);
+
+            padding: 7px 12px;
+
+            border-radius: 999px;
+
+            font-size: 11px;
+            font-weight: 800;
+
+            letter-spacing: 0.8px;
+
+            margin-bottom: 12px;
         }
 
         .page-header h1 {
-            font-size: 32px;
+            font-size: 34px;
+
+            font-weight: 800;
+
             margin-bottom: 7px;
+
+            letter-spacing: -0.5px;
         }
 
         .page-header p {
-            color: #6b7280;
+            color: var(--muted);
+
+            font-size: 15px;
+
+            line-height: 1.6;
         }
 
-        /* STAT CARDS */
+        /* ==============================
+           STAT CARDS
+        ============================== */
 
         .stats {
             display: grid;
+
             grid-template-columns:
                 repeat(5, 1fr);
+
             gap: 18px;
+
             margin-bottom: 30px;
         }
 
         .stat-card {
-            background: white;
+            background: var(--white);
+
             padding: 22px;
+
             border-radius: 15px;
+
+            border: 1px solid var(--border);
+
             box-shadow:
-                0 5px 18px rgba(0, 0, 0, 0.06);
+                0 7px 22px rgba(0, 0, 0, 0.05);
+
+            transition: 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 28px rgba(0, 0, 0, 0.08);
         }
 
         .stat-icon {
-            font-size: 28px;
-            margin-bottom: 12px;
+            width: 45px;
+            height: 45px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: var(--red-light);
+
+            color: var(--red);
+
+            border-radius: 12px;
+
+            font-size: 22px;
+
+            margin-bottom: 15px;
         }
 
         .stat-label {
-            color: #6b7280;
-            font-size: 14px;
-            margin-bottom: 6px;
+            color: var(--muted);
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            margin-bottom: 7px;
         }
 
         .stat-value {
             font-size: 26px;
-            font-weight: bold;
+
+            font-weight: 800;
+
+            color: var(--black);
         }
 
-        /* MAIN GRID */
+        /* ==============================
+           MAIN GRID
+        ============================== */
 
         .grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+
+            grid-template-columns:
+                1fr 1fr;
+
             gap: 25px;
+
             margin-bottom: 25px;
         }
 
         .card {
-            background: white;
+            background: var(--white);
+
             border-radius: 15px;
+
             padding: 25px;
+
+            border: 1px solid var(--border);
+
             box-shadow:
-                0 5px 18px rgba(0, 0, 0, 0.06);
+                0 7px 22px rgba(0, 0, 0, 0.05);
         }
 
         .card h2 {
             font-size: 21px;
+
+            font-weight: 800;
+
             margin-bottom: 5px;
         }
 
         .card-subtitle {
-            color: #6b7280;
+            color: var(--muted);
+
             font-size: 13px;
+
             margin-bottom: 20px;
         }
 
-        /* POPULAR FOOD */
+        /* ==============================
+           POPULAR FOOD
+        ============================== */
 
         .food-row {
             display: flex;
+
             align-items: center;
             justify-content: space-between;
+
             padding: 15px 0;
-            border-bottom: 1px solid #e5e7eb;
+
+            border-bottom: 1px solid var(--border);
+
             gap: 15px;
         }
 
@@ -159,31 +326,71 @@
         }
 
         .food-name {
-            font-weight: bold;
+            font-weight: 800;
         }
 
         .food-category {
-            color: #6b7280;
+            color: var(--muted);
+
             font-size: 13px;
+
             margin-top: 4px;
         }
 
         .food-sales {
             text-align: right;
+
             white-space: nowrap;
         }
 
         .quantity {
-            font-weight: bold;
+            font-weight: 800;
         }
 
         .revenue {
-            color: #16a34a;
+            color: var(--green);
+
             font-size: 13px;
+
+            font-weight: 700;
+
             margin-top: 4px;
         }
 
-        /* SALES TABLE */
+        /* ==============================
+           SALES OVERVIEW
+        ============================== */
+
+        .overview-row {
+            display: flex;
+
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 15px 0;
+
+            border-bottom: 1px solid var(--border);
+
+            gap: 15px;
+        }
+
+        .overview-row:last-child {
+            border-bottom: none;
+        }
+
+        .overview-row span {
+            color: var(--muted);
+
+            font-size: 14px;
+        }
+
+        .overview-row strong {
+            font-size: 15px;
+        }
+
+        /* ==============================
+           SALES TABLE
+        ============================== */
 
         .table-wrapper {
             overflow-x: auto;
@@ -191,115 +398,244 @@
 
         table {
             width: 100%;
+
             border-collapse: collapse;
+
+            min-width: 750px;
         }
 
         th {
             text-align: left;
+
             padding: 14px;
-            background: #f3f4f6;
-            font-size: 13px;
-            color: #4b5563;
+
+            background: var(--black);
+
+            color: var(--white);
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            white-space: nowrap;
+        }
+
+        th:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+
+        th:last-child {
+            border-radius: 0 8px 8px 0;
         }
 
         td {
-            padding: 14px;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 15px 14px;
+
+            border-bottom: 1px solid var(--border);
+
             font-size: 14px;
+
+            white-space: nowrap;
         }
+
+        tbody tr:hover {
+            background: #FFF9F9;
+        }
+
+        /* ==============================
+           STATUS
+        ============================== */
 
         .status {
             display: inline-block;
+
             padding: 6px 10px;
+
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.3px;
         }
 
         .placed {
-            background: #dbeafe;
-            color: #1d4ed8;
+            background: #FFF1F2;
+            color: var(--red-dark);
         }
 
         .preparing {
-            background: #fef3c7;
-            color: #92400e;
+            background: #FFF4D6;
+            color: #8A5A00;
         }
 
         .ready {
-            background: #dcfce7;
-            color: #166534;
+            background: #E9F8EF;
+            color: #187443;
         }
 
         .completed {
-            background: #d1fae5;
-            color: #065f46;
+            background: #DDF6E8;
+            color: #116438;
+        }
+
+        .cancelled {
+            background: #F1F1F1;
+            color: #666666;
         }
 
         .amount {
-            font-weight: bold;
+            font-weight: 800;
+
+            color: var(--black);
         }
 
         .empty {
             text-align: center;
-            color: #6b7280;
+
+            color: var(--muted);
+
             padding: 30px;
         }
 
+        /* ==============================
+           BACK BUTTON
+        ============================== */
+
         .back-btn {
             display: inline-block;
+
             margin-top: 25px;
+
             padding: 12px 20px;
-            background: #2563eb;
-            color: white;
+
+            background: var(--black);
+
+            color: var(--white);
+
             text-decoration: none;
+
             border-radius: 9px;
-            font-weight: bold;
+
+            font-weight: 800;
+
+            font-size: 14px;
+
+            transition: 0.2s;
         }
 
         .back-btn:hover {
-            background: #1d4ed8;
+            background: var(--red);
+
+            transform: translateY(-1px);
         }
 
-        @media (max-width: 1000px) {
+        /* ==============================
+           RESPONSIVE
+        ============================== */
+
+        @media (max-width: 1100px) {
+
             .stats {
                 grid-template-columns:
                     repeat(3, 1fr);
             }
+
         }
 
-        @media (max-width: 750px) {
-            .stats {
-                grid-template-columns:
-                    repeat(2, 1fr);
+        @media (max-width: 800px) {
+
+            .navbar {
+                padding: 10px 4%;
             }
 
             .grid {
                 grid-template-columns: 1fr;
             }
+
+            .stats {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
         }
 
-        @media (max-width: 500px) {
+        @media (max-width: 550px) {
+
+            .navbar {
+                align-items: center;
+            }
+
+            .brand img {
+                width: 52px;
+                height: 52px;
+            }
+
+            .nav-links {
+                width: 100%;
+
+                justify-content: center;
+            }
+
+            .nav-links a {
+                font-size: 12px;
+
+                padding: 7px 9px;
+            }
+
+            .container {
+                width: 94%;
+
+                margin-top: 25px;
+            }
+
+            .page-header h1 {
+                font-size: 27px;
+            }
+
             .stats {
                 grid-template-columns: 1fr;
             }
 
-            .page-header h1 {
-                font-size: 26px;
+            .stat-card {
+                padding: 18px;
             }
+
+            .card {
+                padding: 20px;
+            }
+
         }
+
     </style>
+
 </head>
+
 
 <body>
 
+
+<!-- ==============================
+     NAVBAR
+============================== -->
+
 <nav class="navbar">
 
-    <div class="logo">
-        ARMIET <span>CanteenFlow</span>
-    </div>
+
+    <a href="/admin/dashboard"
+       class="brand">
+
+        <img
+            src="/images/armiet-canteenflow-logo.png"
+            alt="ARMIET CanteenFlow Logo"
+        >
+
+    </a>
+
 
     <div class="nav-links">
+
         <a href="/admin/dashboard">
             Dashboard
         </a>
@@ -320,16 +656,30 @@
         <a href="/logout">
             Logout
         </a>
+
     </div>
 
 </nav>
 
 
+<!-- ==============================
+     MAIN
+============================== -->
+
 <div class="container">
+
+
+    <!-- PAGE HEADER -->
 
     <div class="page-header">
 
-        <h1>Sales & Reports</h1>
+        <span class="page-label">
+            ADMIN ANALYTICS
+        </span>
+
+        <h1>
+            Sales & Reports
+        </h1>
 
         <p>
             Monitor canteen sales, orders and popular food items.
@@ -338,47 +688,66 @@
     </div>
 
 
-    <!-- STAT CARDS -->
+    <!-- ==============================
+         STAT CARDS
+    ============================== -->
 
     <div class="stats">
 
+
+        <!-- TOTAL SALES -->
+
         <div class="stat-card">
 
-            <div class="stat-icon">₹</div>
+            <div class="stat-icon">
+                ₹
+            </div>
 
             <div class="stat-label">
                 Total Sales
             </div>
 
             <div class="stat-value">
+
                 ₹<span th:text="${totalSales}">
                     0
                 </span>
+
             </div>
 
         </div>
 
 
+        <!-- TODAY SALES -->
+
         <div class="stat-card">
 
-            <div class="stat-icon">📅</div>
+            <div class="stat-icon">
+                📅
+            </div>
 
             <div class="stat-label">
                 Today's Sales
             </div>
 
             <div class="stat-value">
+
                 ₹<span th:text="${todaySales}">
                     0
                 </span>
+
             </div>
 
         </div>
 
 
+        <!-- TOTAL ORDERS -->
+
         <div class="stat-card">
 
-            <div class="stat-icon">🧾</div>
+            <div class="stat-icon">
+                🧾
+            </div>
 
             <div class="stat-label">
                 Total Orders
@@ -392,9 +761,13 @@
         </div>
 
 
+        <!-- COMPLETED ORDERS -->
+
         <div class="stat-card">
 
-            <div class="stat-icon">✅</div>
+            <div class="stat-icon">
+                ✓
+            </div>
 
             <div class="stat-label">
                 Completed Orders
@@ -408,9 +781,13 @@
         </div>
 
 
+        <!-- ACTIVE ORDERS -->
+
         <div class="stat-card">
 
-            <div class="stat-icon">🔥</div>
+            <div class="stat-icon">
+                🔥
+            </div>
 
             <div class="stat-label">
                 Active Orders
@@ -426,13 +803,20 @@
     </div>
 
 
-    <!-- POPULAR FOOD + SUMMARY -->
+    <!-- ==============================
+         POPULAR FOOD + SUMMARY
+    ============================== -->
 
     <div class="grid">
 
+
+        <!-- POPULAR FOOD -->
+
         <div class="card">
 
-            <h2>🍔 Popular Food</h2>
+            <h2>
+                Popular Food
+            </h2>
 
             <p class="card-subtitle">
                 Items ordered most frequently
@@ -449,6 +833,7 @@
 
             <div th:each="food : ${popularFood}"
                  class="food-row">
+
 
                 <div>
 
@@ -472,6 +857,7 @@
                         <span th:text="${food.quantity_sold}">
                             0
                         </span>
+
                         sold
 
                     </div>
@@ -491,50 +877,58 @@
         </div>
 
 
+        <!-- SALES OVERVIEW -->
+
         <div class="card">
 
-            <h2>📊 Sales Overview</h2>
+            <h2>
+                Sales Overview
+            </h2>
 
             <p class="card-subtitle">
                 Current performance summary
             </p>
 
 
-            <div class="food-row">
+            <div class="overview-row">
 
-                <div>
+                <span>
                     Total Revenue
-                </div>
+                </span>
 
                 <strong>
+
                     ₹<span th:text="${totalSales}">
                         0
                     </span>
+
                 </strong>
 
             </div>
 
 
-            <div class="food-row">
+            <div class="overview-row">
 
-                <div>
+                <span>
                     Today's Revenue
-                </div>
+                </span>
 
                 <strong>
+
                     ₹<span th:text="${todaySales}">
                         0
                     </span>
+
                 </strong>
 
             </div>
 
 
-            <div class="food-row">
+            <div class="overview-row">
 
-                <div>
+                <span>
                     Total Orders
-                </div>
+                </span>
 
                 <strong th:text="${totalOrders}">
                     0
@@ -543,11 +937,11 @@
             </div>
 
 
-            <div class="food-row">
+            <div class="overview-row">
 
-                <div>
+                <span>
                     Completed Orders
-                </div>
+                </span>
 
                 <strong th:text="${completedOrders}">
                     0
@@ -556,11 +950,11 @@
             </div>
 
 
-            <div class="food-row">
+            <div class="overview-row">
 
-                <div>
+                <span>
                     Active Orders
-                </div>
+                </span>
 
                 <strong th:text="${activeOrders}">
                     0
@@ -573,11 +967,15 @@
     </div>
 
 
-    <!-- RECENT SALES -->
+    <!-- ==============================
+         RECENT SALES
+    ============================== -->
 
     <div class="card">
 
-        <h2>🧾 Recent Sales</h2>
+        <h2>
+            Recent Sales
+        </h2>
 
         <p class="card-subtitle">
             Latest customer orders
@@ -592,12 +990,29 @@
 
                 <tr>
 
-                    <th>Order</th>
-                    <th>Token</th>
-                    <th>Customer</th>
-                    <th>Amount</th>
-                    <th>Status</th>
-                    <th>Time</th>
+                    <th>
+                        Order
+                    </th>
+
+                    <th>
+                        Token
+                    </th>
+
+                    <th>
+                        Customer
+                    </th>
+
+                    <th>
+                        Amount
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Time
+                    </th>
 
                 </tr>
 
@@ -606,23 +1021,32 @@
 
                 <tbody>
 
+
                 <tr th:each="sale : ${recentSales}">
 
+
                     <td>
+
                         #<span th:text="${sale.id}">
                             1
                         </span>
+
                     </td>
 
+
                     <td>
+
                         #<span th:text="${sale.token_number}">
                             1
                         </span>
+
                     </td>
+
 
                     <td th:text="${sale.customer_name}">
                         Customer
                     </td>
+
 
                     <td class="amount">
 
@@ -632,26 +1056,31 @@
 
                     </td>
 
+
                     <td>
 
-                        <span class="status"
-                              th:classappend="${#strings.toLowerCase(sale.status)}"
-                              th:text="${sale.status}">
+                        <span
+                            class="status"
+                            th:classappend="${#strings.toLowerCase(sale.status)}"
+                            th:text="${sale.status}">
                             PLACED
                         </span>
 
                     </td>
 
+
                     <td th:text="${sale.order_time}">
                         Time
                     </td>
+
 
                 </tr>
 
 
                 <tr th:if="${recentSales.isEmpty()}">
 
-                    <td colspan="6"
+                    <td
+                        colspan="6"
                         class="empty">
 
                         No sales found.
@@ -659,6 +1088,7 @@
                     </td>
 
                 </tr>
+
 
                 </tbody>
 
@@ -669,12 +1099,19 @@
     </div>
 
 
+    <!-- BACK BUTTON -->
+
     <a href="/admin/dashboard"
        class="back-btn">
+
         ← Back to Dashboard
+
     </a>
+
 
 </div>
 
+
 </body>
+
 </html>

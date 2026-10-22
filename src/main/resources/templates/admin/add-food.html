@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Add Food | ARMIET CanteenFlow</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
     <style>
 
@@ -21,109 +20,192 @@
         }
 
         body {
-            font-family: "DM Sans", sans-serif;
-            background: #f5f7fb;
-            color: #172033;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #F7F7F7;
+            color: #111111;
         }
 
+        /* ==============================
+           NAVBAR
+        ============================== */
+
         .navbar {
-            height: 72px;
-            background: white;
-            border-bottom: 1px solid #e8ebf0;
+            height: 74px;
+            background: #FFFFFF;
+            border-bottom: 1px solid #E7E7E7;
+
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             padding: 0 6%;
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .brand {
-            font-family: "Space Grotesk", sans-serif;
-            font-size: 22px;
-            font-weight: 700;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
         }
 
-        .brand span {
-            color: #2864e6;
+        .brand img {
+            width: 58px;
+            height: 58px;
+            object-fit: contain;
+            display: block;
         }
 
         .nav-links {
             display: flex;
-            gap: 22px;
+            align-items: center;
+            gap: 24px;
         }
 
         .nav-links a {
             text-decoration: none;
-            color: #697386;
-            font-weight: 600;
+            color: #555555;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #E21B23;
         }
 
         .logout {
-            color: #e5484d !important;
+            color: #E21B23 !important;
         }
+
+        /* ==============================
+           MAIN CONTAINER
+        ============================== */
 
         .container {
             width: 90%;
             max-width: 760px;
-            margin: 45px auto;
+            margin: 45px auto 60px;
         }
+
+        /* ==============================
+           PAGE HEADER
+        ============================== */
 
         .page-header {
             margin-bottom: 25px;
         }
 
+        .page-label {
+            display: inline-block;
+
+            background: #FFE4E6;
+            color: #B9151B;
+
+            padding: 7px 12px;
+            border-radius: 999px;
+
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+
+            margin-bottom: 12px;
+        }
+
         .page-header h1 {
-            font-family: "Space Grotesk", sans-serif;
             font-size: 34px;
-            margin-bottom: 7px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
 
         .page-header p {
-            color: #697386;
+            color: #6B6B6B;
+            font-size: 15px;
+            line-height: 1.6;
         }
+
+        /* ==============================
+           FORM CARD
+        ============================== */
 
         .form-card {
-            background: white;
-            border: 1px solid #edf0f5;
-            border-radius: 20px;
+            background: #FFFFFF;
+
+            border: 1px solid #E7E7E7;
+            border-radius: 18px;
+
             padding: 32px;
-            box-shadow: 0 8px 25px rgba(30, 45, 70, 0.06);
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.06);
         }
 
+        /* ==============================
+           FORM GROUP
+        ============================== */
+
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 21px;
         }
 
         label {
             display: block;
-            font-size: 14px;
-            font-weight: 700;
+
+            font-size: 13px;
+            font-weight: 800;
+
             margin-bottom: 8px;
+            color: #222222;
         }
 
         input,
         textarea,
         select {
             width: 100%;
+
             padding: 13px 14px;
-            border: 1px solid #dce1e8;
+
+            border: 1px solid #D9D9D9;
             border-radius: 10px;
-            background: white;
+
+            background: #FFFFFF;
+            color: #111111;
+
             font-family: inherit;
             font-size: 14px;
+
             outline: none;
+
+            transition: 0.2s;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: #A0A0A0;
         }
 
         input:focus,
         textarea:focus,
         select:focus {
-            border-color: #2864e6;
-            box-shadow: 0 0 0 3px rgba(40, 100, 230, 0.08);
+            border-color: #E21B23;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(226, 27, 35, 0.10);
         }
 
         textarea {
-            min-height: 100px;
+            min-height: 110px;
             resize: vertical;
+            line-height: 1.5;
         }
+
+        /* ==============================
+           TWO COLUMNS
+        ============================== */
 
         .two-columns {
             display: grid;
@@ -131,67 +213,223 @@
             gap: 18px;
         }
 
-        .emoji-input {
-            font-size: 22px;
+        /* ==============================
+           PHOTO UPLOAD
+        ============================== */
+
+        .photo-upload-box {
+            border: 2px dashed #E21B23;
+            border-radius: 14px;
+
+            padding: 22px;
+
+            background: #FFF7F7;
+
+            text-align: center;
+
+            transition: 0.2s;
         }
+
+        .photo-upload-box:hover {
+            background: #FFF1F2;
+        }
+
+        .upload-icon {
+            font-size: 38px;
+            margin-bottom: 8px;
+        }
+
+        .upload-title {
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .upload-subtitle {
+            color: #777777;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .file-input {
+            width: 100%;
+            padding: 10px;
+
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+
+            background: #FFFFFF;
+
+            cursor: pointer;
+        }
+
+        .file-info {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #666666;
+        }
+
+        /* ==============================
+           IMAGE PREVIEW
+        ============================== */
+
+        .image-preview {
+            display: none;
+
+            margin-top: 15px;
+        }
+
+        .image-preview img {
+            width: 180px;
+            height: 140px;
+
+            object-fit: cover;
+
+            border-radius: 12px;
+
+            border: 1px solid #E7E7E7;
+
+            box-shadow:
+                0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .preview-text {
+            margin-top: 7px;
+
+            color: #16834B;
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        /* ==============================
+           AVAILABILITY
+        ============================== */
 
         .availability-box {
             display: flex;
             align-items: center;
             gap: 10px;
+
             margin-top: 5px;
+
+            padding: 14px 16px;
+
+            background: #FFF7F7;
+            border: 1px solid #F3D5D7;
+
+            border-radius: 12px;
         }
 
         .availability-box input {
-            width: auto;
+            width: 18px;
+            height: 18px;
+
+            accent-color: #E21B23;
+
+            cursor: pointer;
         }
 
         .availability-box label {
             margin: 0;
-            font-weight: 600;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            cursor: pointer;
         }
+
+        /* ==============================
+           BUTTONS
+        ============================== */
 
         .buttons {
             display: flex;
             gap: 12px;
-            margin-top: 28px;
+
+            margin-top: 30px;
         }
 
         .btn {
             flex: 1;
+
             border: none;
             border-radius: 10px;
+
             padding: 14px;
+
             font-family: inherit;
-            font-weight: 700;
+            font-weight: 800;
             font-size: 14px;
+
             cursor: pointer;
+
             text-align: center;
             text-decoration: none;
+
+            transition: 0.2s;
         }
 
         .submit-btn {
-            background: #2864e6;
-            color: white;
+            background: #E21B23;
+            color: #FFFFFF;
+
+            box-shadow:
+                0 6px 16px
+                rgba(226, 27, 35, 0.20);
         }
 
         .submit-btn:hover {
-            background: #1f55ca;
+            background: #B9151B;
+            transform: translateY(-1px);
         }
 
         .cancel-btn {
-            background: #eef0f4;
-            color: #172033;
+            background: #111111;
+            color: #FFFFFF;
         }
 
         .cancel-btn:hover {
-            background: #e2e5ea;
+            background: #292929;
+            transform: translateY(-1px);
         }
 
-        @media (max-width: 600px) {
+        /* ==============================
+           FORM NOTE
+        ============================== */
+
+        .form-note {
+            margin-top: 20px;
+
+            padding: 13px 15px;
+
+            background: #F7F7F7;
+            border-left: 4px solid #E21B23;
+
+            border-radius: 8px;
+
+            color: #666666;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* ==============================
+           MOBILE
+        ============================== */
+
+        @media (max-width: 650px) {
 
             .navbar {
                 padding: 0 4%;
+            }
+
+            .brand img {
+                width: 52px;
+                height: 52px;
+            }
+
+            .nav-links {
+                gap: 12px;
             }
 
             .nav-links a:not(.logout) {
@@ -200,11 +438,16 @@
 
             .container {
                 width: 94%;
-                margin-top: 25px;
+                margin-top: 28px;
+            }
+
+            .page-header h1 {
+                font-size: 28px;
             }
 
             .form-card {
                 padding: 22px;
+                border-radius: 15px;
             }
 
             .two-columns {
@@ -215,18 +458,39 @@
             .buttons {
                 flex-direction: column;
             }
+
+            .btn {
+                width: 100%;
+            }
+
+            .image-preview img {
+                width: 100%;
+                max-width: 280px;
+                height: 180px;
+            }
         }
 
     </style>
+
 </head>
 
 <body>
 
+<!-- ==============================
+     NAVBAR
+============================== -->
+
 <nav class="navbar">
 
-    <div class="brand">
-        ARMIET <span>CanteenFlow</span>
-    </div>
+    <a href="/admin/dashboard"
+       class="brand">
+
+        <img
+            src="/images/armiet-canteenflow-logo.png"
+            alt="ARMIET CanteenFlow Logo"
+        >
+
+    </a>
 
     <div class="nav-links">
 
@@ -242,7 +506,8 @@
             Food Menu
         </a>
 
-        <a href="/logout" class="logout">
+        <a href="/logout"
+           class="logout">
             Logout
         </a>
 
@@ -251,26 +516,40 @@
 </nav>
 
 
+<!-- ==============================
+     MAIN
+============================== -->
+
 <main class="container">
 
+    <!-- PAGE HEADER -->
+
     <section class="page-header">
+
+        <span class="page-label">
+            FOOD MANAGEMENT
+        </span>
 
         <h1>
             Add New Food
         </h1>
 
         <p>
-            Add a new item to the ARMIET canteen menu.
+            Add a delicious new item to the ARMIET CanteenFlow menu.
         </p>
 
     </section>
 
 
+    <!-- FORM -->
+
     <section class="form-card">
 
         <form action="/admin/food/add"
-              method="post">
+              method="post"
+              enctype="multipart/form-data">
 
+            <!-- FOOD NAME -->
 
             <div class="form-group">
 
@@ -288,6 +567,8 @@
             </div>
 
 
+            <!-- DESCRIPTION -->
+
             <div class="form-group">
 
                 <label for="description">
@@ -303,6 +584,8 @@
             </div>
 
 
+            <!-- CATEGORY + PRICE -->
+
             <div class="two-columns">
 
                 <div class="form-group">
@@ -311,9 +594,10 @@
                         Category
                     </label>
 
-                    <select id="category"
-                            name="category"
-                            required>
+                    <select
+                        id="category"
+                        name="category"
+                        required>
 
                         <option value="">
                             Select Category
@@ -347,7 +631,7 @@
                 <div class="form-group">
 
                     <label for="price">
-                        Price (?)
+                        Price (₹)
                     </label>
 
                     <input
@@ -364,22 +648,64 @@
             </div>
 
 
+            <!-- ==============================
+                 FOOD PHOTO
+            ============================== -->
+
             <div class="form-group">
 
-                <label for="imageUrl">
-                    Food Emoji / Icon
+                <label for="foodImage">
+                    Food Photo
                 </label>
 
-                <input
-                    type="text"
-                    id="imageUrl"
-                    name="imageUrl"
-                    class="emoji-input"
-                    maxlength="10"
-                    placeholder="??">
+                <div class="photo-upload-box">
+
+                    <div class="upload-icon">
+                        📸
+                    </div>
+
+                    <div class="upload-title">
+                        Upload Food Photo
+                    </div>
+
+                    <div class="upload-subtitle">
+                        Choose a clear photo of the food item
+                    </div>
+
+                    <input
+                        type="file"
+                        id="foodImage"
+                        name="foodImage"
+                        class="file-input"
+                        accept="image/*">
+
+                    <div class="file-info">
+                        JPG, JPEG, PNG or WEBP recommended
+                    </div>
+
+                    <!-- IMAGE PREVIEW -->
+
+                    <div
+                        class="image-preview"
+                        id="imagePreview">
+
+                        <img
+                            id="previewImage"
+                            src=""
+                            alt="Food Preview">
+
+                        <div class="preview-text">
+                            ✓ Photo selected
+                        </div>
+
+                    </div>
+
+                </div>
 
             </div>
 
+
+            <!-- AVAILABILITY -->
 
             <div class="availability-box">
 
@@ -396,18 +722,37 @@
             </div>
 
 
+            <!-- BUTTONS -->
+
             <div class="buttons">
 
-                <a href="/admin/food"
-                   class="btn cancel-btn">
+                <a
+                    href="/admin/food"
+                    class="btn cancel-btn">
+
                     Cancel
+
                 </a>
 
                 <button
                     type="submit"
                     class="btn submit-btn">
+
                     + Add Food
+
                 </button>
+
+            </div>
+
+
+            <!-- FORM NOTE -->
+
+            <div class="form-note">
+
+                💡 <strong>Tip:</strong>
+                Use a clear and attractive food photo. The uploaded
+                photo will automatically be available for display on
+                the student menu.
 
             </div>
 
@@ -417,5 +762,82 @@
 
 </main>
 
+
+<!-- ==============================
+     PHOTO PREVIEW SCRIPT
+============================== -->
+
+<script>
+
+    const foodImage =
+        document.getElementById("foodImage");
+
+    const imagePreview =
+        document.getElementById("imagePreview");
+
+    const previewImage =
+        document.getElementById("previewImage");
+
+
+    foodImage.addEventListener(
+        "change",
+        function () {
+
+            const file =
+                this.files[0];
+
+            if (!file) {
+
+                imagePreview.style.display =
+                    "none";
+
+                previewImage.src = "";
+
+                return;
+            }
+
+
+            // Make sure selected file is an image
+
+            if (!file.type.startsWith("image/")) {
+
+                alert(
+                    "Please select a valid image file."
+                );
+
+                this.value = "";
+
+                imagePreview.style.display =
+                    "none";
+
+                return;
+            }
+
+
+            // Create preview
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function (event) {
+
+                    previewImage.src =
+                        event.target.result;
+
+                    imagePreview.style.display =
+                        "block";
+                };
+
+
+            reader.readAsDataURL(file);
+
+        }
+    );
+
+</script>
+
 </body>
+
 </html>

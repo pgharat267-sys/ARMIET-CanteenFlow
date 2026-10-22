@@ -23,7 +23,10 @@ public class StudentDashboardController {
             HttpSession session,
             Model model) {
 
-        // Check student login
+        // ==========================================
+        // CHECK STUDENT LOGIN
+        // ==========================================
+
         if (session.getAttribute("userId") == null) {
             return "redirect:/login";
         }
@@ -32,22 +35,66 @@ public class StudentDashboardController {
                 ((Number) session.getAttribute("userId"))
                         .intValue();
 
-        // Get logged-in student's name
+        // ==========================================
+        // STUDENT INFORMATION
+        // ==========================================
+
         String userName =
-                String.valueOf(
-                        session.getAttribute("userName")
-                );
+                String.valueOf(session.getAttribute("userName"));
 
         String userEmail =
-                String.valueOf(
-                        session.getAttribute("userEmail")
+                String.valueOf(session.getAttribute("userEmail"));
+
+        // ==========================================
+        // ENSURE CANTEEN SETTINGS TABLE EXISTS
+        // ==========================================
+
+        jdbcTemplate.execute("""
+            CREATE TABLE IF NOT EXISTS canteen_settings (
+                id INTEGER PRIMARY KEY,
+                is_live INTEGER NOT NULL DEFAULT 1
+            )
+        """);
+
+        // ==========================================
+        // CREATE DEFAULT SETTINGS IF REQUIRED
+        // ==========================================
+
+        Integer settingsCount =
+                jdbcTemplate.queryForObject(
+                        "SELECT COUNT(*) FROM canteen_settings",
+                        Integer.class
                 );
 
-        /*
-         * ==========================================
-         * ACTIVE ORDERS / RUSH METER
-         * ==========================================
-         */
+        if (settingsCount == null || settingsCount == 0) {
+
+            jdbcTemplate.update("""
+                INSERT INTO canteen_settings
+                (id, is_live)
+                VALUES (1, 1)
+            """);
+        }
+
+        // ==========================================
+        // GET CANTEEN LIVE / CLOSED STATUS
+        // ==========================================
+
+        Integer liveValue =
+                jdbcTemplate.queryForObject(
+                        """
+                        SELECT is_live
+                        FROM canteen_settings
+                        WHERE id = 1
+                        """,
+                        Integer.class
+                );
+
+        boolean canteenLive =
+                liveValue != null && liveValue == 1;
+
+        // ==========================================
+        // COUNT ACTUAL ACTIVE ORDERS
+        // ==========================================
 
         Integer activeOrders =
                 jdbcTemplate.queryForObject(
@@ -64,70 +111,9 @@ public class StudentDashboardController {
             activeOrders = 0;
         }
 
-        /*
-         * Rush levels:
-         *
-         * 0-4   = LOW
-         * 5-9   = MODERATE
-         * 10-14 = CROWDED
-         * 15+   = VERY CROWDED
-         */
-
-        String rushStatus;
-
-        if (activeOrders < 5) {
-            rushStatus = "LOW";
-        }
-        else if (activeOrders < 10) {
-            rushStatus = "MODERATE";
-        }
-        else if (activeOrders < 15) {
-            rushStatus = "CROWDED";
-        }
-        else {
-            rushStatus = "VERY CROWDED";
-        }
-
-        /*
-         * Maximum rush capacity = 20 orders.
-         * Anything above 20 stays at 100%.
-         */
-
-        int rushPercentage =
-                (int) Math.round(
-                        (activeOrders / 20.0) * 100
-                );
-
-        if (rushPercentage > 100) {
-            rushPercentage = 100;
-        }
-
-        /*
-         * ==========================================
-         * CURRENT TOKEN
-         * ==========================================
-         */
-
-        Integer currentToken =
-                jdbcTemplate.queryForObject(
-                        """
-                        SELECT MAX(token_number)
-                        FROM orders
-                        WHERE status IN
-                        ('PLACED', 'PREPARING', 'READY')
-                        """,
-                        Integer.class
-                );
-
-        if (currentToken == null) {
-            currentToken = 0;
-        }
-
-        /*
-         * ==========================================
-         * STUDENT'S ACTIVE ORDERS
-         * ==========================================
-         */
+        // ==========================================
+        // STUDENT'S ACTIVE ORDERS
+        // ==========================================
 
         Integer myActiveOrders =
                 jdbcTemplate.queryForObject(
@@ -146,11 +132,93 @@ public class StudentDashboardController {
             myActiveOrders = 0;
         }
 
-        /*
-         * ==========================================
-         * FOOD MENU
-         * ==========================================
-         */
+        // ==========================================
+        // RUSH PERCENTAGE AND STATUS
+        // ==========================================
+
+        int rushPercentage;
+        String rushStatus;
+
+        if (!canteenLive) {
+
+            // CLOSED: Always show zero rush.
+
+            rushPercentage = 0;
+            rushStatus = "CLOSED";
+
+        } else {
+
+            // LIVE: Calculate using actual active orders.
+
+            rushPercentage =
+                    (int) Math.round(
+                            (activeOrders / 20.0) * 100
+                    );
+
+            if (rushPercentage > 100) {
+                rushPercentage = 100;
+            }
+
+            if (activeOrders < 5) {
+                rushStatus = "LOW";
+            } else if (activeOrders < 10) {
+                rushStatus = "MODERATE";
+            } else if (activeOrders < 15) {
+                rushStatus = "CROWDED";
+            } else {
+                rushStatus = "VERY CROWDED";
+            }
+        }
+
+        // ==========================================
+        // CURRENT ACTIVE TOKEN
+        // ==========================================
+
+        Integer currentToken =
+                jdbcTemplate.queryForObject(
+                        """
+                        SELECT MAX(token_number)
+                        FROM orders
+                        WHERE status IN
+                        ('PLACED', 'PREPARING', 'READY')
+                        """,
+                        Integer.class
+                );
+
+        if (currentToken == null) {
+            currentToken = 0;
+        }
+
+        // ==========================================
+        // ESTIMATED WAITING TIME
+        // ==========================================
+
+        int estimatedWait;
+
+        if (!canteenLive || activeOrders == 0) {
+
+            estimatedWait = 0;
+
+        } else if (activeOrders < 5) {
+
+            estimatedWait = 5;
+
+        } else if (activeOrders < 10) {
+
+            estimatedWait = 10;
+
+        } else if (activeOrders < 15) {
+
+            estimatedWait = 15;
+
+        } else {
+
+            estimatedWait = 20;
+        }
+
+        // ==========================================
+        // GET AVAILABLE FOOD MENU
+        // ==========================================
 
         List<Map<String, Object>> foodItems =
                 jdbcTemplate.queryForList(
@@ -169,82 +237,25 @@ public class StudentDashboardController {
                         """
                 );
 
-        /*
-         * ==========================================
-         * ESTIMATED WAITING TIME
-         * ==========================================
-         *
-         * Rough estimate based on active orders.
-         */
+        // ==========================================
+        // SEND VALUES TO STUDENT DASHBOARD
+        // ==========================================
 
-        int estimatedWait;
+        model.addAttribute("userName", userName);
+        model.addAttribute("userEmail", userEmail);
 
-        if (activeOrders == 0) {
-            estimatedWait = 0;
-        }
-        else if (activeOrders < 5) {
-            estimatedWait = 5;
-        }
-        else if (activeOrders < 10) {
-            estimatedWait = 10;
-        }
-        else if (activeOrders < 15) {
-            estimatedWait = 15;
-        }
-        else {
-            estimatedWait = 20;
-        }
+        model.addAttribute("canteenLive", canteenLive);
 
-        /*
-         * ==========================================
-         * SEND DATA TO THYMELEAF
-         * ==========================================
-         */
+        model.addAttribute("activeOrders", activeOrders);
+        model.addAttribute("myActiveOrders", myActiveOrders);
 
-        model.addAttribute(
-                "userName",
-                userName
-        );
+        model.addAttribute("rushPercentage", rushPercentage);
+        model.addAttribute("rushStatus", rushStatus);
 
-        model.addAttribute(
-                "userEmail",
-                userEmail
-        );
+        model.addAttribute("currentToken", currentToken);
+        model.addAttribute("estimatedWait", estimatedWait);
 
-        model.addAttribute(
-                "activeOrders",
-                activeOrders
-        );
-
-        model.addAttribute(
-                "myActiveOrders",
-                myActiveOrders
-        );
-
-        model.addAttribute(
-                "rushPercentage",
-                rushPercentage
-        );
-
-        model.addAttribute(
-                "rushStatus",
-                rushStatus
-        );
-
-        model.addAttribute(
-                "currentToken",
-                currentToken
-        );
-
-        model.addAttribute(
-                "estimatedWait",
-                estimatedWait
-        );
-
-        model.addAttribute(
-                "foodItems",
-                foodItems
-        );
+        model.addAttribute("foodItems", foodItems);
 
         return "student/dashboard";
     }

@@ -38,16 +38,27 @@
             margin-bottom: 28px;
         }
 
+        /* =========================
+           ARMIET CANTEENFLOW LOGO
+        ========================= */
+
         .login-logo-icon {
-            width: 58px;
-            height: 58px;
+            width: 78px;
+            height: 78px;
             margin: 0 auto 12px;
-            border-radius: 16px;
-            background: #ff6b35;
+            border-radius: 18px;
+            background: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            overflow: hidden;
+        }
+
+        .login-logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
         }
 
         .login-logo h1 {
@@ -158,6 +169,11 @@
                 padding: 30px 22px;
             }
 
+            .login-logo-icon {
+                width: 70px;
+                height: 70px;
+            }
+
         }
 
     </style>
@@ -170,12 +186,17 @@
 
         <div class="login-card">
 
-            <!-- Logo -->
+            <!-- ARMIET CANTEENFLOW LOGO -->
 
             <div class="login-logo">
 
                 <div class="login-logo-icon">
-                    🍴
+
+                    <img
+                        src="/images/armiet-canteenflow-logo.png"
+                        alt="ARMIET CanteenFlow Logo"
+                    >
+
                 </div>
 
                 <h1>Welcome Back</h1>

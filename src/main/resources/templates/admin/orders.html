@@ -11,8 +11,30 @@
 
     <title>Admin Orders | ARMIET CanteenFlow</title>
 
-
     <style>
+
+        :root {
+            --red: #E21B23;
+            --red-dark: #B9151B;
+            --red-light: #FFF1F2;
+            --red-soft: #FFE4E6;
+
+            --black: #111111;
+            --white: #FFFFFF;
+
+            --background: #F7F7F7;
+            --border: #E7E7E7;
+
+            --text: #171717;
+            --muted: #6B6B6B;
+
+            --green: #16834B;
+            --green-light: #ECFDF3;
+
+            --orange: #B45309;
+            --orange-light: #FFF7E8;
+        }
+
 
         * {
             box-sizing: border-box;
@@ -20,12 +42,11 @@
 
 
         body {
-
             margin: 0;
 
-            background: #f6f7f9;
+            background: var(--background);
 
-            color: #171717;
+            color: var(--text);
 
             font-family:
                 Arial,
@@ -39,13 +60,11 @@
         ========================================= */
 
         .navbar {
+            min-height: 76px;
 
-            height: 76px;
+            background: var(--white);
 
-            background: white;
-
-            border-bottom:
-                1px solid #eeeeee;
+            border-bottom: 1px solid var(--border);
 
             display: flex;
 
@@ -53,53 +72,52 @@
 
             justify-content: space-between;
 
-            padding:
-                0 5%;
+            padding: 8px 5%;
+
+            gap: 20px;
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 1000;
         }
 
 
-        .brand {
+        /* =========================================
+           BRAND
+        ========================================= */
 
+        .brand {
             display: flex;
 
             align-items: center;
-
-            gap: 12px;
 
             text-decoration: none;
 
-            color: #111;
+            color: var(--black);
+
+            flex-shrink: 0;
         }
 
 
-        .brand-icon {
+        .brand img {
+            width: 58px;
 
-            width: 46px;
+            height: 58px;
 
-            height: 46px;
+            object-fit: contain;
 
-            border-radius: 13px;
+            display: block;
+        }
 
-            background: #ff6b35;
 
-            color: white;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            font-size: 23px;
-
-            box-shadow:
-                0 8px 20px
-                rgba(255, 107, 53, 0.20);
+        .brand-text {
+            margin-left: 12px;
         }
 
 
         .brand-name {
-
             display: block;
 
             font-size: 18px;
@@ -109,7 +127,6 @@
 
 
         .brand-subtitle {
-
             display: block;
 
             color: #888;
@@ -120,43 +137,59 @@
         }
 
 
-        .nav-actions {
+        /* =========================================
+           NAV ACTIONS
+        ========================================= */
 
+        .nav-actions {
             display: flex;
 
             align-items: center;
 
-            gap: 10px;
+            gap: 8px;
+
+            flex-wrap: wrap;
+
+            justify-content: flex-end;
         }
 
 
         .nav-btn {
-
             text-decoration: none;
 
-            color: #171717;
+            color: var(--black);
 
-            border:
-                1px solid #dddddd;
+            border: 1px solid #DDDDDD;
 
-            background: white;
+            background: var(--white);
 
-            padding:
-                10px 15px;
+            padding: 10px 15px;
 
             border-radius: 9px;
 
             font-size: 13px;
 
             font-weight: 800;
+
+            transition: 0.2s ease;
         }
 
 
         .nav-btn:hover {
+            border-color: var(--red);
 
-            border-color: #ff6b35;
+            color: var(--red);
 
-            color: #ff6b35;
+            background: var(--red-light);
+        }
+
+
+        .logout-btn:hover {
+            background: var(--red);
+
+            border-color: var(--red);
+
+            color: white;
         }
 
 
@@ -165,20 +198,17 @@
         ========================================= */
 
         .container {
-
             width: 92%;
 
             max-width: 1350px;
 
             margin: auto;
 
-            padding:
-                42px 0 70px;
+            padding: 42px 0 70px;
         }
 
 
         .page-header {
-
             display: flex;
 
             justify-content: space-between;
@@ -186,12 +216,13 @@
             align-items: flex-end;
 
             margin-bottom: 28px;
+
+            gap: 20px;
         }
 
 
         .page-label {
-
-            color: #ff6b35;
+            color: var(--red);
 
             font-size: 12px;
 
@@ -202,9 +233,7 @@
 
 
         .page-header h1 {
-
-            margin:
-                9px 0 7px;
+            margin: 9px 0 7px;
 
             font-size: 34px;
 
@@ -213,7 +242,6 @@
 
 
         .page-header p {
-
             margin: 0;
 
             color: #777;
@@ -223,20 +251,27 @@
 
 
         .order-count {
+            background: var(--white);
 
-            background: white;
+            border: 1px solid var(--border);
 
-            border:
-                1px solid #eeeeee;
-
-            padding:
-                12px 17px;
+            padding: 12px 17px;
 
             border-radius: 12px;
 
             font-size: 13px;
 
             font-weight: 800;
+
+            white-space: nowrap;
+
+            box-shadow:
+                0 5px 15px rgba(0, 0, 0, 0.03);
+        }
+
+
+        .order-count span {
+            color: var(--red);
         }
 
 
@@ -245,24 +280,20 @@
         ========================================= */
 
         .orders-card {
+            background: var(--white);
 
-            background: white;
-
-            border:
-                1px solid #eeeeee;
+            border: 1px solid var(--border);
 
             border-radius: 20px;
 
             overflow: hidden;
 
             box-shadow:
-                0 8px 30px
-                rgba(0, 0, 0, 0.04);
+                0 8px 30px rgba(0, 0, 0, 0.04);
         }
 
 
         .table-wrapper {
-
             width: 100%;
 
             overflow-x: auto;
@@ -270,7 +301,6 @@
 
 
         table {
-
             width: 100%;
 
             border-collapse: collapse;
@@ -280,19 +310,16 @@
 
 
         thead {
-
-            background: #fafafa;
+            background: var(--black);
         }
 
 
         th {
-
             text-align: left;
 
-            padding:
-                17px 18px;
+            padding: 17px 18px;
 
-            color: #777;
+            color: white;
 
             font-size: 11px;
 
@@ -300,20 +327,16 @@
 
             text-transform: uppercase;
 
-            border-bottom:
-                1px solid #eeeeee;
+            border-bottom: 1px solid #222;
 
             white-space: nowrap;
         }
 
 
         td {
+            padding: 18px;
 
-            padding:
-                18px;
-
-            border-bottom:
-                1px solid #eeeeee;
+            border-bottom: 1px solid var(--border);
 
             vertical-align: top;
 
@@ -321,14 +344,17 @@
         }
 
 
-        tbody tr:hover {
+        tbody tr {
+            transition: 0.15s ease;
+        }
 
-            background: #fffaf7;
+
+        tbody tr:hover {
+            background: #FFF9F9;
         }
 
 
         tbody tr:last-child td {
-
             border-bottom: none;
         }
 
@@ -338,7 +364,6 @@
         ========================================= */
 
         .token {
-
             display: inline-flex;
 
             align-items: center;
@@ -347,14 +372,15 @@
 
             min-width: 54px;
 
-            padding:
-                9px 12px;
+            padding: 9px 12px;
 
             border-radius: 10px;
 
-            background: #fff1ea;
+            background: var(--red-light);
 
-            color: #ff5b23;
+            color: var(--red);
+
+            border: 1px solid #FFD4D6;
 
             font-size: 14px;
 
@@ -367,7 +393,6 @@
         ========================================= */
 
         .student-name {
-
             font-weight: 900;
 
             margin-bottom: 5px;
@@ -375,7 +400,6 @@
 
 
         .student-email {
-
             color: #888;
 
             font-size: 11px;
@@ -387,7 +411,6 @@
         ========================================= */
 
         .food-list {
-
             display: flex;
 
             flex-direction: column;
@@ -397,7 +420,6 @@
 
 
         .food-item {
-
             display: flex;
 
             align-items: center;
@@ -409,28 +431,26 @@
 
 
         .food-name {
-
             font-weight: 800;
         }
 
 
         .food-quantity {
+            color: #555;
 
-            color: #777;
+            background: #F1F1F1;
 
-            background: #f4f4f4;
-
-            padding:
-                3px 7px;
+            padding: 3px 7px;
 
             border-radius: 6px;
 
             font-size: 10px;
+
+            font-weight: 700;
         }
 
 
         .food-price {
-
             color: #777;
 
             font-size: 11px;
@@ -442,12 +462,13 @@
         ========================================= */
 
         .amount {
-
             font-size: 15px;
 
             font-weight: 900;
 
             white-space: nowrap;
+
+            color: var(--red);
         }
 
 
@@ -456,7 +477,6 @@
         ========================================= */
 
         .payment-box {
-
             display: flex;
 
             flex-direction: column;
@@ -468,7 +488,6 @@
 
 
         .payment-method {
-
             color: #777;
 
             font-size: 10px;
@@ -480,15 +499,13 @@
 
 
         .payment-status {
-
             display: inline-flex;
 
             align-items: center;
 
             width: fit-content;
 
-            padding:
-                6px 9px;
+            padding: 6px 9px;
 
             border-radius: 8px;
 
@@ -499,37 +516,32 @@
 
 
         .payment-pending {
+            background: var(--orange-light);
 
-            background: #fff3dc;
-
-            color: #b56a00;
+            color: var(--orange);
         }
 
 
         .payment-paid {
+            background: var(--green-light);
 
-            background: #e8f8ed;
-
-            color: #16823b;
+            color: var(--green);
         }
 
 
         .payment-action {
-
             margin-top: 2px;
         }
 
 
         .mark-paid-btn {
-
             border: none;
 
-            background: #171717;
+            background: var(--black);
 
             color: white;
 
-            padding:
-                8px 11px;
+            padding: 8px 11px;
 
             border-radius: 8px;
 
@@ -538,17 +550,17 @@
             font-weight: 900;
 
             cursor: pointer;
+
+            transition: 0.2s ease;
         }
 
 
         .mark-paid-btn:hover {
-
-            background: #ff6b35;
+            background: var(--red);
         }
 
 
         .pending-note {
-
             color: #999;
 
             font-size: 10px;
@@ -560,7 +572,6 @@
         ========================================= */
 
         .status-form {
-
             display: flex;
 
             flex-direction: column;
@@ -572,14 +583,11 @@
 
 
         .status-select {
-
-            border:
-                1px solid #dddddd;
+            border: 1px solid #DDDDDD;
 
             background: white;
 
-            padding:
-                9px 10px;
+            padding: 9px 10px;
 
             border-radius: 8px;
 
@@ -588,25 +596,27 @@
             font-weight: 700;
 
             outline: none;
+
+            cursor: pointer;
         }
 
 
         .status-select:focus {
+            border-color: var(--red);
 
-            border-color: #ff6b35;
+            box-shadow:
+                0 0 0 3px var(--red-light);
         }
 
 
         .status-update-btn {
-
             border: none;
 
-            background: #f1f1f1;
+            background: var(--black);
 
-            color: #171717;
+            color: white;
 
-            padding:
-                8px 10px;
+            padding: 8px 10px;
 
             border-radius: 8px;
 
@@ -615,14 +625,13 @@
             font-weight: 900;
 
             cursor: pointer;
+
+            transition: 0.2s ease;
         }
 
 
         .status-update-btn:hover {
-
-            background: #ff6b35;
-
-            color: white;
+            background: var(--red);
         }
 
 
@@ -631,7 +640,6 @@
         ========================================= */
 
         .order-time {
-
             color: #777;
 
             font-size: 11px;
@@ -647,16 +655,13 @@
         ========================================= */
 
         .empty-orders {
-
-            padding:
-                70px 20px;
+            padding: 70px 20px;
 
             text-align: center;
         }
 
 
         .empty-icon {
-
             font-size: 45px;
 
             margin-bottom: 15px;
@@ -664,16 +669,13 @@
 
 
         .empty-orders h2 {
-
-            margin:
-                0 0 8px;
+            margin: 0 0 8px;
 
             font-size: 20px;
         }
 
 
         .empty-orders p {
-
             margin: 0;
 
             color: #888;
@@ -687,7 +689,6 @@
         ========================================= */
 
         .footer {
-
             text-align: center;
 
             color: #999;
@@ -702,46 +703,29 @@
            RESPONSIVE
         ========================================= */
 
-        @media (max-width: 700px) {
+        @media (max-width: 900px) {
 
             .navbar {
+                align-items: flex-start;
 
-                padding:
-                    0 4%;
-            }
+                padding-top: 10px;
 
+                padding-bottom: 10px;
 
-            .brand-subtitle {
+                flex-direction: column;
 
-                display: none;
+                min-height: auto;
             }
 
 
             .nav-actions {
+                width: 100%;
 
-                gap: 5px;
-            }
-
-
-            .nav-btn {
-
-                padding:
-                    9px 10px;
-
-                font-size: 11px;
-            }
-
-
-            .container {
-
-                width: 94%;
-
-                padding-top: 28px;
+                justify-content: flex-start;
             }
 
 
             .page-header {
-
                 align-items: flex-start;
 
                 flex-direction: column;
@@ -749,9 +733,55 @@
                 gap: 18px;
             }
 
+        }
+
+
+        @media (max-width: 700px) {
+
+            .navbar {
+                padding-left: 4%;
+
+                padding-right: 4%;
+            }
+
+
+            .brand-subtitle {
+                display: none;
+            }
+
+
+            .brand img {
+                width: 52px;
+
+                height: 52px;
+            }
+
+
+            .brand-name {
+                font-size: 16px;
+            }
+
+
+            .nav-actions {
+                gap: 5px;
+            }
+
+
+            .nav-btn {
+                padding: 9px 10px;
+
+                font-size: 11px;
+            }
+
+
+            .container {
+                width: 94%;
+
+                padding-top: 28px;
+            }
+
 
             .page-header h1 {
-
                 font-size: 28px;
             }
 
@@ -771,15 +801,18 @@
 
 <header class="navbar">
 
+
     <a
         href="/admin/dashboard"
         class="brand">
 
-        <div class="brand-icon">
-            🍴
-        </div>
+        <img
+            src="/images/armiet-canteenflow-logo.png"
+            alt="ARMIET CanteenFlow Logo"
+        >
 
-        <div>
+
+        <div class="brand-text">
 
             <span class="brand-name">
                 ARMIET CanteenFlow
@@ -795,6 +828,7 @@
 
 
     <div class="nav-actions">
+
 
         <a
             href="/admin/dashboard"
@@ -825,7 +859,7 @@
 
         <a
             href="/logout"
-            class="nav-btn">
+            class="nav-btn logout-btn">
 
             Logout
 
@@ -834,7 +868,6 @@
     </div>
 
 </header>
-
 
 
 <!-- =========================================
@@ -850,15 +883,18 @@
 
     <section class="page-header">
 
+
         <div>
 
             <span class="page-label">
                 ORDER MANAGEMENT
             </span>
 
+
             <h1>
                 All Orders
             </h1>
+
 
             <p>
                 Manage student orders, payments and order status.
@@ -881,7 +917,6 @@
     </section>
 
 
-
     <!-- =====================================
          ORDERS CARD
     ====================================== -->
@@ -896,6 +931,7 @@
         <div
             class="table-wrapper"
             th:if="${orders != null and !orders.isEmpty()}">
+
 
             <table>
 
@@ -941,12 +977,12 @@
                 </thead>
 
 
-
                 <!-- ==========================
                      TABLE BODY
                 =========================== -->
 
                 <tbody>
+
 
                 <tr
                     th:each="order : ${orders}">
@@ -969,29 +1005,30 @@
                     </td>
 
 
-
                     <!-- ======================
                          STUDENT
                     ======================= -->
 
                     <td>
 
-                        <div class="student-name"
-                             th:text="${order.student_name}">
+                        <div
+                            class="student-name"
+                            th:text="${order.student_name}">
 
                             Student
 
                         </div>
 
-                        <div class="student-email"
-                             th:text="${order.student_email}">
+
+                        <div
+                            class="student-email"
+                            th:text="${order.student_email}">
 
                             student@email.com
 
                         </div>
 
                     </td>
-
 
 
                     <!-- ======================
@@ -1002,9 +1039,11 @@
 
                         <div class="food-list">
 
+
                             <div
                                 class="food-item"
                                 th:each="item : ${order.items}">
+
 
                                 <span
                                     class="food-name"
@@ -1039,7 +1078,6 @@
                     </td>
 
 
-
                     <!-- ======================
                          AMOUNT
                     ======================= -->
@@ -1055,7 +1093,6 @@
                         </span>
 
                     </td>
-
 
 
                     <!-- ======================
@@ -1102,19 +1139,23 @@
                                 class="payment-action"
                                 th:if="${order.payment_status != 'PAID'}">
 
+
                                 <form
                                     method="post"
                                     action="/admin/orders/payment">
+
 
                                     <input
                                         type="hidden"
                                         name="orderId"
                                         th:value="${order.id}">
 
+
                                     <input
                                         type="hidden"
                                         name="paymentStatus"
                                         value="PAID">
+
 
                                     <button
                                         type="submit"
@@ -1144,12 +1185,12 @@
                     </td>
 
 
-
                     <!-- ======================
                          ORDER STATUS
                     ======================= -->
 
                     <td>
+
 
                         <form
                             method="post"
@@ -1229,7 +1270,6 @@
                     </td>
 
 
-
                     <!-- ======================
                          ORDER TIME
                     ======================= -->
@@ -1256,7 +1296,6 @@
         </div>
 
 
-
         <!-- =================================
              NO ORDERS
         ================================== -->
@@ -1265,13 +1304,16 @@
             class="empty-orders"
             th:if="${orders == null or orders.isEmpty()}">
 
+
             <div class="empty-icon">
                 📦
             </div>
 
+
             <h2>
                 No Orders Yet
             </h2>
+
 
             <p>
                 Student orders will appear here when they place an order.

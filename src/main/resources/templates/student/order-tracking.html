@@ -13,17 +13,42 @@
 
     <style>
 
+        :root {
+            --red: #E21B23;
+            --red-dark: #B9151B;
+            --red-light: #FFF1F2;
+            --red-soft: #FFE4E6;
+
+            --black: #111111;
+            --white: #FFFFFF;
+
+            --background: #F7F7F7;
+            --border: #E7E7E7;
+
+            --text: #171717;
+            --muted: #6B6B6B;
+
+            --green: #16834B;
+            --green-light: #ECFDF3;
+
+            --orange: #C2410C;
+            --orange-light: #FFF7ED;
+        }
+
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+
         body {
             font-family: Arial, sans-serif;
-            background: #f5f7fb;
-            color: #1f2937;
+            background: var(--background);
+            color: var(--text);
         }
+
 
         /* =========================
            NAVBAR
@@ -31,41 +56,78 @@
 
         .navbar {
             height: 70px;
-            background: white;
+
+            background: rgba(255, 255, 255, 0.97);
+
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             padding: 0 7%;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+
+            border-bottom: 1px solid var(--border);
+
+            position: sticky;
+            top: 0;
+
+            z-index: 1000;
         }
+
+
+        /* =========================
+           LOGO
+        ========================= */
 
         .logo {
-            font-size: 23px;
-            font-weight: bold;
-            color: #2563eb;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
         }
 
-        .logo span {
-            color: #111827;
+
+        .logo img {
+            width: 58px;
+            height: 58px;
+
+            object-fit: contain;
+
+            display: block;
         }
+
+
+        /* =========================
+           NAVIGATION
+        ========================= */
 
         .nav-links {
             display: flex;
             gap: 10px;
         }
 
+
         .nav-btn {
             text-decoration: none;
+
             padding: 10px 18px;
+
             border-radius: 8px;
-            background: #f3f4f6;
-            color: #374151;
+
+            background: var(--black);
+
+            color: white;
+
             font-weight: 600;
+
+            transition: 0.25s ease;
         }
 
+
         .nav-btn:hover {
-            background: #e5e7eb;
+            background: var(--red);
+
+            transform: translateY(-1px);
         }
+
 
         /* =========================
            MAIN
@@ -73,198 +135,317 @@
 
         .container {
             max-width: 900px;
+
             margin: 45px auto;
+
             padding: 20px;
         }
+
 
         .page-header {
             margin-bottom: 25px;
         }
 
+
         .page-header h1 {
             font-size: 32px;
+
             margin-bottom: 8px;
         }
 
+
         .page-header p {
-            color: #6b7280;
+            color: var(--muted);
         }
+
 
         /* =========================
            ORDER SUMMARY
         ========================= */
 
         .order-card {
-            background: white;
+            background: var(--white);
+
             border-radius: 18px;
+
             padding: 28px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+
+            border: 1px solid var(--border);
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.05);
+
             margin-bottom: 22px;
         }
 
+
         .order-top {
             display: flex;
+
             justify-content: space-between;
+
             align-items: center;
+
             padding-bottom: 20px;
-            border-bottom: 1px solid #e5e7eb;
+
+            border-bottom: 1px solid var(--border);
         }
 
+
         .order-id {
-            color: #6b7280;
+            color: var(--muted);
+
             font-size: 14px;
         }
 
+
         .token {
             font-size: 27px;
+
             font-weight: 800;
-            color: #2563eb;
+
+            color: var(--red);
+
             margin-top: 5px;
         }
 
+
         .status-badge {
             padding: 9px 16px;
+
             border-radius: 20px;
-            background: #dcfce7;
-            color: #15803d;
+
+            background: var(--red-light);
+
+            color: var(--red);
+
+            border: 1px solid #FFD4D6;
+
             font-weight: bold;
+
             font-size: 13px;
         }
+
 
         /* =========================
            PAYMENT
         ========================= */
 
         .payment-card {
-            background: white;
+            background: var(--white);
+
             border-radius: 18px;
+
             padding: 25px 28px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+
+            border: 1px solid var(--border);
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.05);
+
             margin-bottom: 22px;
-            border-left: 5px solid #f59e0b;
+
+            border-left: 5px solid #F59E0B;
         }
 
+
         .payment-card.paid {
-            border-left-color: #16a34a;
+            border-left-color: var(--green);
         }
+
 
         .payment-title {
             font-size: 21px;
+
             font-weight: 800;
+
             margin-bottom: 12px;
         }
+
 
         .payment-method {
             color: #374151;
+
             font-size: 14px;
+
             font-weight: 600;
+
             margin-bottom: 12px;
         }
+
 
         .payment-status {
             display: inline-flex;
+
             align-items: center;
+
             padding: 8px 12px;
+
             border-radius: 9px;
+
             font-size: 12px;
+
             font-weight: 800;
+
             margin-bottom: 12px;
         }
 
+
         .payment-pending {
-            background: #fff1d6;
-            color: #b45309;
+            background: #FFF1D6;
+
+            color: #B45309;
         }
+
 
         .payment-paid {
-            background: #dcfce7;
-            color: #15803d;
+            background: #DCFCE7;
+
+            color: #15803D;
         }
 
+
         .payment-message {
-            color: #6b7280;
+            color: var(--muted);
+
             font-size: 13px;
+
             line-height: 1.6;
         }
+
 
         /* =========================
            TRACKING
         ========================= */
 
         .tracking-card {
-            background: white;
+            background: var(--white);
+
             border-radius: 18px;
+
             padding: 30px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+
+            border: 1px solid var(--border);
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.05);
+
             margin-bottom: 22px;
         }
 
+
         .tracking-card h2 {
             margin-bottom: 30px;
+
             font-size: 22px;
         }
 
+
         .timeline {
             position: relative;
+
             display: flex;
+
             justify-content: space-between;
+
             margin: 0 20px;
         }
 
+
         .timeline::before {
             content: "";
+
             position: absolute;
+
             top: 24px;
+
             left: 7%;
+
             right: 7%;
+
             height: 4px;
-            background: #e5e7eb;
+
+            background: #E5E7EB;
+
             z-index: 0;
+
+            border-radius: 10px;
         }
+
 
         .step {
             position: relative;
+
             z-index: 1;
+
             width: 23%;
+
             text-align: center;
         }
 
+
         .step-circle {
             width: 48px;
+
             height: 48px;
+
             margin: 0 auto 12px;
+
             border-radius: 50%;
-            background: #e5e7eb;
-            color: #6b7280;
+
+            background: #E5E7EB;
+
+            color: #6B7280;
+
             display: flex;
+
             align-items: center;
+
             justify-content: center;
+
             font-size: 20px;
+
             font-weight: bold;
+
             border: 4px solid white;
         }
 
+
         .step.completed .step-circle {
-            background: #16a34a;
+            background: var(--green);
+
             color: white;
+
+            box-shadow:
+                0 0 0 3px #D1FAE5;
         }
 
+
         .step.active .step-circle {
-            background: #2563eb;
+            background: var(--red);
+
             color: white;
-            box-shadow: 0 0 0 5px #dbeafe;
+
+            box-shadow:
+                0 0 0 5px var(--red-soft);
         }
+
 
         .step-title {
             font-weight: bold;
+
             font-size: 14px;
         }
 
+
         .step-description {
-            color: #6b7280;
+            color: var(--muted);
+
             font-size: 12px;
+
             margin-top: 5px;
         }
+
 
         /* =========================
            WAIT TIME
@@ -272,52 +453,80 @@
 
         .wait-box {
             margin-top: 35px;
+
             padding: 18px;
+
             border-radius: 12px;
-            background: #fff7ed;
+
+            background: var(--red-light);
+
+            border: 1px solid #FFD4D6;
+
             text-align: center;
-            color: #c2410c;
+
+            color: var(--red-dark);
+
             font-weight: bold;
         }
+
 
         /* =========================
            ORDER ITEMS
         ========================= */
 
         .items-card {
-            background: white;
+            background: var(--white);
+
             border-radius: 18px;
+
             padding: 28px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+
+            border: 1px solid var(--border);
+
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.05);
         }
+
 
         .items-card h2 {
             margin-bottom: 18px;
         }
 
+
         .item {
             display: flex;
+
             justify-content: space-between;
+
             padding: 15px 0;
-            border-bottom: 1px solid #e5e7eb;
+
+            border-bottom: 1px solid var(--border);
         }
+
 
         .item:last-child {
             border-bottom: none;
         }
 
+
         .item-name {
             font-weight: bold;
         }
 
+
         .item-quantity {
-            color: #6b7280;
+            color: var(--muted);
+
             margin-left: 8px;
         }
 
+
         .item-price {
             font-weight: bold;
+
+            color: var(--black);
         }
+
 
         /* =========================
            TOTAL
@@ -325,17 +534,25 @@
 
         .total-row {
             display: flex;
+
             justify-content: space-between;
+
             padding-top: 20px;
+
             margin-top: 10px;
-            border-top: 1px solid #e5e7eb;
+
+            border-top: 1px solid var(--border);
+
             font-size: 20px;
+
             font-weight: bold;
         }
 
+
         .total-price {
-            color: #2563eb;
+            color: var(--red);
         }
+
 
         /* =========================
            BUTTONS
@@ -343,36 +560,57 @@
 
         .buttons {
             display: flex;
+
             gap: 12px;
+
             margin-top: 25px;
         }
 
+
         .btn {
             flex: 1;
+
             text-align: center;
+
             text-decoration: none;
+
             padding: 13px;
+
             border-radius: 9px;
+
             font-weight: 600;
+
+            transition: 0.25s ease;
         }
 
+
         .primary {
-            background: #2563eb;
+            background: var(--red);
+
             color: white;
         }
 
-        .secondary {
-            background: #f3f4f6;
-            color: #374151;
-        }
 
         .primary:hover {
-            background: #1d4ed8;
+            background: var(--red-dark);
+
+            transform: translateY(-1px);
         }
 
-        .secondary:hover {
-            background: #e5e7eb;
+
+        .secondary {
+            background: #F3F3F3;
+
+            color: var(--black);
         }
+
+
+        .secondary:hover {
+            background: var(--red-light);
+
+            color: var(--red);
+        }
+
 
         /* =========================
            MOBILE
@@ -384,66 +622,95 @@
                 padding: 0 20px;
             }
 
-            .logo {
-                font-size: 18px;
+
+            .logo img {
+                width: 50px;
+
+                height: 50px;
             }
+
 
             .container {
                 margin: 25px auto;
+
                 padding: 15px;
             }
+
 
             .page-header h1 {
                 font-size: 27px;
             }
 
+
             .order-top {
                 align-items: flex-start;
+
                 gap: 15px;
             }
+
 
             .timeline {
                 flex-direction: column;
+
                 gap: 25px;
+
                 margin-left: 10px;
             }
 
+
             .timeline::before {
                 top: 24px;
+
                 bottom: 24px;
+
                 left: 22px;
+
                 width: 4px;
+
                 height: auto;
+
                 right: auto;
             }
 
+
             .step {
                 width: 100%;
+
                 display: flex;
+
                 align-items: center;
+
                 text-align: left;
+
                 gap: 15px;
             }
 
+
             .step-circle {
                 margin: 0;
+
                 flex-shrink: 0;
             }
+
 
             .step-info {
                 flex: 1;
             }
 
+
             .buttons {
                 flex-direction: column;
             }
+
         }
 
     </style>
 
 </head>
 
+
 <body>
+
 
 <!-- =========================
      NAVBAR
@@ -451,15 +718,22 @@
 
 <nav class="navbar">
 
-    <div class="logo">
-        ARMIET
-        <span>CanteenFlow</span>
-    </div>
+    <a href="/student/dashboard"
+       class="logo">
+
+        <img
+            src="/images/armiet-canteenflow-logo.png"
+            alt="ARMIET CanteenFlow Logo"
+        >
+
+    </a>
+
 
     <div class="nav-links">
 
-        <a href="/student/orders"
-           class="nav-btn">
+        <a
+            href="/student/orders"
+            class="nav-btn">
 
             My Orders
 
@@ -476,11 +750,13 @@
 
 <div class="container">
 
+
     <div class="page-header">
 
         <h1>
             📦 Track Your Order
         </h1>
+
 
         <p>
             Follow your order from placement to pickup.
@@ -503,26 +779,35 @@
 
                     Order ID:
 
-                    <strong th:text="${order.id}">
+                    <strong
+                        th:text="${order.id}">
+
                         4
+
                     </strong>
 
                 </div>
+
 
                 <div class="token">
 
                     🎟️ Token #
 
-                    <span th:text="${order.token_number}">
+                    <span
+                        th:text="${order.token_number}">
+
                         4
+
                     </span>
 
                 </div>
 
             </div>
 
-            <div class="status-badge"
-                 th:text="${status}">
+
+            <div
+                class="status-badge"
+                th:text="${status}">
 
                 PLACED
 
@@ -537,8 +822,9 @@
          PAYMENT
     ========================= -->
 
-    <div class="payment-card"
-         th:classappend="${order.payment_status == 'PAID' ? ' paid' : ''}">
+    <div
+        class="payment-card"
+        th:classappend="${order.payment_status == 'PAID' ? ' paid' : ''}">
 
         <div class="payment-title">
 
@@ -546,11 +832,25 @@
 
         </div>
 
+
         <div class="payment-method">
 
             Payment Method:
-            <span th:text="${order.payment_method}">
-                CASH_AT_COUNTER
+
+            <span
+                th:if="${order.payment_method == 'CASH_AT_COUNTER'}">
+
+                Cash at Canteen Counter
+
+            </span>
+
+
+            <span
+                th:unless="${order.payment_method == 'CASH_AT_COUNTER'}"
+                th:text="${order.payment_method}">
+
+                Cash at Canteen Counter
+
             </span>
 
         </div>
@@ -558,13 +858,15 @@
 
         <!-- PAYMENT PENDING -->
 
-        <div th:if="${order.payment_status == 'PENDING'}">
+        <div
+            th:if="${order.payment_status == 'PENDING'}">
 
             <div class="payment-status payment-pending">
 
                 🟠 PAYMENT PENDING
 
             </div>
+
 
             <div class="payment-message">
 
@@ -578,13 +880,15 @@
 
         <!-- PAYMENT PAID -->
 
-        <div th:if="${order.payment_status == 'PAID'}">
+        <div
+            th:if="${order.payment_status == 'PAID'}">
 
             <div class="payment-status payment-paid">
 
                 🟢 PAYMENT PAID
 
             </div>
+
 
             <div class="payment-message">
 
@@ -608,13 +912,15 @@
             Order Status
         </h2>
 
+
         <div class="timeline">
 
 
             <!-- PLACED -->
 
-            <div class="step"
-                 th:classappend="${statusStep >= 1 ? ' completed' : ''}">
+            <div
+                class="step"
+                th:classappend="${statusStep >= 1 ? ' completed' : ''}">
 
                 <div class="step-circle">
 
@@ -627,6 +933,7 @@
                     </span>
 
                 </div>
+
 
                 <div class="step-info">
 
@@ -645,8 +952,9 @@
 
             <!-- PREPARING -->
 
-            <div class="step"
-                 th:classappend="${statusStep >= 2 ? ' completed' : (statusStep == 1 ? ' active' : '')}">
+            <div
+                class="step"
+                th:classappend="${statusStep >= 2 ? ' completed' : (statusStep == 1 ? ' active' : '')}">
 
                 <div class="step-circle">
 
@@ -659,6 +967,7 @@
                     </span>
 
                 </div>
+
 
                 <div class="step-info">
 
@@ -677,8 +986,9 @@
 
             <!-- READY -->
 
-            <div class="step"
-                 th:classappend="${statusStep >= 3 ? ' completed' : (statusStep == 2 ? ' active' : '')}">
+            <div
+                class="step"
+                th:classappend="${statusStep >= 3 ? ' completed' : (statusStep == 2 ? ' active' : '')}">
 
                 <div class="step-circle">
 
@@ -691,6 +1001,7 @@
                     </span>
 
                 </div>
+
 
                 <div class="step-info">
 
@@ -709,8 +1020,9 @@
 
             <!-- COMPLETED -->
 
-            <div class="step"
-                 th:classappend="${statusStep >= 4 ? ' completed' : (statusStep == 3 ? ' active' : '')}">
+            <div
+                class="step"
+                th:classappend="${statusStep >= 4 ? ' completed' : (statusStep == 3 ? ' active' : '')}">
 
                 <div class="step-circle">
 
@@ -723,6 +1035,7 @@
                     </span>
 
                 </div>
+
 
                 <div class="step-info">
 
@@ -743,13 +1056,17 @@
 
         <!-- WAIT TIME -->
 
-        <div class="wait-box"
-             th:if="${statusStep < 3}">
+        <div
+            class="wait-box"
+            th:if="${statusStep < 3}">
 
             ⏱️ Estimated waiting time:
 
-            <span th:text="${estimatedWait}">
+            <span
+                th:text="${estimatedWait}">
+
                 8
+
             </span>
 
             minutes
@@ -757,16 +1074,18 @@
         </div>
 
 
-        <div class="wait-box"
-             th:if="${statusStep == 3}">
+        <div
+            class="wait-box"
+            th:if="${statusStep == 3}">
 
             🍱 Your order is ready for pickup!
 
         </div>
 
 
-        <div class="wait-box"
-             th:if="${statusStep >= 4}">
+        <div
+            class="wait-box"
+            th:if="${statusStep >= 4}">
 
             ✅ Your order has been completed.
 
@@ -786,36 +1105,46 @@
         </h2>
 
 
-        <div class="item"
-             th:each="item : ${orderItems}">
+        <div
+            class="item"
+            th:each="item : ${orderItems}">
 
             <div>
 
-                <span class="item-name"
-                      th:text="${item.name}">
+                <span
+                    class="item-name"
+                    th:text="${item.name}">
 
                     Vada Pav
 
                 </span>
 
+
                 <span class="item-quantity">
 
                     ×
 
-                    <span th:text="${item.quantity}">
+                    <span
+                        th:text="${item.quantity}">
+
                         1
+
                     </span>
 
                 </span>
 
             </div>
 
+
             <div class="item-price">
 
                 ₹
 
-                <span th:text="${item.price * item.quantity}">
+                <span
+                    th:text="${item.price * item.quantity}">
+
                     20
+
                 </span>
 
             </div>
@@ -831,12 +1160,16 @@
                 Total
             </span>
 
+
             <span class="total-price">
 
                 ₹
 
-                <span th:text="${order.total_amount}">
+                <span
+                    th:text="${order.total_amount}">
+
                     20
+
                 </span>
 
             </span>
@@ -848,15 +1181,18 @@
 
         <div class="buttons">
 
-            <a href="/student/orders"
-               class="btn secondary">
+            <a
+                href="/student/orders"
+                class="btn secondary">
 
                 ← My Orders
 
             </a>
 
-            <a href="/student/dashboard"
-               class="btn primary">
+
+            <a
+                href="/student/dashboard"
+                class="btn primary">
 
                 Back to Dashboard →
 
@@ -867,6 +1203,7 @@
     </div>
 
 </div>
+
 
 </body>
 

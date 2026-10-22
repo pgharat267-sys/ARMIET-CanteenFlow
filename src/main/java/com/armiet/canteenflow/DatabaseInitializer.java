@@ -17,11 +17,19 @@ public class DatabaseInitializer implements CommandLineRunner {
     public void run(String... args) {
 
         // ==============================
+        // ENABLE FOREIGN KEYS
+        // ==============================
+
+        jdbcTemplate.execute("PRAGMA foreign_keys = ON");
+
+
+        // ==============================
         // USERS TABLE
         // ==============================
+
         jdbcTemplate.execute("""
             CREATE TABLE IF NOT EXISTS users (
-                id SERIAL PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 email TEXT NOT NULL UNIQUE,
                 password TEXT NOT NULL,
@@ -34,13 +42,14 @@ public class DatabaseInitializer implements CommandLineRunner {
         // ==============================
         // FOOD ITEMS TABLE
         // ==============================
+
         jdbcTemplate.execute("""
             CREATE TABLE IF NOT EXISTS food_items (
-                id SERIAL PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 description TEXT,
                 category TEXT,
-                price DOUBLE PRECISION NOT NULL,
+                price REAL NOT NULL,
                 image_url TEXT,
                 available INTEGER NOT NULL DEFAULT 1,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -51,12 +60,13 @@ public class DatabaseInitializer implements CommandLineRunner {
         // ==============================
         // ORDERS TABLE
         // ==============================
+
         jdbcTemplate.execute("""
             CREATE TABLE IF NOT EXISTS orders (
-                id SERIAL PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 user_id INTEGER NOT NULL,
                 token_number INTEGER,
-                total_amount DOUBLE PRECISION NOT NULL,
+                total_amount REAL NOT NULL,
                 status TEXT NOT NULL DEFAULT 'PLACED',
                 payment_method TEXT NOT NULL DEFAULT 'CASH_AT_COUNTER',
                 payment_status TEXT NOT NULL DEFAULT 'PENDING',
@@ -67,10 +77,9 @@ public class DatabaseInitializer implements CommandLineRunner {
         """);
 
 
-        // ==================================================
-        // SAFE DATABASE UPGRADE
-        // Add payment columns if they do not exist
-        // ==================================================
+        // ==============================
+        // SAFE PAYMENT COLUMN UPGRADES
+        // ==============================
 
         addColumnIfMissing(
                 "orders",
@@ -91,9 +100,9 @@ public class DatabaseInitializer implements CommandLineRunner {
         );
 
 
-        // ==================================================
-        // NORMALIZE EXISTING ORDERS
-        // ==================================================
+        // ==============================
+        // NORMALIZE PAYMENT DATA
+        // ==============================
 
         jdbcTemplate.update("""
             UPDATE orders
@@ -112,13 +121,14 @@ public class DatabaseInitializer implements CommandLineRunner {
         // ==============================
         // ORDER ITEMS TABLE
         // ==============================
+
         jdbcTemplate.execute("""
             CREATE TABLE IF NOT EXISTS order_items (
-                id SERIAL PRIMARY KEY,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
                 order_id INTEGER NOT NULL,
                 food_item_id INTEGER NOT NULL,
                 quantity INTEGER NOT NULL,
-                price DOUBLE PRECISION NOT NULL,
+                price REAL NOT NULL,
                 FOREIGN KEY (order_id) REFERENCES orders(id),
                 FOREIGN KEY (food_item_id) REFERENCES food_items(id)
             )
@@ -128,11 +138,13 @@ public class DatabaseInitializer implements CommandLineRunner {
         // ==============================
         // DEFAULT ADMIN ACCOUNT
         // ==============================
-        Integer adminCount = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM users WHERE email = ?",
-                Integer.class,
-                "admin@armiet.com"
-        );
+
+        Integer adminCount =
+                jdbcTemplate.queryForObject(
+                        "SELECT COUNT(*) FROM users WHERE email = ?",
+                        Integer.class,
+                        "admin@armiet.com"
+                );
 
         if (adminCount != null && adminCount == 0) {
 
@@ -158,10 +170,12 @@ public class DatabaseInitializer implements CommandLineRunner {
         // ==============================
         // DEFAULT FOOD MENU
         // ==============================
-        Integer foodCount = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM food_items",
-                Integer.class
-        );
+
+        Integer foodCount =
+                jdbcTemplate.queryForObject(
+                        "SELECT COUNT(*) FROM food_items",
+                        Integer.class
+                );
 
         if (foodCount != null && foodCount == 0) {
 
@@ -220,10 +234,12 @@ public class DatabaseInitializer implements CommandLineRunner {
 
 
         // ==============================
-        // DATABASE READY MESSAGE
+        // DATABASE READY
         // ==============================
+
         System.out.println("======================================");
         System.out.println("ARMIET CanteenFlow Database Ready!");
+        System.out.println("Database : SQLite");
         System.out.println("Tables created:");
         System.out.println("1. users");
         System.out.println("2. food_items");
@@ -263,8 +279,8 @@ public class DatabaseInitializer implements CommandLineRunner {
 
 
     // ==================================================
-    // ADD COLUMN ONLY IF IT DOES NOT ALREADY EXIST
-    // PostgreSQL version
+    // ADD COLUMN IF MISSING
+    // SQLITE VERSION
     // ==================================================
 
     private void addColumnIfMissing(
@@ -276,10 +292,8 @@ public class DatabaseInitializer implements CommandLineRunner {
                 jdbcTemplate.queryForObject(
                         """
                         SELECT COUNT(*)
-                        FROM information_schema.columns
-                        WHERE table_schema = 'public'
-                        AND table_name = ?
-                        AND column_name = ?
+                        FROM pragma_table_info(?)
+                        WHERE name = ?
                         """,
                         Integer.class,
                         tableName,

@@ -7,11 +7,6 @@
 
     <title>Edit Food | ARMIET CanteenFlow</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-
     <style>
 
         * {
@@ -21,122 +16,205 @@
         }
 
         body {
-            font-family: "DM Sans", sans-serif;
-            background: #f5f7fb;
-            color: #172033;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #F7F7F7;
+            color: #111111;
         }
 
+        /* ==============================
+           NAVBAR
+        ============================== */
+
         .navbar {
-            height: 72px;
-            background: white;
-            border-bottom: 1px solid #e8ebf0;
+            height: 74px;
+            background: #FFFFFF;
+            border-bottom: 1px solid #E7E7E7;
+
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             padding: 0 6%;
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         .brand {
-            font-family: "Space Grotesk", sans-serif;
-            font-size: 22px;
-            font-weight: 700;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
         }
 
-        .brand span {
-            color: #2864e6;
+        .brand img {
+            width: 58px;
+            height: 58px;
+            object-fit: contain;
+            display: block;
         }
 
         .nav-links {
             display: flex;
-            gap: 22px;
+            align-items: center;
+            gap: 24px;
         }
 
         .nav-links a {
             text-decoration: none;
-            color: #697386;
-            font-weight: 600;
+            color: #555555;
+            font-size: 14px;
+            font-weight: 700;
+            transition: 0.2s;
         }
 
         .nav-links a:hover {
-            color: #2864e6;
+            color: #E21B23;
         }
 
         .logout {
-            color: #e5484d !important;
+            color: #E21B23 !important;
         }
+
+        /* ==============================
+           MAIN
+        ============================== */
 
         .container {
             width: 90%;
             max-width: 760px;
-            margin: 45px auto;
+            margin: 45px auto 60px;
         }
+
+        /* ==============================
+           PAGE HEADER
+        ============================== */
 
         .page-header {
             margin-bottom: 25px;
         }
 
+        .page-label {
+            display: inline-block;
+
+            background: #FFE4E6;
+            color: #B9151B;
+
+            padding: 7px 12px;
+            border-radius: 999px;
+
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+
+            margin-bottom: 12px;
+        }
+
         .page-header h1 {
-            font-family: "Space Grotesk", sans-serif;
             font-size: 34px;
-            margin-bottom: 7px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
 
         .page-header p {
-            color: #697386;
+            color: #6B6B6B;
+            font-size: 15px;
+            line-height: 1.6;
         }
+
+        /* ==============================
+           FORM CARD
+        ============================== */
 
         .form-card {
-            background: white;
-            border: 1px solid #edf0f5;
-            border-radius: 20px;
+            background: #FFFFFF;
+
+            border: 1px solid #E7E7E7;
+            border-radius: 18px;
+
             padding: 32px;
-            box-shadow: 0 8px 25px rgba(30, 45, 70, 0.06);
+
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
         }
+
+        /* ==============================
+           FOOD ID
+        ============================== */
 
         .food-id {
-            background: #f5f7fb;
-            padding: 10px 13px;
-            border-radius: 9px;
-            color: #697386;
+            background: #111111;
+            color: #FFFFFF;
+
+            padding: 11px 14px;
+
+            border-radius: 10px;
+
             font-size: 13px;
-            margin-bottom: 22px;
+            margin-bottom: 24px;
         }
 
+        .food-id strong {
+            color: #FFFFFF;
+        }
+
+        /* ==============================
+           FORM
+        ============================== */
+
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 21px;
         }
 
         label {
             display: block;
-            font-size: 14px;
-            font-weight: 700;
+
+            font-size: 13px;
+            font-weight: 800;
+
             margin-bottom: 8px;
+            color: #222222;
         }
 
         input,
         textarea,
         select {
             width: 100%;
+
             padding: 13px 14px;
-            border: 1px solid #dce1e8;
+
+            border: 1px solid #D9D9D9;
             border-radius: 10px;
-            background: white;
+
+            background: #FFFFFF;
+            color: #111111;
+
             font-family: inherit;
             font-size: 14px;
+
             outline: none;
+
+            transition: 0.2s;
         }
 
         input:focus,
         textarea:focus,
         select:focus {
-            border-color: #2864e6;
-            box-shadow: 0 0 0 3px rgba(40, 100, 230, 0.08);
+            border-color: #E21B23;
+
+            box-shadow:
+                0 0 0 3px rgba(226, 27, 35, 0.10);
         }
 
         textarea {
-            min-height: 100px;
+            min-height: 110px;
             resize: vertical;
+            line-height: 1.5;
         }
+
+        /* ==============================
+           TWO COLUMNS
+        ============================== */
 
         .two-columns {
             display: grid;
@@ -144,67 +222,141 @@
             gap: 18px;
         }
 
+        /* ==============================
+           IMAGE / EMOJI
+        ============================== */
+
         .emoji-input {
             font-size: 22px;
         }
+
+        /* ==============================
+           AVAILABILITY
+        ============================== */
 
         .availability-box {
             display: flex;
             align-items: center;
             gap: 10px;
+
             margin-top: 5px;
+
+            padding: 14px 16px;
+
+            background: #FFF7F7;
+            border: 1px solid #F3D5D7;
+
+            border-radius: 12px;
         }
 
         .availability-box input {
-            width: auto;
+            width: 18px;
+            height: 18px;
+
+            accent-color: #E21B23;
+
+            cursor: pointer;
         }
 
         .availability-box label {
             margin: 0;
-            font-weight: 600;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            cursor: pointer;
         }
+
+        /* ==============================
+           BUTTONS
+        ============================== */
 
         .buttons {
             display: flex;
             gap: 12px;
-            margin-top: 28px;
+
+            margin-top: 30px;
         }
 
         .btn {
             flex: 1;
+
             border: none;
             border-radius: 10px;
+
             padding: 14px;
+
             font-family: inherit;
-            font-weight: 700;
+            font-weight: 800;
             font-size: 14px;
+
             cursor: pointer;
+
             text-align: center;
             text-decoration: none;
+
+            transition: 0.2s;
         }
 
         .submit-btn {
-            background: #2864e6;
-            color: white;
+            background: #E21B23;
+            color: #FFFFFF;
+
+            box-shadow:
+                0 6px 16px rgba(226, 27, 35, 0.20);
         }
 
         .submit-btn:hover {
-            background: #1f55ca;
+            background: #B9151B;
+            transform: translateY(-1px);
         }
 
         .cancel-btn {
-            background: #eef0f4;
-            color: #172033;
+            background: #111111;
+            color: #FFFFFF;
         }
 
         .cancel-btn:hover {
-            background: #e2e5ea;
+            background: #292929;
+            transform: translateY(-1px);
         }
 
-        @media (max-width: 600px) {
+        /* ==============================
+           NOTE
+        ============================== */
+
+        .form-note {
+            margin-top: 20px;
+
+            padding: 13px 15px;
+
+            background: #F7F7F7;
+            border-left: 4px solid #E21B23;
+
+            border-radius: 8px;
+
+            color: #666666;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* ==============================
+           MOBILE
+        ============================== */
+
+        @media (max-width: 650px) {
 
             .navbar {
                 padding: 0 4%;
+            }
+
+            .brand img {
+                width: 52px;
+                height: 52px;
+            }
+
+            .nav-links {
+                gap: 12px;
             }
 
             .nav-links a:not(.logout) {
@@ -213,11 +365,16 @@
 
             .container {
                 width: 94%;
-                margin-top: 25px;
+                margin-top: 28px;
+            }
+
+            .page-header h1 {
+                font-size: 28px;
             }
 
             .form-card {
                 padding: 22px;
+                border-radius: 15px;
             }
 
             .two-columns {
@@ -228,18 +385,36 @@
             .buttons {
                 flex-direction: column;
             }
+
+            .btn {
+                width: 100%;
+            }
         }
 
     </style>
+
 </head>
+
 
 <body>
 
+
+<!-- ==============================
+     NAVBAR
+============================== -->
+
 <nav class="navbar">
 
-    <div class="brand">
-        ARMIET <span>CanteenFlow</span>
-    </div>
+    <a href="/admin/dashboard"
+       class="brand">
+
+        <img
+            src="/images/armiet-canteenflow-logo.png"
+            alt="ARMIET CanteenFlow Logo"
+        >
+
+    </a>
+
 
     <div class="nav-links">
 
@@ -255,7 +430,8 @@
             Food Menu
         </a>
 
-        <a href="/logout" class="logout">
+        <a href="/logout"
+           class="logout">
             Logout
         </a>
 
@@ -264,26 +440,43 @@
 </nav>
 
 
+<!-- ==============================
+     MAIN
+============================== -->
+
 <main class="container">
 
+
+    <!-- PAGE HEADER -->
+
     <section class="page-header">
+
+        <span class="page-label">
+            FOOD MANAGEMENT
+        </span>
 
         <h1>
             Edit Food
         </h1>
 
         <p>
-            Update the food item's information.
+            Update the food item's information and availability.
         </p>
 
     </section>
 
 
+    <!-- FORM CARD -->
+
     <section class="form-card">
+
+
+        <!-- FOOD ID -->
 
         <div class="food-id">
 
             Food ID:
+
             <strong th:text="${food.id}">
                 1
             </strong>
@@ -291,14 +484,20 @@
         </div>
 
 
+        <!-- EDIT FORM -->
+
         <form action="/admin/food/edit"
               method="post">
 
 
-            <input type="hidden"
-                   name="foodId"
-                   th:value="${food.id}">
+            <input
+                type="hidden"
+                name="foodId"
+                th:value="${food.id}"
+            >
 
+
+            <!-- FOOD NAME -->
 
             <div class="form-group">
 
@@ -311,10 +510,13 @@
                     id="name"
                     name="name"
                     th:value="${food.name}"
-                    required>
+                    required
+                >
 
             </div>
 
+
+            <!-- DESCRIPTION -->
 
             <div class="form-group">
 
@@ -326,10 +528,13 @@
                     id="description"
                     name="description"
                     required
-                    th:text="${food.description}"></textarea>
+                    th:text="${food.description}"
+                ></textarea>
 
             </div>
 
+
+            <!-- CATEGORY + PRICE -->
 
             <div class="two-columns">
 
@@ -339,32 +544,44 @@
                         Category
                     </label>
 
-                    <select id="category"
-                            name="category"
-                            required>
+                    <select
+                        id="category"
+                        name="category"
+                        required
+                    >
 
-                        <option value="Snacks"
-                                th:selected="${food.category == 'Snacks'}">
+                        <option
+                            value="Snacks"
+                            th:selected="${food.category == 'Snacks'}"
+                        >
                             Snacks
                         </option>
 
-                        <option value="Fast Food"
-                                th:selected="${food.category == 'Fast Food'}">
+                        <option
+                            value="Fast Food"
+                            th:selected="${food.category == 'Fast Food'}"
+                        >
                             Fast Food
                         </option>
 
-                        <option value="Beverages"
-                                th:selected="${food.category == 'Beverages'}">
+                        <option
+                            value="Beverages"
+                            th:selected="${food.category == 'Beverages'}"
+                        >
                             Beverages
                         </option>
 
-                        <option value="Meals"
-                                th:selected="${food.category == 'Meals'}">
+                        <option
+                            value="Meals"
+                            th:selected="${food.category == 'Meals'}"
+                        >
                             Meals
                         </option>
 
-                        <option value="Desserts"
-                                th:selected="${food.category == 'Desserts'}">
+                        <option
+                            value="Desserts"
+                            th:selected="${food.category == 'Desserts'}"
+                        >
                             Desserts
                         </option>
 
@@ -376,7 +593,7 @@
                 <div class="form-group">
 
                     <label for="price">
-                        Price (?)
+                        Price (₹)
                     </label>
 
                     <input
@@ -386,12 +603,15 @@
                         min="1"
                         step="0.01"
                         th:value="${food.price}"
-                        required>
+                        required
+                    >
 
                 </div>
 
             </div>
 
+
+            <!-- IMAGE / EMOJI -->
 
             <div class="form-group">
 
@@ -406,10 +626,13 @@
                     class="emoji-input"
                     maxlength="10"
                     th:value="${food.image_url}"
-                    placeholder="??">
+                    placeholder="🍔"
+                >
 
             </div>
 
+
+            <!-- AVAILABILITY -->
 
             <div class="availability-box">
 
@@ -417,7 +640,8 @@
                     type="checkbox"
                     id="available"
                     name="available"
-                    th:checked="${food.available == 1}">
+                    th:checked="${food.available == 1}"
+                >
 
                 <label for="available">
                     Food is currently available
@@ -426,18 +650,33 @@
             </div>
 
 
+            <!-- BUTTONS -->
+
             <div class="buttons">
 
-                <a href="/admin/food"
-                   class="btn cancel-btn">
+                <a
+                    href="/admin/food"
+                    class="btn cancel-btn"
+                >
                     Cancel
                 </a>
 
+
                 <button
                     type="submit"
-                    class="btn submit-btn">
+                    class="btn submit-btn"
+                >
                     Save Changes
                 </button>
+
+            </div>
+
+
+            <div class="form-note">
+
+                💡 <strong>Tip:</strong>
+                Make sure the food name, price, category and availability
+                are correct before saving your changes.
 
             </div>
 
@@ -446,6 +685,7 @@
     </section>
 
 </main>
+
 
 </body>
 </html>

@@ -20,11 +20,14 @@ public class CartController {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    // ==============================
+    // =========================================================
     // SHOW CART
-    // ==============================
+    // =========================================================
+
     @GetMapping("/student/cart")
-    public String showCart(HttpSession session, Model model) {
+    public String showCart(
+            HttpSession session,
+            Model model) {
 
         if (session.getAttribute("userId") == null) {
             return "redirect:/login";
@@ -33,20 +36,84 @@ public class CartController {
         List<Map<String, Object>> cart =
                 getCart(session);
 
-        double total = calculateTotal(cart);
+        double total =
+                calculateTotal(cart);
 
-        model.addAttribute("cartItems", cart);
-        model.addAttribute("cartTotal", total);
+        model.addAttribute(
+                "cartItems",
+                cart
+        );
+
+        model.addAttribute(
+                "cartTotal",
+                total
+        );
+
+        model.addAttribute(
+                "canteenLive",
+                isCanteenLive()
+        );
 
         return "student/cart";
     }
 
+    // =========================================================
+    // ADD ITEM TO CART
+    // =========================================================
 
-    // ==============================
-    // ADD FOOD TO CART
-    // ==============================
     @PostMapping("/student/cart/add")
     public String addToCart(
+            @RequestParam int foodId,
+            HttpSession session) {
+
+        // Check login
+        if (session.getAttribute("userId") == null) {
+            return "redirect:/login";
+        }
+
+        // Check whether canteen is LIVE
+        if (!isCanteenLive()) {
+            return "redirect:/student/dashboard";
+        }
+
+        // Check whether food is available
+        Integer available =
+                jdbcTemplate.queryForObject(
+                        """
+                        SELECT available
+                        FROM food_items
+                        WHERE id = ?
+                        """,
+                        Integer.class,
+                        foodId
+                );
+
+        if (available == null || available != 1) {
+            return "redirect:/student/dashboard";
+        }
+
+        Map<Integer, Integer> cart =
+                getCartMap(session);
+
+        cart.put(
+                foodId,
+                cart.getOrDefault(foodId, 0) + 1
+        );
+
+        session.setAttribute(
+                "cart",
+                cart
+        );
+
+        return "redirect:/student/cart";
+    }
+
+    // =========================================================
+    // INCREASE QUANTITY
+    // =========================================================
+
+    @PostMapping("/student/cart/increase")
+    public String increaseQuantity(
             @RequestParam int foodId,
             HttpSession session) {
 
@@ -54,100 +121,111 @@ public class CartController {
             return "redirect:/login";
         }
 
-        Map<Integer, Integer> cart = getCartMap(session);
+        Map<Integer, Integer> cart =
+                getCartMap(session);
 
         cart.put(
                 foodId,
                 cart.getOrDefault(foodId, 0) + 1
         );
 
-        session.setAttribute("cart", cart);
-
-        return "redirect:/student/cart";
-    }
-
-
-    // ==============================
-    // INCREASE QUANTITY
-    // ==============================
-    @PostMapping("/student/cart/increase")
-    public String increaseQuantity(
-            @RequestParam int foodId,
-            HttpSession session) {
-
-        Map<Integer, Integer> cart = getCartMap(session);
-
-        cart.put(
-                foodId,
-                cart.getOrDefault(foodId, 0) + 1
+        session.setAttribute(
+                "cart",
+                cart
         );
 
-        session.setAttribute("cart", cart);
-
         return "redirect:/student/cart";
     }
 
-
-    // ==============================
+    // =========================================================
     // DECREASE QUANTITY
-    // ==============================
+    // =========================================================
+
     @PostMapping("/student/cart/decrease")
     public String decreaseQuantity(
             @RequestParam int foodId,
             HttpSession session) {
 
-        Map<Integer, Integer> cart = getCartMap(session);
+        if (session.getAttribute("userId") == null) {
+            return "redirect:/login";
+        }
+
+        Map<Integer, Integer> cart =
+                getCartMap(session);
 
         if (cart.containsKey(foodId)) {
 
-            int quantity = cart.get(foodId) - 1;
+            int quantity =
+                    cart.get(foodId) - 1;
 
             if (quantity <= 0) {
+
                 cart.remove(foodId);
+
             } else {
-                cart.put(foodId, quantity);
+
+                cart.put(
+                        foodId,
+                        quantity
+                );
             }
         }
 
-        session.setAttribute("cart", cart);
+        session.setAttribute(
+                "cart",
+                cart
+        );
 
         return "redirect:/student/cart";
     }
 
-
-    // ==============================
+    // =========================================================
     // REMOVE ITEM
-    // ==============================
+    // =========================================================
+
     @PostMapping("/student/cart/remove")
     public String removeItem(
             @RequestParam int foodId,
             HttpSession session) {
 
-        Map<Integer, Integer> cart = getCartMap(session);
+        if (session.getAttribute("userId") == null) {
+            return "redirect:/login";
+        }
+
+        Map<Integer, Integer> cart =
+                getCartMap(session);
 
         cart.remove(foodId);
 
-        session.setAttribute("cart", cart);
+        session.setAttribute(
+                "cart",
+                cart
+        );
 
         return "redirect:/student/cart";
     }
 
-
-    // ==============================
+    // =========================================================
     // CLEAR CART
-    // ==============================
+    // =========================================================
+
     @PostMapping("/student/cart/clear")
-    public String clearCart(HttpSession session) {
+    public String clearCart(
+            HttpSession session) {
+
+        if (session.getAttribute("userId") == null) {
+            return "redirect:/login";
+        }
 
         session.removeAttribute("cart");
 
         return "redirect:/student/cart";
     }
 
+    // =========================================================
+    // GET CART MAP FROM SESSION
+    // =========================================================
 
-    // ==============================
-    // GET CART MAP
-    // ==============================
     @SuppressWarnings("unchecked")
     private Map<Integer, Integer> getCartMap(
             HttpSession session) {
@@ -171,10 +249,10 @@ public class CartController {
         return (Map<Integer, Integer>) cartObject;
     }
 
+    // =========================================================
+    // GET FULL CART DETAILS
+    // =========================================================
 
-    // ==============================
-    // GET CART FOOD DETAILS
-    // ==============================
     private List<Map<String, Object>> getCart(
             HttpSession session) {
 
@@ -187,16 +265,25 @@ public class CartController {
         for (Map.Entry<Integer, Integer> entry :
                 cart.entrySet()) {
 
-            int foodId = entry.getKey();
-            int quantity = entry.getValue();
+            int foodId =
+                    entry.getKey();
+
+            int quantity =
+                    entry.getValue();
 
             List<Map<String, Object>> foods =
                     jdbcTemplate.queryForList(
                             """
-                            SELECT id, name, description,
-                                   category, price, image_url
+                            SELECT
+                                id,
+                                name,
+                                description,
+                                category,
+                                price,
+                                image_url
                             FROM food_items
-                            WHERE id = ? AND available = 1
+                            WHERE id = ?
+                            AND available = 1
                             """,
                             foodId
                     );
@@ -207,7 +294,8 @@ public class CartController {
                         new HashMap<>(foods.get(0));
 
                 double price =
-                        ((Number) food.get("price"))
+                        ((Number)
+                                food.get("price"))
                                 .doubleValue();
 
                 food.put(
@@ -227,10 +315,10 @@ public class CartController {
         return cartItems;
     }
 
+    // =========================================================
+    // CALCULATE CART TOTAL
+    // =========================================================
 
-    // ==============================
-    // CALCULATE TOTAL
-    // ==============================
     private double calculateTotal(
             List<Map<String, Object>> cartItems) {
 
@@ -240,10 +328,58 @@ public class CartController {
                 cartItems) {
 
             total +=
-                    ((Number) item.get("itemTotal"))
+                    ((Number)
+                            item.get("itemTotal"))
                             .doubleValue();
         }
 
         return total;
+    }
+
+    // =========================================================
+    // CHECK CANTEEN LIVE STATUS
+    // =========================================================
+
+    private boolean isCanteenLive() {
+
+        // Make sure settings table exists
+        jdbcTemplate.execute("""
+            CREATE TABLE IF NOT EXISTS canteen_settings (
+                id INTEGER PRIMARY KEY,
+                is_live INTEGER NOT NULL DEFAULT 1
+            )
+        """);
+
+        // Create default LIVE status if needed
+        Integer count =
+                jdbcTemplate.queryForObject(
+                        "SELECT COUNT(*) FROM canteen_settings",
+                        Integer.class
+                );
+
+        if (count == null || count == 0) {
+
+            jdbcTemplate.update(
+                    """
+                    INSERT INTO canteen_settings
+                    (id, is_live)
+                    VALUES (1, 1)
+                    """
+            );
+        }
+
+        // Read current status
+        Integer liveValue =
+                jdbcTemplate.queryForObject(
+                        """
+                        SELECT is_live
+                        FROM canteen_settings
+                        WHERE id = 1
+                        """,
+                        Integer.class
+                );
+
+        return liveValue != null &&
+                liveValue == 1;
     }
 }

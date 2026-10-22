@@ -6,6 +6,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.UUID;
 
 @Controller
 public class AdminFoodAddController {
@@ -30,7 +39,6 @@ public class AdminFoodAddController {
         return "admin/add-food";
     }
 
-
     // ==========================================
     // SAVE NEW FOOD
     // ==========================================
@@ -41,32 +49,41 @@ public class AdminFoodAddController {
             @RequestParam String description,
             @RequestParam String category,
             @RequestParam double price,
-            @RequestParam(required = false) String imageUrl,
+            @RequestParam(required = false) MultipartFile foodImage,
             @RequestParam(required = false) String available,
             HttpSession session) {
 
-        // Check that only admin can add food
+        // ==========================================
+        // ADMIN SECURITY CHECK
+        // ==========================================
+
         if (!isAdmin(session)) {
             return "redirect:/login";
         }
 
+        // ==========================================
+        // CLEAN INPUT
+        // ==========================================
 
-        // Remove unnecessary spaces
-        String cleanName = name.trim();
+        String cleanName =
+                name == null
+                        ? ""
+                        : name.trim();
 
         String cleanDescription =
-                description.trim();
+                description == null
+                        ? ""
+                        : description.trim();
 
         String cleanCategory =
-                category.trim();
-
-        String cleanImageUrl =
-                imageUrl == null
+                category == null
                         ? ""
-                        : imageUrl.trim();
+                        : category.trim();
 
+        // ==========================================
+        // BASIC VALIDATION
+        // ==========================================
 
-        // Basic validation
         if (cleanName.isEmpty() ||
                 cleanDescription.isEmpty() ||
                 cleanCategory.isEmpty() ||
@@ -75,22 +92,118 @@ public class AdminFoodAddController {
             return "redirect:/admin/food/add";
         }
 
-
-        // Checkbox handling
-        //
-        // Checkbox checked:
-        // available = "on"
-        //
-        // Checkbox unchecked:
-        // available = null
-        //
-        // Database uses:
-        // 1 = available
-        // 0 = unavailable
+        // ==========================================
+        // AVAILABILITY
+        // ==========================================
 
         int isAvailable =
                 available != null ? 1 : 0;
 
+        // ==========================================
+        // FOOD IMAGE
+        // ==========================================
+
+        String imageUrl = "";
+
+        if (foodImage != null &&
+                !foodImage.isEmpty()) {
+
+            // Make sure uploaded file is an image
+            String contentType =
+                    foodImage.getContentType();
+
+            if (contentType == null ||
+                    !contentType.startsWith("image/")) {
+
+                return "redirect:/admin/food/add";
+            }
+
+            try {
+
+                // ==========================================
+                // CREATE UPLOAD DIRECTORY
+                // ==========================================
+
+                Path uploadDirectory =
+                        Paths.get(
+                                "src",
+                                "main",
+                                "resources",
+                                "static",
+                                "uploads",
+                                "food"
+                        );
+
+                Files.createDirectories(
+                        uploadDirectory
+                );
+
+                // ==========================================
+                // GET ORIGINAL FILE EXTENSION
+                // ==========================================
+
+                String originalFileName =
+                        foodImage.getOriginalFilename();
+
+                String extension = "";
+
+                if (originalFileName != null &&
+                        originalFileName.contains(".")) {
+
+                    extension =
+                            originalFileName.substring(
+                                    originalFileName
+                                            .lastIndexOf(".")
+                            ).toLowerCase();
+                }
+
+                // ==========================================
+                // CREATE UNIQUE FILE NAME
+                // ==========================================
+
+                String newFileName =
+                        UUID.randomUUID()
+                                .toString()
+                                + extension;
+
+                // ==========================================
+                // FINAL FILE PATH
+                // ==========================================
+
+                Path filePath =
+                        uploadDirectory.resolve(
+                                newFileName
+                        );
+
+                // ==========================================
+                // SAVE IMAGE
+                // ==========================================
+
+                try (InputStream inputStream =
+                             foodImage.getInputStream()) {
+
+                    Files.copy(
+                            inputStream,
+                            filePath,
+                            StandardCopyOption.REPLACE_EXISTING
+                    );
+                }
+
+                // ==========================================
+                // IMAGE URL FOR DATABASE
+                // ==========================================
+
+                imageUrl =
+                        "/uploads/food/"
+                                + newFileName;
+
+            } catch (IOException e) {
+
+                e.printStackTrace();
+
+                return "redirect:/admin/food/add";
+            }
+        }
 
         // ==========================================
         // INSERT FOOD INTO DATABASE
@@ -107,17 +220,16 @@ public class AdminFoodAddController {
                 cleanDescription,
                 cleanCategory,
                 price,
-                cleanImageUrl,
+                imageUrl,
                 isAvailable
         );
 
-
-        // After successful insertion,
-        // go back to Food Menu.
+        // ==========================================
+        // RETURN TO FOOD MENU
+        // ==========================================
 
         return "redirect:/admin/food";
     }
-
 
     // ==========================================
     // ADMIN SECURITY CHECK
