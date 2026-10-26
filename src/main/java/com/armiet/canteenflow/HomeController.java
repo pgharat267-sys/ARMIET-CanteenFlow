@@ -17,31 +17,21 @@ public class HomeController {
     @GetMapping("/")
     public String home(Model model) {
 
-        jdbcTemplate.execute("""
-            CREATE TABLE IF NOT EXISTS canteen_settings (
-                id INTEGER PRIMARY KEY,
-                is_live INTEGER NOT NULL DEFAULT 1
-            )
-        """);
+        boolean canteenLive = true;
 
-        Integer settingsCount = jdbcTemplate.queryForObject(
-                "SELECT COUNT(*) FROM canteen_settings",
-                Integer.class
-        );
-
-        if (settingsCount == null || settingsCount == 0) {
-            jdbcTemplate.update("""
-                INSERT INTO canteen_settings (id, is_live)
-                VALUES (1, 1)
-            """);
-        }
-
-        Integer liveValue = jdbcTemplate.queryForObject(
+        try {
+            Integer status = jdbcTemplate.queryForObject(
                 "SELECT is_live FROM canteen_settings WHERE id = 1",
                 Integer.class
-        );
+            );
 
-        boolean canteenLive = liveValue != null && liveValue == 1;
+            canteenLive = status != null && status == 1;
+
+        } catch (Exception e) {
+            // Keep the public homepage available if the status
+            // cannot be retrieved from the database.
+            canteenLive = true;
+        }
 
         model.addAttribute("canteenLive", canteenLive);
 

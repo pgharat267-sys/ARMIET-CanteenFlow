@@ -1,19 +1,32 @@
+```html
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>ARMIET CanteenFlow | Smart College Canteen</title>
+    <meta name="description" content="Welcome to ARMIET CanteenFlow. Explore your college canteen, order food online, and collect your order using a digital token.">
 
     <style>
         :root {
             --red: #e21b23;
+            --red-dark: #bd1119;
             --dark: #171717;
             --muted: #6b7280;
             --light: #fff1f2;
+            --border: #eeeeee;
+            --white: #ffffff;
+            --green: #16834b;
         }
 
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
 
         body {
             margin: 0;
@@ -22,27 +35,37 @@
             color: var(--dark);
         }
 
-        a { text-decoration: none; }
+        a {
+            text-decoration: none;
+        }
 
         .navbar {
+            min-height: 88px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 18px 7%;
-            background: white;
-            border-bottom: 1px solid #eee;
+            gap: 20px;
+            padding: 12px 7%;
+            background: rgba(255, 255, 255, 0.98);
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
-            z-index: 10;
+            z-index: 100;
         }
 
         .brand {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--dark);
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
         }
 
-        .brand span { color: var(--red); }
+        .brand-logo {
+            display: block;
+            width: 220px;
+            height: 64px;
+            object-fit: contain;
+            object-position: left center;
+        }
 
         .nav-buttons {
             display: flex;
@@ -51,164 +74,315 @@
         }
 
         .btn {
-            display: inline-block;
-            padding: 12px 20px;
-            border-radius: 9px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 21px;
+            border-radius: 10px;
+            font-size: 15px;
             font-weight: 700;
-            transition: .2s;
+            transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+            cursor: pointer;
         }
 
         .btn-outline {
-            border: 1px solid #ddd;
+            border: 1px solid #dedede;
             color: var(--dark);
             background: white;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--red);
+            color: var(--red);
         }
 
         .btn-red {
             background: var(--red);
             color: white;
+            border: 1px solid var(--red);
+            box-shadow: 0 6px 16px rgba(226, 27, 35, 0.13);
         }
 
-        .btn:hover { transform: translateY(-2px); }
+        .btn-red:hover {
+            background: var(--red-dark);
+            border-color: var(--red-dark);
+            box-shadow: 0 8px 22px rgba(226, 27, 35, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
 
         .hero {
-            min-height: 510px;
-            padding: 75px 7%;
+            min-height: 590px;
+            padding: 70px 7%;
             display: grid;
-            grid-template-columns: 1.2fr .8fr;
+            grid-template-columns: 1.08fr .92fr;
             align-items: center;
-            gap: 45px;
+            gap: 55px;
+            overflow: hidden;
             background:
-                radial-gradient(circle at 85% 30%, #ffe0e2, transparent 35%),
-                linear-gradient(120deg, white, #fff7f7);
+                radial-gradient(circle at 85% 25%, rgba(255, 190, 194, .45), transparent 32%),
+                linear-gradient(120deg, #ffffff 0%, #fff8f8 60%, #fff0f1 100%);
+        }
+
+        .hero-content {
+            max-width: 650px;
         }
 
         .tag {
-            display: inline-block;
-            padding: 9px 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
             border-radius: 30px;
             color: var(--red);
             background: var(--light);
-            font-size: 13px;
-            font-weight: 700;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .tag-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--red);
         }
 
         h1 {
-            font-size: clamp(40px, 5vw, 66px);
+            font-size: clamp(42px, 5.1vw, 70px);
             line-height: 1.08;
-            margin: 22px 0;
-            letter-spacing: -2px;
+            margin: 24px 0;
+            letter-spacing: -2.5px;
         }
 
-        h1 span { color: var(--red); }
+        h1 span {
+            color: var(--red);
+        }
 
-        .hero p {
+        .hero-description {
             color: var(--muted);
             font-size: 17px;
-            line-height: 1.8;
-            max-width: 560px;
+            line-height: 1.9;
+            max-width: 570px;
+            margin: 0;
         }
 
         .hero-actions {
             display: flex;
             gap: 14px;
-            margin-top: 28px;
+            margin-top: 30px;
             flex-wrap: wrap;
         }
 
+        .hero-note {
+            margin-top: 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+            color: #656565;
+            font-size: 13px;
+        }
+
+        .hero-note span::before {
+            content: "✓";
+            color: var(--green);
+            font-weight: 800;
+            margin-right: 7px;
+        }
+
+        .hero-visual {
+            position: relative;
+            min-width: 0;
+        }
+
         .hero-card {
+            position: relative;
             background: white;
             border-radius: 28px;
-            padding: 35px;
-            box-shadow: 0 25px 70px #17171712;
-            text-align: center;
-            border: 1px solid #f1f1f1;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, .9);
+            box-shadow: 0 28px 75px rgba(23, 23, 23, .12);
+            overflow: hidden;
         }
 
-        .food-icon {
-            font-size: 100px;
-            margin: 10px 0;
+        .hero-photo {
+            width: 100%;
+            height: 350px;
+            display: block;
+            object-fit: cover;
+            border-radius: 20px;
+            background: #f3e9e2;
         }
 
-        .hero-card h2 { margin-bottom: 8px; }
+        .photo-caption {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 12px 13px;
+        }
 
-        .hero-card p {
-            font-size: 14px;
-            margin: 0 auto 22px;
+        .photo-caption h2 {
+            margin: 0 0 7px;
+            font-size: 21px;
+        }
+
+        .photo-caption p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .photo-badge {
+            flex-shrink: 0;
+            padding: 9px 12px;
+            background: var(--light);
+            color: var(--red);
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .floating-note {
+            position: absolute;
+            left: -25px;
+            bottom: 105px;
+            padding: 13px 17px;
+            background: white;
+            border: 1px solid #f0f0f0;
+            border-radius: 14px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, .10);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .floating-note span {
+            display: block;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 400;
+            margin-top: 5px;
         }
 
         .section {
-            padding: 65px 7%;
+            padding: 78px 7%;
         }
 
         .section-heading {
             text-align: center;
-            margin-bottom: 35px;
+            margin: 0 auto 42px;
+            max-width: 650px;
+        }
+
+        .section-heading .eyebrow {
+            color: var(--red);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
         }
 
         .section-heading h2 {
-            font-size: 34px;
-            margin-bottom: 10px;
+            font-size: clamp(28px, 3.5vw, 40px);
+            margin: 13px 0;
+            letter-spacing: -1px;
         }
 
-        .section-heading p { color: var(--muted); }
+        .section-heading p {
+            color: var(--muted);
+            line-height: 1.8;
+            margin: 0;
+        }
 
         .features {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 22px;
         }
 
         .feature {
-            padding: 28px;
+            padding: 30px;
             background: white;
-            border: 1px solid #eee;
-            border-radius: 18px;
+            border: 1px solid var(--border);
+            border-radius: 19px;
+            transition: transform .2s ease, box-shadow .2s ease;
         }
 
-        .feature-icon { font-size: 35px; }
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 35px rgba(0, 0, 0, .06);
+        }
 
-        .feature h3 { margin-bottom: 10px; }
+        .feature-icon {
+            width: 54px;
+            height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--light);
+            color: var(--red);
+            border-radius: 15px;
+            font-size: 25px;
+            font-weight: 800;
+        }
+
+        .feature h3 {
+            margin: 22px 0 10px;
+            font-size: 19px;
+        }
 
         .feature p {
             color: var(--muted);
-            line-height: 1.7;
+            line-height: 1.8;
             font-size: 14px;
+            margin-bottom: 0;
         }
 
         .status-section {
-            padding: 0 7% 65px;
+            padding: 0 7% 75px;
         }
 
         .status-card {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 20px;
+            gap: 25px;
             background: white;
-            border: 1px solid #eee;
-            border-radius: 18px;
-            padding: 28px 32px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px 34px;
         }
 
-        .status-card h3 { margin: 0 0 8px; }
+        .status-card h3 {
+            margin: 0 0 9px;
+            font-size: 21px;
+        }
 
         .status-card p {
             color: var(--muted);
             margin: 0;
+            line-height: 1.7;
+            font-size: 14px;
         }
 
         .live-badge {
-            display: inline-block;
-            padding: 10px 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
             border-radius: 30px;
-            font-weight: 700;
-            font-size: 13px;
+            font-weight: 800;
+            font-size: 12px;
+            white-space: nowrap;
         }
 
         .live {
             background: #e9f8ef;
-            color: #16834b;
+            color: var(--green);
         }
 
         .closed {
@@ -218,43 +392,201 @@
 
         .cta {
             text-align: center;
-            padding: 55px 20px;
-            background: var(--dark);
+            padding: 65px 7%;
+            background:
+                radial-gradient(circle at 50% 0%, rgba(226, 27, 35, .25), transparent 50%),
+                var(--dark);
             color: white;
+        }
+
+        .cta h2 {
+            font-size: clamp(28px, 4vw, 40px);
+            margin: 0 0 14px;
         }
 
         .cta p {
             color: #d1d5db;
-            line-height: 1.7;
+            line-height: 1.8;
+            margin: 0 auto 25px;
         }
 
         footer {
             text-align: center;
-            padding: 24px;
+            padding: 25px 7%;
             background: white;
             color: var(--muted);
             font-size: 13px;
+            border-top: 1px solid var(--border);
+        }
+
+        @media (max-width: 1000px) {
+            .hero {
+                gap: 35px;
+                padding-left: 5%;
+                padding-right: 5%;
+            }
+
+            .hero-photo {
+                height: 300px;
+            }
+
+            .floating-note {
+                left: -12px;
+            }
+
+            .brand-logo {
+                width: 190px;
+            }
         }
 
         @media (max-width: 800px) {
-            .hero {
-                grid-template-columns: 1fr;
-                padding-top: 50px;
+            .navbar {
+                padding: 12px 5%;
+                min-height: 76px;
             }
 
-            .features { grid-template-columns: 1fr; }
+            .brand-logo {
+                width: 165px;
+                height: 52px;
+            }
 
-            .navbar { padding: 16px 5%; }
+            .nav-buttons {
+                gap: 8px;
+            }
 
-            .brand { font-size: 19px; }
+            .btn {
+                padding: 11px 13px;
+                font-size: 13px;
+            }
 
-            .nav-buttons { gap: 7px; }
+            .hero {
+                grid-template-columns: 1fr;
+                padding: 52px 6%;
+                gap: 40px;
+            }
 
-            .btn { padding: 10px 12px; font-size: 13px; }
+            .hero-content {
+                max-width: 100%;
+            }
+
+            h1 {
+                font-size: clamp(40px, 9vw, 60px);
+                letter-spacing: -1.5px;
+            }
+
+            .hero-description {
+                font-size: 16px;
+            }
+
+            .hero-visual {
+                max-width: 600px;
+                width: 100%;
+                margin: 0 auto;
+            }
+
+            .hero-photo {
+                height: 320px;
+            }
+
+            .floating-note {
+                left: -8px;
+                bottom: 105px;
+            }
+
+            .section {
+                padding: 60px 6%;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .feature {
+                padding: 25px;
+            }
+
+            .status-section {
+                padding: 0 6% 60px;
+            }
 
             .status-card {
                 align-items: flex-start;
                 flex-direction: column;
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 430px) {
+            .navbar {
+                padding: 11px 4%;
+                gap: 8px;
+            }
+
+            .brand-logo {
+                width: 125px;
+                height: 46px;
+            }
+
+            .nav-buttons {
+                gap: 6px;
+            }
+
+            .btn {
+                padding: 10px 11px;
+                font-size: 12px;
+                border-radius: 8px;
+            }
+
+            .hero {
+                padding: 42px 5%;
+            }
+
+            h1 {
+                font-size: 40px;
+            }
+
+            .hero-actions {
+                gap: 10px;
+            }
+
+            .hero-photo {
+                height: 245px;
+            }
+
+            .photo-caption {
+                padding: 17px 8px 9px;
+            }
+
+            .photo-caption h2 {
+                font-size: 17px;
+            }
+
+            .photo-badge {
+                padding: 8px;
+                font-size: 10px;
+            }
+
+            .floating-note {
+                left: 7px;
+                bottom: 105px;
+                padding: 11px 12px;
+            }
+
+            .hero-note {
+                gap: 10px;
+                flex-direction: column;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+
+            *,
+            *::before,
+            *::after {
+                transition-duration: .01ms !important;
             }
         }
     </style>
@@ -263,9 +595,14 @@
 <body>
 
 <header class="navbar">
-    <a href="/" class="brand">ARMIET <span>CanteenFlow</span></a>
+    <a href="/" class="brand" aria-label="ARMIET CanteenFlow homepage">
+        <img
+            class="brand-logo"
+            src="/images/armiet-canteenflow-logo.png"
+            alt="ARMIET CanteenFlow Logo">
+    </a>
 
-    <nav class="nav-buttons">
+    <nav class="nav-buttons" aria-label="Main navigation">
         <a href="/login" class="btn btn-outline">Login</a>
         <a href="/register" class="btn btn-red">Register</a>
     </nav>
@@ -273,14 +610,18 @@
 
 <main>
     <section class="hero">
-        <div>
-            <span class="tag">SMART COLLEGE CANTEEN</span>
+        <div class="hero-content">
+            <span class="tag">
+                <span class="tag-dot"></span>
+                SMART COLLEGE CANTEEN
+            </span>
 
-            <h1>Your Campus Food,<br>
+            <h1>
+                Your Campus Food,<br>
                 <span>Made Simpler.</span>
             </h1>
 
-            <p>
+            <p class="hero-description">
                 Welcome to ARMIET CanteenFlow! Explore the canteen,
                 order your favourite food, receive a digital token,
                 and track your order without waiting in long queues.
@@ -290,45 +631,75 @@
                 <a href="/login" class="btn btn-red">Order Food &rarr;</a>
                 <a href="/register" class="btn btn-outline">Create Account</a>
             </div>
+
+            <div class="hero-note">
+                <span>Easy online pre-orders</span>
+                <span>Digital order tokens</span>
+                <span>Less waiting in queues</span>
+            </div>
         </div>
 
-        <div class="hero-card">
-            <div class="food-icon">🍔 🍕 🥪</div>
-            <h2>Good Food. Less Waiting.</h2>
-            <p>
-                Your college canteen experience, made convenient
-                with online pre-orders and digital tokens.
-            </p>
-            <a href="/login" class="btn btn-red">Explore Canteen</a>
+        <div class="hero-visual">
+            <div class="hero-card">
+                <img
+                    class="hero-photo"
+                    src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&amp;fit=crop&amp;w=1100&amp;q=85"
+                    alt="Freshly prepared burger served with fresh ingredients"
+                    fetchpriority="high">
+
+                <div class="photo-caption">
+                    <div>
+                        <h2>Good Food. Less Waiting.</h2>
+                        <p>Your college canteen experience, made convenient.</p>
+                    </div>
+
+                    <span class="photo-badge">MADE FRESH</span>
+                </div>
+            </div>
+
+            <div class="floating-note">
+                Order. Collect. Enjoy.
+                <span>Your campus food, made simpler.</span>
+            </div>
         </div>
     </section>
 
     <section class="section">
         <div class="section-heading">
+            <span class="eyebrow">A better canteen experience</span>
             <h2>Everything You Need</h2>
-            <p>A smarter way to enjoy your college canteen.</p>
+            <p>
+                A smarter, simpler way to enjoy your college canteen.
+                Spend less time waiting and more time enjoying your break.
+            </p>
         </div>
 
         <div class="features">
             <article class="feature">
-                <div class="feature-icon">🍽️</div>
+                <div class="feature-icon" aria-hidden="true">01</div>
                 <h3>Today's Menu</h3>
-                <p>Explore available food items, check prices,
-                   and choose your favourite snacks and meals.</p>
+                <p>
+                    Explore available food items, check prices,
+                    and choose your favourite snacks and meals.
+                </p>
             </article>
 
             <article class="feature">
-                <div class="feature-icon">🎟️</div>
+                <div class="feature-icon" aria-hidden="true">02</div>
                 <h3>Digital Token</h3>
-                <p>Place your order and use your digital token
-                   for convenient collection at the counter.</p>
+                <p>
+                    Place your order and use your digital token
+                    for convenient collection at the canteen counter.
+                </p>
             </article>
 
             <article class="feature">
-                <div class="feature-icon">⚡</div>
+                <div class="feature-icon" aria-hidden="true">03</div>
                 <h3>Live Rush Meter</h3>
-                <p>Check current canteen activity and estimated
-                   waiting time before visiting.</p>
+                <p>
+                    Check canteen activity and estimated waiting time
+                    before visiting.
+                </p>
             </article>
         </div>
     </section>
@@ -337,20 +708,25 @@
         <div class="status-card">
             <div>
                 <h3>Canteen Status</h3>
-                <p>Check the latest canteen activity before ordering.</p>
+                <p>
+                    Check the latest canteen activity before placing an order.
+                </p>
             </div>
 
-            <span class="live-badge"
-                  th:classappend="${canteenLive} ? ' live' : ' closed'"
-                  th:text="${canteenLive} ? '● OPEN NOW' : '● CURRENTLY CLOSED'">
-                ● OPEN NOW
+            <span
+                class="live-badge"
+                th:classappend="${canteenLive} ? ' live' : ' closed'"
+                th:text="${canteenLive} ? '● OPEN NOW' : '● CURRENTLY CLOSED'">
+                ● Checking status
             </span>
         </div>
     </section>
 
     <section class="cta">
         <h2>Ready to Order?</h2>
-        <p>Log in or create your account to explore the canteen menu.</p>
+        <p>
+            Log in or create your account to explore the canteen menu.
+        </p>
         <a href="/login" class="btn btn-red">Get Started &rarr;</a>
     </section>
 </main>
@@ -361,3 +737,4 @@
 
 </body>
 </html>
+```
