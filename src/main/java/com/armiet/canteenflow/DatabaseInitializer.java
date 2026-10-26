@@ -17,19 +17,12 @@ public class DatabaseInitializer implements CommandLineRunner {
     public void run(String... args) {
 
         // ==============================
-        // ENABLE FOREIGN KEYS
-        // ==============================
-
-        jdbcTemplate.execute("PRAGMA foreign_keys = ON");
-
-
-        // ==============================
         // USERS TABLE
         // ==============================
 
         jdbcTemplate.execute("""
             CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id BIGSERIAL PRIMARY KEY,
                 name TEXT NOT NULL,
                 email TEXT NOT NULL UNIQUE,
                 password TEXT NOT NULL,
@@ -45,7 +38,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         jdbcTemplate.execute("""
             CREATE TABLE IF NOT EXISTS food_items (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id BIGSERIAL PRIMARY KEY,
                 name TEXT NOT NULL,
                 description TEXT,
                 category TEXT,
@@ -63,7 +56,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         jdbcTemplate.execute("""
             CREATE TABLE IF NOT EXISTS orders (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id BIGSERIAL PRIMARY KEY,
                 user_id INTEGER NOT NULL,
                 token_number INTEGER,
                 total_amount REAL NOT NULL,
@@ -124,7 +117,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         jdbcTemplate.execute("""
             CREATE TABLE IF NOT EXISTS order_items (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id BIGSERIAL PRIMARY KEY,
                 order_id INTEGER NOT NULL,
                 food_item_id INTEGER NOT NULL,
                 quantity INTEGER NOT NULL,
@@ -239,7 +232,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         System.out.println("======================================");
         System.out.println("ARMIET CanteenFlow Database Ready!");
-        System.out.println("Database : SQLite");
+        System.out.println("Database : PostgreSQL");
         System.out.println("Tables created:");
         System.out.println("1. users");
         System.out.println("2. food_items");
@@ -280,7 +273,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     // ==================================================
     // ADD COLUMN IF MISSING
-    // SQLITE VERSION
+    // POSTGRESQL-COMPATIBLE VERSION
     // ==================================================
 
     private void addColumnIfMissing(
@@ -292,8 +285,10 @@ public class DatabaseInitializer implements CommandLineRunner {
                 jdbcTemplate.queryForObject(
                         """
                         SELECT COUNT(*)
-                        FROM pragma_table_info(?)
-                        WHERE name = ?
+                        FROM information_schema.columns
+                        WHERE table_schema = current_schema()
+                          AND table_name = ?
+                          AND column_name = ?
                         """,
                         Integer.class,
                         tableName,

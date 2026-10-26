@@ -131,7 +131,7 @@ public class OrderController {
         // CREATE ORDER
         // ==================================================
 
-        jdbcTemplate.update(
+        Long orderId = jdbcTemplate.queryForObject(
                 """
                 INSERT INTO orders
                 (
@@ -144,7 +144,9 @@ public class OrderController {
                     payment_id
                 )
                 VALUES (?, ?, ?, ?, ?, ?, ?)
+                RETURNING id
                 """,
+                Long.class,
                 userId,
                 tokenNumber,
                 totalAmount,
@@ -166,20 +168,6 @@ public class OrderController {
                 """,
                 tokenNumber + 1
         );
-
-        // ==================================================
-        // GET NEW ORDER ID
-        // ==================================================
-
-        Long orderId =
-                jdbcTemplate.queryForObject(
-                        "SELECT last_insert_rowid()",
-                        Long.class
-                );
-
-        if (orderId == null) {
-            return "redirect:/student/cart";
-        }
 
         // ==================================================
         // FIND FOOD COLUMN
@@ -477,7 +465,13 @@ public class OrderController {
 
         List<Map<String, Object>> columns =
                 jdbcTemplate.queryForList(
-                        "PRAGMA table_info(order_items)"
+                        """
+                        SELECT column_name AS name
+                        FROM information_schema.columns
+                        WHERE table_schema = current_schema()
+                          AND table_name = 'order_items'
+                        ORDER BY ordinal_position
+                        """
                 );
 
         String[] possibleColumns = {

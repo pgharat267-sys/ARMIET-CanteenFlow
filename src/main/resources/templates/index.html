@@ -1840,8 +1840,7 @@
 
 <span
     class="item-count"
-    th:text="${#lists.size(foodItems) + ' items'}">
-
+    th:text="${#lists.size(foodItems != null ? foodItems : {}) + ' items'}"
     0 items
 
 </span>
