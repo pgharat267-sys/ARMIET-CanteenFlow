@@ -7,31 +7,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import java.util.UUID;
 
 @Controller
 public class AdminFoodAddController {
 
     private final JdbcTemplate jdbcTemplate;
+    private final CloudinaryService cloudinaryService;
 
-    public AdminFoodAddController(JdbcTemplate jdbcTemplate) {
+    public AdminFoodAddController(
+            JdbcTemplate jdbcTemplate,
+            CloudinaryService cloudinaryService) {
         this.jdbcTemplate = jdbcTemplate;
+        this.cloudinaryService = cloudinaryService;
     }
 
-    // ==========================================
-    // SHOW ADD FOOD PAGE
-    // ==========================================
-
+    // Show Add Food page
     @GetMapping("/admin/food/add")
     public String showAddFoodPage(HttpSession session) {
-
         if (!isAdmin(session)) {
             return "redirect:/login";
         }
@@ -39,10 +34,7 @@ public class AdminFoodAddController {
         return "admin/add-food";
     }
 
-    // ==========================================
-    // SAVE NEW FOOD
-    // ==========================================
-
+    // Save new food item
     @PostMapping("/admin/food/add")
     public String addFood(
             @RequestParam String name,
@@ -51,198 +43,104 @@ public class AdminFoodAddController {
             @RequestParam double price,
             @RequestParam(required = false) MultipartFile foodImage,
             @RequestParam(required = false) String available,
-            HttpSession session) {
-
-        // ==========================================
-        // ADMIN SECURITY CHECK
-        // ==========================================
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
 
         if (!isAdmin(session)) {
             return "redirect:/login";
         }
 
-        // ==========================================
-        // CLEAN INPUT
-        // ==========================================
-
-        String cleanName =
-                name == null
-                        ? ""
-                        : name.trim();
-
+        String cleanName = name == null ? "" : name.trim();
         String cleanDescription =
-                description == null
-                        ? ""
-                        : description.trim();
-
+                description == null ? "" : description.trim();
         String cleanCategory =
-                category == null
-                        ? ""
-                        : category.trim();
+                category == null ? "" : category.trim();
 
-        // ==========================================
-        // BASIC VALIDATION
-        // ==========================================
+        if (cleanName.isEmpty()
+                || cleanDescription.isEmpty()
+                || cleanCategory.isEmpty()
+                || !Double.isFinite(price)
+                || price <= 0) {
 
-        if (cleanName.isEmpty() ||
-                cleanDescription.isEmpty() ||
-                cleanCategory.isEmpty() ||
-                price <= 0) {
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    "Please enter valid food details and price."
+            );
 
             return "redirect:/admin/food/add";
         }
 
-        // ==========================================
-        // AVAILABILITY
-        // ==========================================
-
-        int isAvailable =
-                available != null ? 1 : 0;
-
-        // ==========================================
-        // FOOD IMAGE
-        // ==========================================
-
+        int isAvailable = available != null ? 1 : 0;
         String imageUrl = "";
 
-        if (foodImage != null &&
-                !foodImage.isEmpty()) {
+        // Upload the selected image to Cloudinary
+        if (foodImage != null && !foodImage.isEmpty()) {
+            String contentType = foodImage.getContentType();
 
-            // Make sure uploaded file is an image
-            String contentType =
-                    foodImage.getContentType();
+            if (contentType == null
+                    || !contentType.toLowerCase()
+                            .startsWith("image/")) {
 
-            if (contentType == null ||
-                    !contentType.startsWith("image/")) {
+                redirectAttributes.addFlashAttribute(
+                        "errorMessage",
+                        "Please select a valid image file."
+                );
 
                 return "redirect:/admin/food/add";
             }
 
             try {
-
-                // ==========================================
-                // CREATE UPLOAD DIRECTORY
-                // ==========================================
-
-                Path uploadDirectory =
-                        Paths.get(
-                                "src",
-                                "main",
-                                "resources",
-                                "static",
-                                "uploads",
-                                "food"
-                        );
-
-                Files.createDirectories(
-                        uploadDirectory
-                );
-
-                // ==========================================
-                // GET ORIGINAL FILE EXTENSION
-                // ==========================================
-
-                String originalFileName =
-                        foodImage.getOriginalFilename();
-
-                String extension = "";
-
-                if (originalFileName != null &&
-                        originalFileName.contains(".")) {
-
-                    extension =
-                            originalFileName.substring(
-                                    originalFileName
-                                            .lastIndexOf(".")
-                            ).toLowerCase();
-                }
-
-                // ==========================================
-                // CREATE UNIQUE FILE NAME
-                // ==========================================
-
-                String newFileName =
-                        UUID.randomUUID()
-                                .toString()
-                                + extension;
-
-                // ==========================================
-                // FINAL FILE PATH
-                // ==========================================
-
-                Path filePath =
-                        uploadDirectory.resolve(
-                                newFileName
-                        );
-
-                // ==========================================
-                // SAVE IMAGE
-                // ==========================================
-
-                try (InputStream inputStream =
-                             foodImage.getInputStream()) {
-
-                    Files.copy(
-                            inputStream,
-                            filePath,
-                            StandardCopyOption.REPLACE_EXISTING
-                    );
-                }
-
-                // ==========================================
-                // IMAGE URL FOR DATABASE
-                // ==========================================
-
-                imageUrl =
-                        "/uploads/food/"
-                                + newFileName;
-
-            } catch (IOException e) {
-
+                imageUrl = cloudinaryService.uploadImage(foodImage);
+            } catch (IOException | RuntimeException e) {
                 e.printStackTrace();
+
+                redirectAttributes.addFlashAttribute(
+                        "errorMessage",
+                        "Image upload failed. Please try again."
+                );
 
                 return "redirect:/admin/food/add";
             }
         }
 
-        // ==========================================
-        // INSERT FOOD INTO DATABASE
-        // ==========================================
+        try {
+            jdbcTemplate.update(
+                    """
+                    INSERT INTO food_items
+                    (name, description, category, price, image_url, available)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    """,
+                    cleanName,
+                    cleanDescription,
+                    cleanCategory,
+                    price,
+                    imageUrl,
+                    isAvailable
+            );
+        } catch (RuntimeException e) {
+            e.printStackTrace();
 
-        jdbcTemplate.update(
-                """
-                INSERT INTO food_items
-                (name, description, category, price, image_url, available)
-                VALUES (?, ?, ?, ?, ?, ?)
-                """,
+            redirectAttributes.addFlashAttribute(
+                    "errorMessage",
+                    "Could not save the food item. Please try again."
+            );
 
-                cleanName,
-                cleanDescription,
-                cleanCategory,
-                price,
-                imageUrl,
-                isAvailable
+            return "redirect:/admin/food/add";
+        }
+
+        redirectAttributes.addFlashAttribute(
+                "successMessage",
+                "Food item added successfully."
         );
-
-        // ==========================================
-        // RETURN TO FOOD MENU
-        // ==========================================
 
         return "redirect:/admin/food";
     }
 
-    // ==========================================
-    // ADMIN SECURITY CHECK
-    // ==========================================
-
+    // Admin security check
     private boolean isAdmin(HttpSession session) {
+        Object roleObject = session.getAttribute("userRole");
 
-        Object roleObject =
-                session.getAttribute("userRole");
-
-        return roleObject != null &&
-                "ADMIN".equalsIgnoreCase(
-                        roleObject.toString()
-                );
+        return roleObject != null
+                && "ADMIN".equalsIgnoreCase(roleObject.toString());
     }
 }
