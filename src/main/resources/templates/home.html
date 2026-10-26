@@ -1,12 +1,13 @@
-```html
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>ARMIET CanteenFlow | Smart College Canteen</title>
-    <meta name="description" content="Welcome to ARMIET CanteenFlow. Explore your college canteen, order food online, and collect your order using a digital token.">
+    <meta name="description"
+          content="ARMIET CanteenFlow makes college canteen ordering simple with digital tokens and convenient food ordering.">
 
     <style>
         :root {
@@ -39,13 +40,15 @@
             text-decoration: none;
         }
 
+        /* NAVIGATION */
+
         .navbar {
             min-height: 88px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 20px;
-            padding: 12px 7%;
+            padding: 10px 6%;
             background: rgba(255, 255, 255, 0.98);
             border-bottom: 1px solid var(--border);
             position: sticky;
@@ -56,21 +59,23 @@
         .brand {
             display: flex;
             align-items: center;
-            flex-shrink: 0;
+            min-width: 0;
+            flex-shrink: 1;
         }
 
         .brand-logo {
             display: block;
-            width: 220px;
-            height: 64px;
+            width: 260px;
+            height: 76px;
             object-fit: contain;
             object-position: left center;
         }
 
         .nav-buttons {
             display: flex;
-            gap: 12px;
             align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
         }
 
         .btn {
@@ -82,7 +87,9 @@
             border-radius: 10px;
             font-size: 15px;
             font-weight: 700;
-            transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+            transition: background .2s ease,
+                        transform .2s ease,
+                        box-shadow .2s ease;
             cursor: pointer;
         }
 
@@ -101,30 +108,41 @@
             background: var(--red);
             color: white;
             border: 1px solid var(--red);
-            box-shadow: 0 6px 16px rgba(226, 27, 35, 0.13);
+            box-shadow: 0 6px 16px rgba(226, 27, 35, .13);
         }
 
         .btn-red:hover {
             background: var(--red-dark);
             border-color: var(--red-dark);
-            box-shadow: 0 8px 22px rgba(226, 27, 35, 0.2);
+            box-shadow: 0 8px 22px rgba(226, 27, 35, .2);
         }
 
         .btn:hover {
             transform: translateY(-2px);
         }
 
+        /* HERO SECTION */
+
         .hero {
             min-height: 590px;
-            padding: 70px 7%;
+            padding: 65px 6%;
             display: grid;
-            grid-template-columns: 1.08fr .92fr;
+            grid-template-columns: 1.02fr .98fr;
             align-items: center;
-            gap: 55px;
+            gap: 45px;
             overflow: hidden;
             background:
-                radial-gradient(circle at 85% 25%, rgba(255, 190, 194, .45), transparent 32%),
-                linear-gradient(120deg, #ffffff 0%, #fff8f8 60%, #fff0f1 100%);
+                radial-gradient(
+                    circle at 85% 25%,
+                    rgba(255, 190, 194, .45),
+                    transparent 32%
+                ),
+                linear-gradient(
+                    120deg,
+                    #ffffff 0%,
+                    #fff8f8 60%,
+                    #fff0f1 100%
+                );
         }
 
         .hero-content {
@@ -152,7 +170,7 @@
         }
 
         h1 {
-            font-size: clamp(42px, 5.1vw, 70px);
+            font-size: clamp(42px, 4.6vw, 67px);
             line-height: 1.08;
             margin: 24px 0;
             letter-spacing: -2.5px;
@@ -181,7 +199,7 @@
             margin-top: 25px;
             display: flex;
             flex-wrap: wrap;
-            gap: 18px;
+            gap: 16px;
             color: #656565;
             font-size: 13px;
         }
@@ -193,71 +211,90 @@
             margin-right: 7px;
         }
 
+        /* INDIAN CANTEEN FOOD COLLAGE */
+
         .hero-visual {
             position: relative;
             min-width: 0;
         }
 
-        .hero-card {
-            position: relative;
+        .food-collage {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 205px 205px;
+            gap: 12px;
+            padding: 12px;
             background: white;
+            border: 1px solid #ffffff;
             border-radius: 28px;
-            padding: 14px;
-            border: 1px solid rgba(255, 255, 255, .9);
             box-shadow: 0 28px 75px rgba(23, 23, 23, .12);
-            overflow: hidden;
+            transform: rotate(.5deg);
         }
 
-        .hero-photo {
+        .food-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 19px;
+            background: #f5e6dd;
+            min-width: 0;
+        }
+
+        .food-item img {
             width: 100%;
-            height: 350px;
+            height: 100%;
             display: block;
             object-fit: cover;
-            border-radius: 20px;
-            background: #f3e9e2;
+            transition: transform .45s ease;
         }
 
-        .photo-caption {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            padding: 20px 12px 13px;
+        .food-item:hover img {
+            transform: scale(1.07);
         }
 
-        .photo-caption h2 {
-            margin: 0 0 7px;
-            font-size: 21px;
-        }
-
-        .photo-caption p {
-            margin: 0;
-            color: var(--muted);
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        .photo-badge {
-            flex-shrink: 0;
-            padding: 9px 12px;
-            background: var(--light);
-            color: var(--red);
-            border-radius: 10px;
+        .food-label {
+            position: absolute;
+            left: 12px;
+            bottom: 12px;
+            padding: 8px 12px;
+            color: white;
+            background: rgba(20, 20, 20, .82);
+            border-radius: 9px;
             font-size: 12px;
             font-weight: 800;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
+        }
+
+        .food-label span {
+            color: #ffb6bb;
+        }
+
+        .food-sticker {
+            position: absolute;
+            top: -15px;
+            left: -12px;
+            z-index: 2;
+            padding: 13px 17px;
+            background: var(--red);
+            color: white;
+            border-radius: 13px;
+            transform: rotate(-7deg);
+            font-size: 13px;
+            font-weight: 800;
+            box-shadow: 0 8px 22px rgba(226, 27, 35, .2);
         }
 
         .floating-note {
             position: absolute;
-            left: -25px;
-            bottom: 105px;
-            padding: 13px 17px;
+            right: -10px;
+            bottom: -24px;
+            padding: 15px 19px;
             background: white;
             border: 1px solid #f0f0f0;
-            border-radius: 14px;
+            border-radius: 15px;
             box-shadow: 0 12px 35px rgba(0, 0, 0, .10);
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 800;
+            z-index: 3;
         }
 
         .floating-note span {
@@ -267,6 +304,51 @@
             font-weight: 400;
             margin-top: 5px;
         }
+
+        /* BENEFITS */
+
+        .benefits {
+            padding: 24px 6%;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .benefit {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .benefit-icon {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            color: var(--red);
+            background: var(--light);
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .benefit strong {
+            display: block;
+            font-size: 13px;
+        }
+
+        .benefit small {
+            display: block;
+            margin-top: 4px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* FEATURES */
 
         .section {
             padding: 78px 7%;
@@ -309,7 +391,8 @@
             background: white;
             border: 1px solid var(--border);
             border-radius: 19px;
-            transition: transform .2s ease, box-shadow .2s ease;
+            transition: transform .2s ease,
+                        box-shadow .2s ease;
         }
 
         .feature:hover {
@@ -341,6 +424,8 @@
             font-size: 14px;
             margin-bottom: 0;
         }
+
+        /* CANTEEN STATUS */
 
         .status-section {
             padding: 0 7% 75px;
@@ -390,11 +475,17 @@
             color: var(--red);
         }
 
+        /* CALL TO ACTION */
+
         .cta {
             text-align: center;
             padding: 65px 7%;
             background:
-                radial-gradient(circle at 50% 0%, rgba(226, 27, 35, .25), transparent 50%),
+                radial-gradient(
+                    circle at 50% 0%,
+                    rgba(226, 27, 35, .25),
+                    transparent 50%
+                ),
                 var(--dark);
             color: white;
         }
@@ -419,35 +510,52 @@
             border-top: 1px solid var(--border);
         }
 
-        @media (max-width: 1000px) {
+        /* RESPONSIVE */
+
+        @media (max-width: 1050px) {
+            .navbar {
+                padding-left: 4%;
+                padding-right: 4%;
+            }
+
+            .brand-logo {
+                width: 220px;
+            }
+
             .hero {
-                gap: 35px;
+                gap: 28px;
                 padding-left: 5%;
                 padding-right: 5%;
             }
 
-            .hero-photo {
-                height: 300px;
+            .food-collage {
+                grid-template-rows: 175px 175px;
+                gap: 9px;
+                padding: 10px;
+            }
+
+            .food-label {
+                left: 8px;
+                bottom: 8px;
+                padding: 7px 9px;
+                font-size: 11px;
             }
 
             .floating-note {
-                left: -12px;
-            }
-
-            .brand-logo {
-                width: 190px;
+                right: -4px;
             }
         }
 
         @media (max-width: 800px) {
             .navbar {
-                padding: 12px 5%;
                 min-height: 76px;
+                padding: 10px 4%;
+                gap: 12px;
             }
 
             .brand-logo {
-                width: 165px;
-                height: 52px;
+                width: 175px;
+                height: 58px;
             }
 
             .nav-buttons {
@@ -461,7 +569,7 @@
 
             .hero {
                 grid-template-columns: 1fr;
-                padding: 52px 6%;
+                padding: 48px 6% 65px;
                 gap: 40px;
             }
 
@@ -470,7 +578,7 @@
             }
 
             h1 {
-                font-size: clamp(40px, 9vw, 60px);
+                font-size: clamp(40px, 8vw, 60px);
                 letter-spacing: -1.5px;
             }
 
@@ -479,18 +587,26 @@
             }
 
             .hero-visual {
-                max-width: 600px;
+                max-width: 620px;
                 width: 100%;
                 margin: 0 auto;
             }
 
-            .hero-photo {
-                height: 320px;
+            .food-collage {
+                grid-template-rows: 220px 220px;
             }
 
-            .floating-note {
-                left: -8px;
-                bottom: 105px;
+            .benefits {
+                padding: 23px 5%;
+                gap: 12px;
+            }
+
+            .benefit {
+                justify-content: flex-start;
+            }
+
+            .benefit small {
+                font-size: 11px;
             }
 
             .section {
@@ -516,19 +632,19 @@
             }
         }
 
-        @media (max-width: 430px) {
+        @media (max-width: 520px) {
             .navbar {
-                padding: 11px 4%;
-                gap: 8px;
+                padding: 10px 3%;
+                gap: 7px;
             }
 
             .brand-logo {
                 width: 125px;
-                height: 46px;
+                height: 48px;
             }
 
             .nav-buttons {
-                gap: 6px;
+                gap: 5px;
             }
 
             .btn {
@@ -538,7 +654,7 @@
             }
 
             .hero {
-                padding: 42px 5%;
+                padding: 40px 5% 58px;
             }
 
             h1 {
@@ -549,32 +665,60 @@
                 gap: 10px;
             }
 
-            .hero-photo {
-                height: 245px;
-            }
-
-            .photo-caption {
-                padding: 17px 8px 9px;
-            }
-
-            .photo-caption h2 {
-                font-size: 17px;
-            }
-
-            .photo-badge {
-                padding: 8px;
-                font-size: 10px;
-            }
-
-            .floating-note {
-                left: 7px;
-                bottom: 105px;
-                padding: 11px 12px;
-            }
-
             .hero-note {
                 gap: 10px;
                 flex-direction: column;
+            }
+
+            .food-collage {
+                grid-template-rows: 155px 155px;
+                gap: 8px;
+                padding: 8px;
+                border-radius: 20px;
+            }
+
+            .food-item {
+                border-radius: 13px;
+            }
+
+            .food-label {
+                left: 6px;
+                bottom: 6px;
+                padding: 6px 7px;
+                font-size: 10px;
+            }
+
+            .food-sticker {
+                top: -13px;
+                left: -5px;
+                padding: 10px 12px;
+                font-size: 11px;
+            }
+
+            .floating-note {
+                right: 0;
+                bottom: -42px;
+                padding: 11px 13px;
+                font-size: 12px;
+            }
+
+            .benefits {
+                grid-template-columns: 1fr;
+                gap: 17px;
+                padding: 23px 7%;
+            }
+
+            .benefit-icon {
+                width: 39px;
+                height: 39px;
+            }
+
+            .photo-caption {
+                padding: 15px 8px 9px;
+            }
+
+            .status-card {
+                padding: 22px;
             }
         }
 
@@ -598,8 +742,8 @@
     <a href="/" class="brand" aria-label="ARMIET CanteenFlow homepage">
         <img
             class="brand-logo"
-            src="/images/armiet-canteenflow-logo.png"
-            alt="ARMIET CanteenFlow Logo">
+            src="/images/student-logo.jpeg"
+            alt="ARMIET and ARMIET CanteenFlow Official Logo">
     </a>
 
     <nav class="nav-buttons" aria-label="Main navigation">
@@ -609,8 +753,13 @@
 </header>
 
 <main>
+
+    <!-- HERO SECTION -->
+
     <section class="hero">
+
         <div class="hero-content">
+
             <span class="tag">
                 <span class="tag-dot"></span>
                 SMART COLLEGE CANTEEN
@@ -622,14 +771,19 @@
             </h1>
 
             <p class="hero-description">
-                Welcome to ARMIET CanteenFlow! Explore the canteen,
-                order your favourite food, receive a digital token,
-                and track your order without waiting in long queues.
+                Welcome to ARMIET CanteenFlow! Explore your college
+                canteen, order your favourite snacks, receive a digital
+                token, and enjoy your break without waiting in long queues.
             </p>
 
             <div class="hero-actions">
-                <a href="/login" class="btn btn-red">Order Food &rarr;</a>
-                <a href="/register" class="btn btn-outline">Create Account</a>
+                <a href="/login" class="btn btn-red">
+                    Order Food &rarr;
+                </a>
+
+                <a href="/register" class="btn btn-outline">
+                    Create Account
+                </a>
             </div>
 
             <div class="hero-note">
@@ -637,77 +791,175 @@
                 <span>Digital order tokens</span>
                 <span>Less waiting in queues</span>
             </div>
+
         </div>
 
+        <!-- INDIAN CANTEEN FOOD COLLAGE -->
+
         <div class="hero-visual">
-            <div class="hero-card">
-                <img
-                    class="hero-photo"
-                    src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&amp;fit=crop&amp;w=1100&amp;q=85"
-                    alt="Freshly prepared burger served with fresh ingredients"
-                    fetchpriority="high">
 
-                <div class="photo-caption">
-                    <div>
-                        <h2>Good Food. Less Waiting.</h2>
-                        <p>Your college canteen experience, made convenient.</p>
+            <div class="food-sticker">
+                DESI FAVOURITES!
+            </div>
+
+            <div class="food-collage">
+
+                <div class="food-item">
+                    <img
+                        src="https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&amp;fit=crop&amp;w=700&amp;q=85"
+                        alt="Indian street food and vada pav"
+                        fetchpriority="high">
+
+                    <div class="food-label">
+                        <span>01</span> Vada Pav
                     </div>
-
-                    <span class="photo-badge">MADE FRESH</span>
                 </div>
+
+                <div class="food-item">
+                    <img
+                        src="https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&amp;fit=crop&amp;w=700&amp;q=85"
+                        alt="Golden crispy samosas"
+                        fetchpriority="high">
+
+                    <div class="food-label">
+                        <span>02</span> Samosa
+                    </div>
+                </div>
+
+                <div class="food-item">
+                    <img
+                        src="https://images.unsplash.com/photo-1626132647523-66f5bf380027?auto=format&amp;fit=crop&amp;w=700&amp;q=85"
+                        alt="Indian spicy snack served fresh">
+
+                    <div class="food-label">
+                        <span>03</span> Misal Pav
+                    </div>
+                </div>
+
+                <div class="food-item">
+                    <img
+                        src="https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&amp;fit=crop&amp;w=700&amp;q=85"
+                        alt="Indian vegetarian meal with rice and curry">
+
+                    <div class="food-label">
+                        <span>04</span> Veg Thali
+                    </div>
+                </div>
+
             </div>
 
             <div class="floating-note">
-                Order. Collect. Enjoy.
-                <span>Your campus food, made simpler.</span>
+                Desi Snacks. Happy Breaks.
+                <span>Affordable favourites, right on campus.</span>
             </div>
+
         </div>
+
     </section>
 
+    <!-- BENEFITS STRIP -->
+
+    <section class="benefits" aria-label="CanteenFlow benefits">
+
+        <div class="benefit">
+            <div class="benefit-icon" aria-hidden="true">&#8635;</div>
+            <div>
+                <strong>Easy Pre-Ordering</strong>
+                <small>Choose food before you arrive</small>
+            </div>
+        </div>
+
+        <div class="benefit">
+            <div class="benefit-icon" aria-hidden="true">#</div>
+            <div>
+                <strong>Digital Token</strong>
+                <small>Know your order number</small>
+            </div>
+        </div>
+
+        <div class="benefit">
+            <div class="benefit-icon" aria-hidden="true">&#9711;</div>
+            <div>
+                <strong>Less Waiting</strong>
+                <small>Make your break count</small>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- FEATURES -->
+
     <section class="section">
+
         <div class="section-heading">
-            <span class="eyebrow">A better canteen experience</span>
-            <h2>Everything You Need</h2>
+
+            <span class="eyebrow">
+                A better canteen experience
+            </span>
+
+            <h2>Your Canteen, Made Smarter.</h2>
+
             <p>
                 A smarter, simpler way to enjoy your college canteen.
                 Spend less time waiting and more time enjoying your break.
             </p>
+
         </div>
 
         <div class="features">
+
             <article class="feature">
+
                 <div class="feature-icon" aria-hidden="true">01</div>
+
                 <h3>Today's Menu</h3>
+
                 <p>
                     Explore available food items, check prices,
                     and choose your favourite snacks and meals.
                 </p>
+
             </article>
 
             <article class="feature">
+
                 <div class="feature-icon" aria-hidden="true">02</div>
+
                 <h3>Digital Token</h3>
+
                 <p>
                     Place your order and use your digital token
                     for convenient collection at the canteen counter.
                 </p>
+
             </article>
 
             <article class="feature">
+
                 <div class="feature-icon" aria-hidden="true">03</div>
+
                 <h3>Live Rush Meter</h3>
+
                 <p>
                     Check canteen activity and estimated waiting time
                     before visiting.
                 </p>
+
             </article>
+
         </div>
+
     </section>
 
+    <!-- LIVE CANTEEN STATUS -->
+
     <section class="status-section">
+
         <div class="status-card">
+
             <div>
                 <h3>Canteen Status</h3>
+
                 <p>
                     Check the latest canteen activity before placing an order.
                 </p>
@@ -719,16 +971,28 @@
                 th:text="${canteenLive} ? '● OPEN NOW' : '● CURRENTLY CLOSED'">
                 ● Checking status
             </span>
+
         </div>
+
     </section>
 
+    <!-- CALL TO ACTION -->
+
     <section class="cta">
-        <h2>Ready to Order?</h2>
+
+        <h2>Ready for Your Next Meal?</h2>
+
         <p>
-            Log in or create your account to explore the canteen menu.
+            Log in or create your account to explore the canteen menu
+            and enjoy a more convenient college canteen experience.
         </p>
-        <a href="/login" class="btn btn-red">Get Started &rarr;</a>
+
+        <a href="/login" class="btn btn-red">
+            Get Started &rarr;
+        </a>
+
     </section>
+
 </main>
 
 <footer>
@@ -737,4 +1001,3 @@
 
 </body>
 </html>
-```
