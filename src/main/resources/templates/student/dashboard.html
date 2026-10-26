@@ -1865,18 +1865,19 @@
 <div class="food-image-box">
 
 
+<!-- Display Cloudinary URLs and local /uploads/ paths. If the image fails to load, show the food emoji. -->
 <img
-    th:if="${food.image_url != null and #strings.startsWith(food.image_url, '/uploads/')}"
+    th:if="${food.image_url != null and !#strings.isEmpty(food.image_url)}"
     th:src="${food.image_url}"
     th:alt="${food.name}"
     class="food-image"
+    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
 >
 
 
 <div
-    th:unless="${food.image_url != null and #strings.startsWith(food.image_url, '/uploads/')}"
     class="food-emoji"
-    th:text="${food.image_url != null and !#strings.isEmpty(food.image_url) ? food.image_url : '🍴'}">
+    th:style="${food.image_url != null and !#strings.isEmpty(food.image_url) ? 'display:none' : 'display:flex'}">
 
     🍴
 
